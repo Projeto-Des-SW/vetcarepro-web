@@ -1,33 +1,85 @@
 import { Button, Image, Input, Switch } from "@nextui-org/react";
-import { FormEvent, useCallback, useState } from "react";
+import { useState, useEffect, useCallback } from "react";
+import banner from "../../assets/_a83c0202-0df2-4ba8-8aa9-b232f3a58d72.jpg";
 import EyeClosed from "../../assets/icons/EyeClosed";
 import EyeOpen from "../../assets/icons/EyeOpen";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { useForm, SubmitHandler, FieldErrors } from "react-hook-form";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 import welcome from "../../assets/boasVindas.png";
 import welcomeBack from "../../assets/bemVindoDeVolta.png";
+
+interface IFormInput {
+  email: string;
+  password: string;
+}
+
+interface IFormCadastro extends IFormInput {
+  repassword: string;
+  username: string;
+  name: string;
+}
+
+const loginSchema = yup
+  .object({
+    email: yup.string().required("Email é obrigatório").email("Email inválido"),
+    password: yup.string().required("Senha é obrigatória"),
+  })
+  .required();
+
+const cadastroSchema = yup
+  .object({
+    email: yup.string().required("Email é obrigatório").email("Email inválido"),
+    password: yup.string().required("Senha é obrigatória"),
+    repassword: yup
+      .string()
+      .oneOf([yup.ref("password")], "As senhas devem corresponder")
+      .required("Confirmação de senha é obrigatória"),
+    username: yup.string().required("Username é obrigatório"),
+    name: yup.string().required("Nome é obrigatório"),
+  })
+  .required();
+
+const isFieldError = (errors: FieldErrors, field: string): boolean => {
+  return !!errors[field];
+};
 
 const Login = () => {
   const [visibilityState, setVisibilityState] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
+  const [schema, setSchema] = useState(loginSchema);
 
   const handleChangeLogin = () => {
     setIsLogin((prevState) => !prevState);
   };
 
+  useEffect(() => {
+    setSchema(isLogin ? loginSchema : cadastroSchema);
+    reset(); // Reset the form whenever schema changes
+  }, [isLogin]);
+
   const handleVisible = useCallback(() => {
     setVisibilityState((prevState) => !prevState);
   }, []);
+
   const navigate = useNavigate();
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const formDataObj = Object.fromEntries(formData);
-    console.log(formDataObj);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<IFormInput | IFormCadastro>({
+    resolver: yupResolver(schema),
+  });
 
-    //TODO: Tratar o continuar logado, salvando no localstorage pra permanecer logado ao sair da pagina
+  console.log(errors);
+
+  const onSubmit: SubmitHandler<IFormInput | IFormCadastro> = (data) => {
     navigate("/home");
+    console.log(data);
   };
 
   return (
@@ -49,20 +101,24 @@ const Login = () => {
             }}
           >
             <h2>Bem-vindo</h2>
-            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className="flex flex-col gap-4"
+            >
               <Input
                 label="Email"
-                name="email"
                 className="font-sans"
+                color={isFieldError(errors, "email") ? "danger" : "default"}
                 placeholder="Digite o seu email"
+                {...register("email")}
               />
+
               <Input
                 type={visibilityState ? "text" : "password"}
                 label="Senha"
-                name="password"
                 placeholder="Digite sua senha"
-                color="danger"
-                //TODO: Com a hookform, aplicar estilos de erro no color
+                color={isFieldError(errors, "password") ? "danger" : "default"}
+                {...register("password")}
                 endContent={
                   <button
                     type="button"
@@ -77,6 +133,7 @@ const Login = () => {
                   </button>
                 }
               />
+
               <Switch name="stayOn">Continuar logado</Switch>
               <Button className="bg-[#AAFAEF]" type="submit">
                 Login
@@ -132,23 +189,37 @@ const Login = () => {
             }}
           >
             <h2>Bem-vindo</h2>
-            <form onSubmit={handleSubmit} className="flex flex-col gap-2">
-              <Input label="Nome" name="nome" placeholder="Digite o seu nome" />
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className="flex flex-col gap-2"
+            >
+              <Input
+                label="Nome"
+                placeholder="Digite o seu nome"
+                {...register("name")}
+                color={isFieldError(errors, "name") ? "danger" : "default"}
+              />
+
               <Input
                 label="Username"
-                name="username"
                 placeholder="Digite o seu username"
+                {...register("username")}
+                color={isFieldError(errors, "username") ? "danger" : "default"}
               />
+
               <Input
                 label="Email"
-                name="email"
                 placeholder="Digite o seu email"
+                {...register("email")}
+                color={isFieldError(errors, "email") ? "danger" : "default"}
               />
+
               <Input
                 type={visibilityState ? "text" : "password"}
                 label="Senha"
-                name="password"
                 placeholder="Digite sua senha"
+                {...register("password")}
+                color={isFieldError(errors, "password") ? "danger" : "default"}
                 endContent={
                   <button
                     type="button"
@@ -163,12 +234,17 @@ const Login = () => {
                   </button>
                 }
               />
+
               <Input
                 type={visibilityState ? "text" : "password"}
-                label="Senha"
-                name="password"
-                placeholder="Digite sua senha"
+                label="Confirme sua Senha"
+                placeholder="Digite sua senha novamente"
+                {...register("repassword")}
+                color={
+                  isFieldError(errors, "repassword") ? "danger" : "default"
+                }
               />
+
               <Button className="bg-[#AAFAEF]" type="submit">
                 Cadastro
               </Button>
