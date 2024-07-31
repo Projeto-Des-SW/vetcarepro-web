@@ -1,6 +1,8 @@
-import { Button, Image, Input, Switch } from "@nextui-org/react";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
+import { Button } from "../ui/button";
 import { useState, useEffect, useCallback } from "react";
-import banner from "../../assets/_a83c0202-0df2-4ba8-8aa9-b232f3a58d72.jpg";
+
 import EyeClosed from "../../assets/icons/EyeClosed";
 import EyeOpen from "../../assets/icons/EyeOpen";
 import { motion } from "framer-motion";
@@ -8,8 +10,8 @@ import { useNavigate } from "react-router-dom";
 import { useForm, SubmitHandler, FieldErrors } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import welcome from "../../assets/boasVindas.png";
-import welcomeBack from "../../assets/bemVindoDeVolta.png";
+
+import { Switch } from "../ui/switch";
 
 interface IFormInput {
   email: string;
@@ -120,36 +122,36 @@ const Login = () => {
       >
         <h2>Bem-vindo</h2>
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+          <Label>Email</Label>
           <Input
-            label="Email"
             className="font-sans"
             color={isFieldError(errors, "email") ? "danger" : "default"}
             placeholder="Digite o seu email"
             {...register("email")}
           />
 
+          <Label>Senha</Label>
           <Input
             type={visibilityState ? "text" : "password"}
-            label="Senha"
             placeholder="Digite sua senha"
             color={isFieldError(errors, "password") ? "danger" : "default"}
             {...register("password")}
-            endContent={
-              <button
-                type="button"
-                onClick={handleVisible}
-                className="focus:outline-none"
-              >
-                {visibilityState ? (
-                  <EyeClosed className="text-2xl text-default-400 pointer-events-none" />
-                ) : (
-                  <EyeOpen className="text-2xl text-default-400 pointer-events-none" />
-                )}
-              </button>
-            }
+            // endContent={
+            //   <button
+            //     type="button"
+            //     onClick={handleVisible}
+            //     className="focus:outline-none"
+            //   >
+            //     {visibilityState ? (
+            //       <EyeClosed className="text-2xl text-default-400 pointer-events-none" />
+            //     ) : (
+            //       <EyeOpen className="text-2xl text-default-400 pointer-events-none" />
+            //     )}
+            //   </button>
+            // }
           />
 
-          <Switch name="stayOn">Continuar logado</Switch>
+          <Switch name="stayOn" />
           <Button className="bg-[#AAFAEF]" type="submit">
             Login
           </Button>
