@@ -1,18 +1,15 @@
-import { useForm, SubmitHandler, FieldErrors } from "react-hook-form";
+import { useForm, SubmitHandler } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate } from "react-router-dom";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
 import { Button } from "../ui/button";
 import EyeClosed from "../../assets/icons/EyeClosed";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -82,7 +79,7 @@ const Cadastro = () => {
   return (
     <section className="flex items-center">
       <>
-        <Card className="w-full ">
+        <Card className="w-full">
           <CardHeader>
             <CardTitle>Bem vindo</CardTitle>
             <CardDescription>
@@ -183,7 +180,7 @@ const Cadastro = () => {
                 }
               /> */}
 
-                <Button className="bg-[#AAFAEF]" type="submit">
+                <Button className="bg-[#4EBA9D]" type="submit">
                   Cadastro
                 </Button>
 

@@ -136,7 +136,7 @@ const Login = () => {
                 <Label>Continuar logado</Label>
               </div>
 
-              <Button className="bg-[#AAFAEF]" type="submit">
+              <Button className="bg-[#4EBA9D]" type="submit">
                 Login
               </Button>
             </form>

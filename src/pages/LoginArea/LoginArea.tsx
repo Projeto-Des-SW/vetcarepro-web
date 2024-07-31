@@ -2,13 +2,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Login from "@/components/Login/Login";
 import husky from "../../assets/hunkyTransparente.png";
 import Cadastro from "@/components/Cadastro/Cadastro";
+import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+
 const LoginArea = () => {
   return (
     <section className="w-full h-[85vh] flex justify-center items-center">
       <Card className=" flex justify-center items-center w- h-fit">
         <CardHeader
-          className="w-[600px] h-[600px] bg-[#4EBA9D] rounded-lg p-9 flex flex-col justify-between bg-cover bg-center bg-no-repeat"
+          className="w-[600px] h-[600px] bg-[#4EBA9D]  rounded-lg p-9 flex flex-col justify-between bg-cover bg-center bg-no-repeat"
           style={{ backgroundImage: `url(${husky})` }}
         >
           <div className="flex items-center gap-4">
@@ -34,12 +36,14 @@ const LoginArea = () => {
             </h1>
           </div>
 
-
-          <p className="leading-7 [&:not(:first-child)]:mt-6 text-white bg-opacity-50 bg-black p-4 rounded-lg">
+          <motion.p
+            className="text-md text-muted-foreground text-white bg-opacity-50 bg-black p-4 rounded-lg"
+            whileHover={{ scale: 1.05 }}
+          >
             O VETCARE é um sistema completo de gestão de clínicas veterinárias,
             com recursos avançados para facilitar o atendimento aos seus
             pacientes e a administração do seu negócio.
-          </p>
+          </motion.p>
         </CardHeader>
         <CardContent className=" flex  items-center">
           <Tabs defaultValue="login" className="w-[400px]">
