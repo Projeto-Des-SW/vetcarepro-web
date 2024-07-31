@@ -69,7 +69,6 @@ const Cadastro = () => {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
   } = useForm<IFormCadastro>({
     resolver: yupResolver(cadastroSchema),
   });

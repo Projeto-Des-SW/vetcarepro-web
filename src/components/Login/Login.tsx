@@ -1,5 +1,5 @@
 import { Button } from "../ui/button";
-import { useState, useEffect, useCallback } from "react";
+import { useState} from "react";
 
 import EyeClosed from "../../assets/icons/EyeClosed";
 import EyeOpen from "../../assets/icons/EyeOpen";
@@ -12,7 +12,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
