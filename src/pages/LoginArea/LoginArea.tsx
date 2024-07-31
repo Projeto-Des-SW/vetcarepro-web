@@ -5,13 +5,13 @@ import Cadastro from "@/components/Cadastro/Cadastro";
 
 const LoginArea = () => {
   return (
-    <section className="w-full flex justify-center items-center">
+    <section className="w-full flex justify-center h-[80vh] items-center">
       <picture>
         <img src={banner} />
       </picture>
-      <Tabs defaultValue="account" className="w-[400px]">
-        <TabsList>
-          <TabsTrigger value="login">Login</TabsTrigger>
+      <Tabs defaultValue="login" className="w-1/4">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="login" >Login</TabsTrigger>
           <TabsTrigger value="cadastro">Cadastro</TabsTrigger>
         </TabsList>
         <TabsContent value="login">
