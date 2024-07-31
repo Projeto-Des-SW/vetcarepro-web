@@ -19,6 +19,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Switch } from "../ui/switch";
+import Inputs from "../Inputs/Inputs";
 
 interface IFormInput {
   email: string;
@@ -120,7 +121,9 @@ const Login = () => {
       <Card className="w-full ">
         <CardHeader>
           <CardTitle>Bem vindo de volta</CardTitle>
-          <CardDescription>É um prazer ter você de volta conosco</CardDescription>
+          <CardDescription>
+            É um prazer ter você de volta conosco
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <motion.main
@@ -137,33 +140,18 @@ const Login = () => {
               onSubmit={handleSubmit(onSubmit)}
               className="flex flex-col gap-4"
             >
-              <Label>Email</Label>
-              <Input
-                className="font-sans"
-                color={isFieldError(errors, "email") ? "danger" : "default"}
-                placeholder="Digite o seu email"
-                {...register("email")}
+              <Inputs
+                label="Email"
+                name="email"
+                register={register}
+                error={errors}
               />
 
-              <Label>Senha</Label>
-              <Input
-                type={visibilityState ? "text" : "password"}
-                placeholder="Digite sua senha"
-                color={isFieldError(errors, "password") ? "danger" : "default"}
-                {...register("password")}
-                // endContent={
-                //   <button
-                //     type="button"
-                //     onClick={handleVisible}
-                //     className="focus:outline-none"
-                //   >
-                //     {visibilityState ? (
-                //       <EyeClosed className="text-2xl text-default-400 pointer-events-none" />
-                //     ) : (
-                //       <EyeOpen className="text-2xl text-default-400 pointer-events-none" />
-                //     )}
-                //   </button>
-                // }
+              <Inputs
+                label="Senha"
+                name="password"
+                register={register}
+                error={errors}
               />
 
               <Switch name="stayOn" />

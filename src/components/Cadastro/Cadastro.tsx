@@ -1,8 +1,8 @@
 import { useForm, SubmitHandler, FieldErrors } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Link, useNavigate } from "react-router-dom";
-import { FormEvent, useCallback, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useCallback, useState } from "react";
 import { motion } from "framer-motion";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
@@ -15,8 +15,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Switch } from "../ui/switch";
 import { Separator } from "../ui/separator";
+import Inputs from "../Inputs/Inputs";
 interface IFormCadastro {
   // repassword: string;
   // username: string;
@@ -112,27 +112,33 @@ const Cadastro = () => {
                 onSubmit={handleSubmit(onSubmit)}
                 className="flex flex-col gap-2"
               >
-                <Label>Nome</Label>
-                <Input
-                  placeholder="Digite o seu nome"
-                  {...register("name")}
-                  color={isFieldError(errors, "name") ? "danger" : "default"}
+                <Inputs
+                  label="Nome"
+                  name="name"
+                  register={register}
+                  error={errors}
                 />
-
                 {/* <Input
                 label="Username"
                 placeholder="Digite o seu username"
                 {...register("username")}
                 color={isFieldError(errors, "username") ? "danger" : "default"}
               /> */}
-                <Label>Email</Label>
-                <Input
-                  placeholder="Digite o seu email"
-                  {...register("email")}
-                  color={isFieldError(errors, "email") ? "danger" : "default"}
-                />
 
-                <Label>Senha</Label>
+                <Inputs
+                  label="Email"
+                  name="email"
+                  register={register}
+                  error={errors}
+                />
+                <Inputs
+                  label="Senha"
+                  name="password"
+                  register={register}
+                  type={visibilityState ? "text" : "password"}
+                  error={errors}
+                />
+                {/* <Label>Senha</Label>
                 <Input
                   type={visibilityState ? "text" : "password"}
                   placeholder="Digite sua senha"
@@ -153,7 +159,7 @@ const Cadastro = () => {
                   //     )}
                   //   </button>
                   // }
-                />
+                /> */}
 
                 {/* <Input
                 type={visibilityState ? "text" : "password"}
