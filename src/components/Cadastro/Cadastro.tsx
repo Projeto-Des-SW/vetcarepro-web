@@ -1,33 +1,158 @@
-import { Button, Image, Input } from "@nextui-org/react";
-import banner from "../../assets/_a83c0202-0df2-4ba8-8aa9-b232f3a58d72.jpg";
-import { Link } from "react-router-dom";
-import { FormEvent } from "react";
+import { useForm, SubmitHandler, FieldErrors } from "react-hook-form";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { Link, useNavigate } from "react-router-dom";
+import { FormEvent, useCallback, useState } from "react";
+import { motion } from "framer-motion";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
+import { Button } from "../ui/button";
 
-const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
+interface IFormCadastro {
+  // repassword: string;
+  // username: string;
+  name: string;
+  email: string;
+  password: string;
+}
 
-  const myData = new FormData(e.currentTarget);
-  const myDataForm = Object.fromEntries(myData);
-  console.log(myDataForm);
-};
+const cadastroSchema = yup
+  .object({
+    email: yup.string().required("Email é obrigatório").email("Email inválido"),
+    password: yup.string().required("Senha é obrigatória"),
+    // repassword: yup
+    //   .string()
+    //   .oneOf([yup.ref("password")], "As senhas devem corresponder")
+    //   .required("Confirmação de senha é obrigatória"),
+    // username: yup.string().required("Username é obrigatório"),
+    name: yup.string().required("Nome é obrigatório"),
+  })
+  .required();
 
 const Cadastro = () => {
+  const [visibilityState, setVisibilityState] = useState(false);
+  const navigate = useNavigate();
+  const onSubmit: SubmitHandler<IFormCadastro> = (data) => {
+    fetch("https://1291-128-201-206-35.ngrok-free.app/sessions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        if (data.id) {
+          console.log("Form submitted successfully");
+          navigate("/");
+        } else {
+          throw new Error("Failed to submit form");
+        }
+      })
+      .catch((error) => {
+        console.error("Form submission error:", error);
+      });
+    navigate("/home");
+    // console.log(data);
+  };
+
+  const isFieldError = (errors: FieldErrors, field: string): boolean => {
+    return !!errors[field];
+  };
+
+  const handleVisible = useCallback(() => {
+    setVisibilityState((prevState) => !prevState);
+  }, []);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<IFormCadastro>({
+    resolver: yupResolver(cadastroSchema),
+  });
+
+  console.log(errors);
+
   return (
-    <section className="flex w-[100vw] h-[100vh] items-center justify-center">
-      <Image src={banner} alt="cadastro" isZoomed width={600} />
+    <section className="flex w-[100vw] items-center">
+      <>
+        <motion.main
+          className="bg-[#4EBA9D] w-1/4  flex flex-col justify-between rounded-[36px] p-7 gap-1 z-20"
+          transition={{ ease: [0.17, 0.67, 0.83, 0.67] }}
+          whileHover={{ scale: 1.05 }}
+          // animate={{
+          //   x: [
+          //     -200, -180, -170, -160, -150, -140, -130, -120, -110, -100, -80,
+          //     -70, -60, -50, -40, -30, -28, -26, -24, -22, -20, -18, -15, -13,
+          //     -10, -8, -6, -4, -2, 0,
+          //   ],
+          // }}
+        >
+          <h2>Bem-vindo</h2>
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="flex flex-col gap-2"
+          >
+            <Label>Nome</Label>
+            <Input
+              placeholder="Digite o seu nome"
+              {...register("name")}
+              color={isFieldError(errors, "name") ? "danger" : "default"}
+            />
 
-      <main className="bg-[#4EBA9D] w-[30%] h-[50%] flex flex-col justify-between rounded-lg p-7">
-        <h2>Bem vindo</h2>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <Input label="Email" name="email" placeholder="Digite o seu email" />
+            {/* <Input
+                label="Username"
+                placeholder="Digite o seu username"
+                {...register("username")}
+                color={isFieldError(errors, "username") ? "danger" : "default"}
+              /> */}
+            <Label>Email</Label>
+            <Input
+              placeholder="Digite o seu email"
+              {...register("email")}
+              color={isFieldError(errors, "email") ? "danger" : "default"}
+            />
 
-          <Button className="bg-[#AAFAEF]" type="submit">
-            Login
-          </Button>
-        </form>
+            <Label>Senha</Label>
+            <Input
+              type={visibilityState ? "text" : "password"}
+              placeholder="Digite sua senha"
+              {...register("password")}
+              color={isFieldError(errors, "password") ? "danger" : "default"}
+              // endContent={
+              //   <button
+              //     type="button"
+              //     onClick={handleVisible}
+              //     className="focus:outline-none"
+              //   >
+              //     {visibilityState ? (
+              //       <EyeClosed className="text-2xl text-default-400 pointer-events-none" />
+              //     ) : (
+              //       <EyeOpen className="text-2xl text-default-400 pointer-events-none" />
+              //     )}
+              //   </button>
+              // }
+            />
 
-        <Link to="/login">Login</Link>
-      </main>
+            {/* <Input
+                type={visibilityState ? "text" : "password"}
+                label="Confirme sua Senha"
+                placeholder="Digite sua senha novamente"
+                {...register("repassword")}
+                color={
+                  isFieldError(errors, "repassword") ? "danger" : "default"
+                }
+              /> */}
+
+            <Button className="bg-[#AAFAEF]" type="submit">
+              Cadastro
+            </Button>
+          </form>
+        </motion.main>
+      </>
     </section>
   );
 };
