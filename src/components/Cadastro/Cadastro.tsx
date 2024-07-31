@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
+import EyeClosed from "../../assets/icons/EyeClosed";
 import {
   Card,
   CardContent,
@@ -17,6 +18,7 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "../ui/separator";
 import Inputs from "../Inputs/Inputs";
+import EyeOpen from "@/assets/icons/EyeOpen";
 interface IFormCadastro {
   // repassword: string;
   // username: string;
@@ -116,6 +118,7 @@ const Cadastro = () => {
                   label="Nome"
                   name="name"
                   register={register}
+                  placeholder="Digite o seu nome"
                   error={errors}
                 />
                 {/* <Input
@@ -128,6 +131,7 @@ const Cadastro = () => {
                 <Inputs
                   label="Email"
                   name="email"
+                  placeholder="Digite seu melhor email"
                   register={register}
                   error={errors}
                 />
@@ -135,8 +139,24 @@ const Cadastro = () => {
                   label="Senha"
                   name="password"
                   register={register}
-                  type={visibilityState ? "text" : "password"}
+                  placeholder="Digite sua senha"
                   error={errors}
+                  type={visibilityState ? "text" : "password"}
+                  icon={
+                    visibilityState ? (
+                      <EyeClosed
+                        onClick={() =>
+                          setVisibilityState((prevState) => !prevState)
+                        }
+                      />
+                    ) : (
+                      <EyeOpen
+                        onClick={() =>
+                          setVisibilityState((prevState) => !prevState)
+                        }
+                      />
+                    )
+                  }
                 />
                 {/* <Label>Senha</Label>
                 <Input

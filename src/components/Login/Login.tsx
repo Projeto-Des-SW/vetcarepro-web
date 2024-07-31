@@ -39,31 +39,10 @@ const loginSchema = yup
   })
   .required();
 
-const cadastroSchema = yup
-  .object({
-    email: yup.string().required("Email é obrigatório").email("Email inválido"),
-    password: yup.string().required("Senha é obrigatória"),
-    // repassword: yup
-    //   .string()
-    //   .oneOf([yup.ref("password")], "As senhas devem corresponder")
-    //   .required("Confirmação de senha é obrigatória"),
-    // username: yup.string().required("Username é obrigatório"),
-    name: yup.string().required("Nome é obrigatório"),
-  })
-  .required();
-
-const isFieldError = (errors: FieldErrors, field: string): boolean => {
-  return !!errors[field];
-};
-
 const Login = () => {
   const [visibilityState, setVisibilityState] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
   const [schema, setSchema] = useState(loginSchema);
-
-  const handleChangeLogin = () => {
-    setIsLogin((prevState) => !prevState);
-  };
 
   useEffect(() => {
     setSchema(loginSchema);
@@ -143,6 +122,7 @@ const Login = () => {
               <Inputs
                 label="Email"
                 name="email"
+                placeholder="Digite seu email"
                 register={register}
                 error={errors}
               />
@@ -151,7 +131,24 @@ const Login = () => {
                 label="Senha"
                 name="password"
                 register={register}
+                placeholder="Digite sua senha"
                 error={errors}
+                type={visibilityState ? "text" : "password"}
+                icon={
+                  visibilityState ? (
+                    <EyeClosed
+                      onClick={() =>
+                        setVisibilityState((prevState) => !prevState)
+                      }
+                    />
+                  ) : (
+                    <EyeOpen
+                      onClick={() =>
+                        setVisibilityState((prevState) => !prevState)
+                      }
+                    />
+                  )
+                }
               />
 
               <Switch name="stayOn" />
