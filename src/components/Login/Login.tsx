@@ -65,7 +65,7 @@ const Login = () => {
   };
 
   useEffect(() => {
-    setSchema(isLogin ? loginSchema : cadastroSchema);
+    setSchema(loginSchema);
     reset(); // Reset the form whenever schema changes
   }, [isLogin]);
 
@@ -81,7 +81,7 @@ const Login = () => {
     formState: { errors },
     reset,
   } = useForm<IFormInput | IFormCadastro>({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(loginSchema),
   });
 
   console.log(errors);
