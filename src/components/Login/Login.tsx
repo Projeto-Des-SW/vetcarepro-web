@@ -1,5 +1,3 @@
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
 import { Button } from "../ui/button";
 import { useState, useEffect, useCallback } from "react";
 
@@ -7,7 +5,7 @@ import EyeClosed from "../../assets/icons/EyeClosed";
 import EyeOpen from "../../assets/icons/EyeOpen";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { useForm, SubmitHandler, FieldErrors } from "react-hook-form";
+import { useForm, SubmitHandler } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
@@ -20,18 +18,12 @@ import {
 } from "@/components/ui/card";
 import { Switch } from "../ui/switch";
 import Inputs from "../Inputs/Inputs";
+import { Label } from "../ui/label";
 
 interface IFormInput {
   email: string;
   password: string;
 }
-
-interface IFormCadastro extends IFormInput {
-  // repassword: string;
-  // username: string;
-  name: string;
-}
-
 const loginSchema = yup
   .object({
     email: yup.string().required("Email é obrigatório").email("Email inválido"),
@@ -41,17 +33,6 @@ const loginSchema = yup
 
 const Login = () => {
   const [visibilityState, setVisibilityState] = useState(false);
-  const [isLogin, setIsLogin] = useState(true);
-  const [schema, setSchema] = useState(loginSchema);
-
-  useEffect(() => {
-    setSchema(loginSchema);
-    reset(); // Reset the form whenever schema changes
-  }, [isLogin]);
-
-  const handleVisible = useCallback(() => {
-    setVisibilityState((prevState) => !prevState);
-  }, []);
 
   const navigate = useNavigate();
 
@@ -60,13 +41,13 @@ const Login = () => {
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<IFormInput | IFormCadastro>({
+  } = useForm<IFormInput>({
     resolver: yupResolver(loginSchema),
   });
 
   console.log(errors);
 
-  const onSubmit: SubmitHandler<IFormInput | IFormCadastro> = (data) => {
+  const onSubmit: SubmitHandler<IFormInput> = (data) => {
     fetch("https://1291-128-201-206-35.ngrok-free.app/sessions", {
       method: "POST",
       headers: {
@@ -150,8 +131,11 @@ const Login = () => {
                   )
                 }
               />
+              <div className="flex items-center gap-2">
+                <Switch name="stayOn" />
+                <Label>Continuar logado</Label>
+              </div>
 
-              <Switch name="stayOn" />
               <Button className="bg-[#AAFAEF]" type="submit">
                 Login
               </Button>

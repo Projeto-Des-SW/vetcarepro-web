@@ -68,14 +68,6 @@ const Cadastro = () => {
     // console.log(data);
   };
 
-  const isFieldError = (errors: FieldErrors, field: string): boolean => {
-    return !!errors[field];
-  };
-
-  const handleVisible = useCallback(() => {
-    setVisibilityState((prevState) => !prevState);
-  }, []);
-
   const {
     register,
     handleSubmit,
