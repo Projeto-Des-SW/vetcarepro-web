@@ -17,8 +17,8 @@ interface IFormInput {
 }
 
 interface IFormCadastro extends IFormInput {
-  repassword: string;
-  username: string;
+  // repassword: string;
+  // username: string;
   name: string;
 }
 
@@ -33,11 +33,11 @@ const cadastroSchema = yup
   .object({
     email: yup.string().required("Email é obrigatório").email("Email inválido"),
     password: yup.string().required("Senha é obrigatória"),
-    repassword: yup
-      .string()
-      .oneOf([yup.ref("password")], "As senhas devem corresponder")
-      .required("Confirmação de senha é obrigatória"),
-    username: yup.string().required("Username é obrigatório"),
+    // repassword: yup
+    //   .string()
+    //   .oneOf([yup.ref("password")], "As senhas devem corresponder")
+    //   .required("Confirmação de senha é obrigatória"),
+    // username: yup.string().required("Username é obrigatório"),
     name: yup.string().required("Nome é obrigatório"),
   })
   .required();
@@ -78,8 +78,28 @@ const Login = () => {
   console.log(errors);
 
   const onSubmit: SubmitHandler<IFormInput | IFormCadastro> = (data) => {
+    fetch("https://1291-128-201-206-35.ngrok-free.app/sessions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        if (data.id) {
+          console.log("Form submitted successfully");
+          navigate("/");
+        } else {
+          throw new Error("Failed to submit form");
+        }
+      })
+      .catch((error) => {
+        console.error("Form submission error:", error);
+      });
     navigate("/home");
-    console.log(data);
+    // console.log(data);
   };
 
   return (
@@ -200,12 +220,12 @@ const Login = () => {
                 color={isFieldError(errors, "name") ? "danger" : "default"}
               />
 
-              <Input
+              {/* <Input
                 label="Username"
                 placeholder="Digite o seu username"
                 {...register("username")}
                 color={isFieldError(errors, "username") ? "danger" : "default"}
-              />
+              /> */}
 
               <Input
                 label="Email"
@@ -235,7 +255,7 @@ const Login = () => {
                 }
               />
 
-              <Input
+              {/* <Input
                 type={visibilityState ? "text" : "password"}
                 label="Confirme sua Senha"
                 placeholder="Digite sua senha novamente"
@@ -243,7 +263,7 @@ const Login = () => {
                 color={
                   isFieldError(errors, "repassword") ? "danger" : "default"
                 }
-              />
+              /> */}
 
               <Button className="bg-[#AAFAEF]" type="submit">
                 Cadastro
