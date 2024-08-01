@@ -18,7 +18,7 @@ const Header = () => {
         </Link>
         <nav className="ml-auto flex gap-4 sm:gap-6">
           <Link
-            to="/"
+            to="/home"
             className="text-sm font-medium hover:underline underline-offset-4"
             prefetch={false}
           >
@@ -42,15 +42,17 @@ const Header = () => {
             href="#"
             className="text-sm font-medium hover:underline underline-offset-4"
             prefetch={false}
+            disabled
           >
             Team
           </Link>
           <Link
             href="#"
+            to="/login"
             className="text-sm font-medium hover:underline underline-offset-4"
             prefetch={false}
           >
-            Contact
+            Login
           </Link>
         </nav>
       </header>
