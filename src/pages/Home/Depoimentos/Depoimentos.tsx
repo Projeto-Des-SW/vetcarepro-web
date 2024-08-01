@@ -1,8 +1,8 @@
-import depoimentos from "../../assets/depoimentos.png";
+import depoimentos from "../../../assets/depoimentos.png";
 
 const Depoimentos = () => {
   return (
-    <section className="w-full py-12 md:py-24 lg:py-32">
+    <section className="w-full  md:py-24 py-24">
       <div className="container px-4 md:px-6">
         <div className="flex flex-col items-center justify-center space-y-4 text-center">
           <div className="space-y-2">
@@ -23,9 +23,9 @@ const Depoimentos = () => {
             <div className="grid gap-4">
               <div className="bg-muted p-6 rounded-lg">
                 <p className="text-muted-foreground">
-                  "O VETCARE simplificou muito a gestão da minha clínica.
-                  Agora tenho mais tempo para me dedicar ao atendimento
-                  dos meus pacientes."
+                  "O VETCARE simplificou muito a gestão da minha clínica. Agora
+                  tenho mais tempo para me dedicar ao atendimento dos meus
+                  pacientes."
                 </p>
                 <div className="flex items-center gap-4 mt-4">
                   <div>

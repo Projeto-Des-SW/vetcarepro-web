@@ -43,10 +43,10 @@ const Login = () => {
     resolver: yupResolver(loginSchema),
   });
 
-  console.log(errors);
+  // console.log(errors);
 
   const onSubmit: SubmitHandler<IFormInput> = (data) => {
-    fetch("https://1291-128-201-206-35.ngrok-free.app/sessions", {
+    fetch("https://df23-2804-214-822c-257b-dd83-41b4-246c-d0b/sessions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

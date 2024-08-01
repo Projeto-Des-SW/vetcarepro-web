@@ -20,7 +20,7 @@ const LoginArea = () => {
     }
   }, [banner]);
 
-  console.log(banner);
+  // console.log(banner);
 
   return (
     <section className="w-full h-[85vh] flex justify-center items-center">

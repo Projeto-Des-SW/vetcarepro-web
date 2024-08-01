@@ -41,7 +41,7 @@ const Cadastro = () => {
   const [visibilityState, setVisibilityState] = useState(false);
   const navigate = useNavigate();
   const onSubmit: SubmitHandler<IFormCadastro> = (data) => {
-    fetch("https://1291-128-201-206-35.ngrok-free.app/users", {
+    fetch("https://df23-2804-214-822c-257b-dd83-41b4-246c-d0b/users", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -73,7 +73,7 @@ const Cadastro = () => {
     resolver: yupResolver(cadastroSchema),
   });
 
-  console.log(errors);
+  // console.log(errors);
 
   return (
     <section className="flex items-center">

@@ -1,22 +1,22 @@
 ("react");
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { Outlet } from "react-router-dom";
+import { Button } from "../ui/button";
 
 const Header = () => {
   const navigate = useNavigate();
 
   return (
     <>
-      <header className="bg-[#4EBA9D] text-primary-foreground px-4 lg:px-6 h-14 flex items-center">
+      <header className="bg-[#4EBA9D] h-[80px] text-primary-foreground px-10 flex items-center">
         <Link
           href="/"
-          className="flex items-center justify-center"
+          className="flex items-center justify-center font-bold text-3xl"
           prefetch={false}
         >
-          <span className="sr-only">VETCARE</span>
+          VetCare
         </Link>
-        <nav className="ml-auto flex gap-4 sm:gap-6">
+        <nav className="ml-auto flex gap-4 sm:gap-6 items-center">
           <Link
             to="/home"
             className="text-sm font-medium hover:underline underline-offset-4"
@@ -24,16 +24,9 @@ const Header = () => {
           >
             Home
           </Link>
-          {/* <Link
-            to="/login"
-            className="text-sm font-medium hover:underline underline-offset-4"
-            prefetch={false}
-          >
-            Features
-          </Link> */}
           <Link
             href="#"
-            to='/pricing'
+            to="/pricing"
             className="text-sm font-medium hover:underline underline-offset-4"
             prefetch={false}
           >
@@ -47,17 +40,16 @@ const Header = () => {
           >
             Team
           </Link>
-          <Link
-            href="#"
-            to="/login"
-            className="text-sm font-medium hover:underline underline-offset-4"
-            prefetch={false}
+          <Button onClick={() => navigate("/login")}>Teste gratis</Button>
+          <Button
+            onClick={() => navigate("/login")}
+            variant={"outline"}
+            className="text-black"
           >
             Login
-          </Link>
+          </Button>
         </nav>
       </header>
-      <Outlet />
     </>
   );
 };

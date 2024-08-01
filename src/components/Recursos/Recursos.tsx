@@ -2,11 +2,11 @@ import logo from '../../assets/_a83c0202-0df2-4ba8-8aa9-b232f3a58d72.jpg'
 
 const Recursos = () => {
   return (
-    <section className="w-full py-12 md:py-24 lg:py-32 bg-muted">
+    <section className="w-full h-[90vh] md:py-24 py-24 bg-muted">
       <div className="container px-4 md:px-6">
         <div className="flex flex-col items-center justify-center space-y-4 text-center">
           <div className="space-y-2 flex flex-col justify-center items-center">
-            <div className="inline-block rounded-lg bg-[#4EBA9D] px-3 py-1 text-sm">
+            <div className="inline-block rounded-lg bg-white px-3 py-1 text-sm">
               Recursos
             </div>
             <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
@@ -57,6 +57,7 @@ const Recursos = () => {
             width="550"
             height="310"
             alt="Image"
+
           />
         </div>
       </div>

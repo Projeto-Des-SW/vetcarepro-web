@@ -1,15 +1,15 @@
-import Depoimentos from "@/components/Depoimentos/Depoimentos";
-import FooterHome from "@/components/FooterHome/FooterHome";
-import FrontHome from "@/components/FrontHome/FrontHome";
+import Depoimentos from "@/pages/Home/Depoimentos/Depoimentos";
+import FrontHome from "@/pages/Home/FrontHome/FrontHome";
+import EndHome from "./EndHome/EndHome";
 import Recursos from "@/components/Recursos/Recursos";
 
 const Home = () => {
   return (
-    <section className="h-[100vh]">
+    <section>
       <FrontHome />
       <Recursos />
       <Depoimentos />
-      <FooterHome />
+      <EndHome />
     </section>
   );
 };

@@ -4,11 +4,12 @@ import Home from "../pages/Home/Home";
 import LoginArea from "@/pages/LoginArea/LoginArea";
 import Pricing from "@/pages/Pricing/Pricing";
 import Dashboard from "@/pages/Dashboard/Dashboard";
+import Root from "@/pages/Root/Root";
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <Header />,
+    element: <Root />,
     children: [
       { path: "/login", element: <LoginArea /> },
       { path: "/home", element: <Home /> },
