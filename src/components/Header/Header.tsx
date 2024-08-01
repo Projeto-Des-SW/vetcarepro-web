@@ -24,19 +24,20 @@ const Header = () => {
           >
             Home
           </Link>
-          <Link
+          {/* <Link
             to="/login"
             className="text-sm font-medium hover:underline underline-offset-4"
             prefetch={false}
           >
             Features
-          </Link>
+          </Link> */}
           <Link
             href="#"
+            to='/pricing'
             className="text-sm font-medium hover:underline underline-offset-4"
             prefetch={false}
           >
-            Pricing
+            Preços
           </Link>
           <Link
             href="#"
