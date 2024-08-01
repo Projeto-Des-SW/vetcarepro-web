@@ -78,7 +78,7 @@ const Cadastro = () => {
   return (
     <section className="flex items-center">
       <>
-        <Card className="w-full">
+        <Card className="w-full border-none">
           <CardHeader>
             <CardTitle>Bem vindo</CardTitle>
             <CardDescription>

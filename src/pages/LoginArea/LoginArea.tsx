@@ -1,17 +1,35 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Login from "@/components/Login/Login";
-import husky from "../../assets/hunkyTransparente.png";
-import Cadastro from "@/components/Cadastro/Cadastro";
 import { motion } from "framer-motion";
+import Cadastro from "@/components/Cadastro/Cadastro";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import cachorroFeliz from "../../assets/cachorroFeliz.png";
+import cachorroFeliz2 from "../../assets/cachorroFeliz2.png";
+import { useEffect, useState } from "react";
+import husky from "../../assets/hunkyTransparente.png";
 
 const LoginArea = () => {
+  const [banner, setBanner] = useState(false);
+  const [bannerImage, setBannerImage] = useState(cachorroFeliz);
+
+  useEffect(() => {
+    if (banner) {
+      setBannerImage(cachorroFeliz);
+    } else {
+      setBannerImage(cachorroFeliz2);
+    }
+  }, [banner]);
+
+  console.log(banner);
+
   return (
     <section className="w-full h-[85vh] flex justify-center items-center">
       <Card className=" flex justify-center items-center w- h-fit">
         <CardHeader
-          className="w-[600px] h-[600px] bg-[#4EBA9D]  rounded-lg p-9 flex flex-col justify-between bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: `url(${husky})` }}
+          className="w-[600px] h-[600px] bg-[#4EBA9D]  rounded-lg p-7 flex flex-col justify-between bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: `url(${husky})`,
+          }}
         >
           <div className="flex items-center gap-4">
             <svg
@@ -45,8 +63,8 @@ const LoginArea = () => {
             pacientes e a administração do seu negócio.
           </motion.p>
         </CardHeader>
-        <CardContent className=" flex  items-center">
-          <Tabs defaultValue="login" className="w-[400px]">
+        <CardContent className="flex items-center w-[600px] justify-center ">
+          <Tabs defaultValue="login" className="w-[500px] flex flex-col ">
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="login">Login</TabsTrigger>
               <TabsTrigger value="cadastro">Cadastro</TabsTrigger>

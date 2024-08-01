@@ -1,5 +1,5 @@
 import { Button } from "../ui/button";
-import { useState} from "react";
+import { useState } from "react";
 
 import EyeClosed from "../../assets/icons/EyeClosed";
 import EyeOpen from "../../assets/icons/EyeOpen";
@@ -39,7 +39,6 @@ const Login = () => {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
   } = useForm<IFormInput>({
     resolver: yupResolver(loginSchema),
   });
@@ -73,18 +72,18 @@ const Login = () => {
 
   return (
     <motion.section
-      className="flex items-center "
+      className="flex items-center justify-center"
       animate={{ x: 0 }}
       transition={{ ease: "easeOut", duration: 1 }}
     >
-      <Card className="w-full ">
+      <Card className="w-full border-none">
         <CardHeader>
           <CardTitle>Bem vindo de volta</CardTitle>
           <CardDescription>
             É um prazer ter você de volta conosco
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="">
           <motion.main
             whileHover={{ scale: 1.05 }}
             // className="bg-[#4EBA9D]  flex flex-col justify-between rounded-[36px] p-7 z-20"
