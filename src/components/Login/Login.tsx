@@ -66,7 +66,7 @@ const Login = () => {
       .catch((error) => {
         console.error("Form submission error:", error);
       });
-    navigate("/home");
+    navigate("/dashboard");
     // console.log(data);
   };
 

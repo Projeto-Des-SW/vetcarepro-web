@@ -1,6 +1,9 @@
 import { Button } from "../ui/button";
 import boasVindas from "../../assets/boasVindas.png";
 const FrontHome = () => {
+
+  
+
   return (
     <div className="flex justify-center items-center w-full h-5/6 box-border">
       <div className="w-[33%] p-8 flex flex-col gap-2">
