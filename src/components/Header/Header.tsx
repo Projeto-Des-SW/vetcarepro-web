@@ -31,7 +31,6 @@ const Header = () => {
         <Link
           to='/home'
           className="flex items-center justify-center font-bold text-3xl"
-          prefetch={false}
         >
           VetCare
         </Link>
@@ -39,7 +38,6 @@ const Header = () => {
           <Link
             to="/home"
             className="text-sm font-medium hover:underline underline-offset-4"
-            prefetch={false}
           >
             Home
           </Link>
@@ -47,14 +45,12 @@ const Header = () => {
             href="#"
             to="/pricing"
             className="text-sm font-medium hover:underline underline-offset-4"
-            prefetch={false}
           >
             Preços
           </Link>
           <Link
             href="#"
             className="text-sm font-medium hover:underline underline-offset-4"
-            prefetch={false}
             disabled
           >
             Team

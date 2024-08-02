@@ -3,25 +3,9 @@ import Login from "@/components/Login/Login";
 import { motion } from "framer-motion";
 import Cadastro from "@/components/Cadastro/Cadastro";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import cachorroFeliz from "../../assets/cachorroFeliz.png";
-import cachorroFeliz2 from "../../assets/cachorroFeliz2.png";
-import { useEffect, useState } from "react";
 import husky from "../../assets/hunkyTransparente.png";
 
 const LoginArea = () => {
-  const [banner, setBanner] = useState(false);
-  const [bannerImage, setBannerImage] = useState(cachorroFeliz);
-
-  useEffect(() => {
-    if (banner) {
-      setBannerImage(cachorroFeliz);
-    } else {
-      setBannerImage(cachorroFeliz2);
-    }
-  }, [banner]);
-
-  // console.log(banner);
-
   return (
     <section className="w-full h-[85vh] flex justify-center items-center">
       <Card className=" flex justify-center items-center w- h-fit">
