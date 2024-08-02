@@ -49,7 +49,6 @@ const Header = () => {
           </Link>
           <Link
             className="text-sm font-medium hover:underline underline-offset-4"
-            disabled
           >
             Team
           </Link>
