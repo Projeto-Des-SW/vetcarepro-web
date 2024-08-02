@@ -16,6 +16,7 @@ import {
 import { Separator } from "../ui/separator";
 import Inputs from "../Inputs/Inputs";
 import EyeOpen from "@/assets/icons/EyeOpen";
+import { toast } from "sonner";
 interface IFormCadastro {
   // repassword: string;
   // username: string;
@@ -63,6 +64,13 @@ const Cadastro = () => {
       });
     navigate("/home");
     // console.log(data);
+    toast("Cadastro realizado com sucesso", {
+      description: "Sunday, December 03, 2023 at 9:00 AM",
+      action: {
+        label: "Dispensar",
+        onClick: () => console.log("Undo"),
+      },
+    });
   };
 
   const {

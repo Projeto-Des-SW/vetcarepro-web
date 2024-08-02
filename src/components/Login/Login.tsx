@@ -21,6 +21,8 @@ import { Label } from "../ui/label";
 import { useUserSelector } from "@/store/hooks";
 import { useDispatch } from "react-redux";
 import { setCurrentUser } from "@/store/user-slice";
+import { Toaster } from "../ui/sonner";
+import { toast } from "sonner";
 
 interface IFormInput {
   email: string;
@@ -74,9 +76,16 @@ const Login = () => {
       .catch((error) => {
         console.error("Form submission error:", error);
       });
-    navigate("/dashboard");
-    // console.log(data);
     dispatch(setCurrentUser(data));
+    navigate("/dashboard");
+    toast("Login realizado com sucesso", {
+      description: "Sunday, December 03, 2023 at 9:00 AM",
+      action: {
+        label: "Dispensar",
+        onClick: () => console.log("Undo"),
+      },
+    });
+    // console.log(data);
   };
 
   return (
@@ -146,6 +155,7 @@ const Login = () => {
               <Button className="bg-[#4EBA9D]" type="submit">
                 Login
               </Button>
+              <Toaster />
             </form>
           </motion.main>
         </CardContent>

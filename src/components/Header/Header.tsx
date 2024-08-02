@@ -29,7 +29,7 @@ const Header = () => {
     <>
       <header className="bg-[#4EBA9D] h-[80px] text-primary-foreground px-10 flex items-center">
         <Link
-          href="/"
+          to='/home'
           className="flex items-center justify-center font-bold text-3xl"
           prefetch={false}
         >
