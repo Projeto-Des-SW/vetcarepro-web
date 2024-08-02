@@ -41,6 +41,16 @@ const cadastroSchema = yup
 const Cadastro = () => {
   const [visibilityState, setVisibilityState] = useState(false);
   const navigate = useNavigate();
+  const now = new Date();
+  const day = now.getDate();
+  const month = now.getMonth() + 1; // Months are zero-based
+  const year = now.getFullYear();
+  const hours = now.getHours();
+  const minutes = now.getMinutes();
+
+  const formattedDate = `${day}/${month}/${year}`;
+  const formattedTime = `${hours}:${minutes.toString().padStart(2, "0")}`;
+
   const onSubmit: SubmitHandler<IFormCadastro> = (data) => {
     fetch("https://df23-2804-214-822c-257b-dd83-41b4-246c-d0b/users", {
       method: "POST",
@@ -64,7 +74,7 @@ const Cadastro = () => {
       });
     // console.log(data);
     toast("Cadastro realizado com sucesso", {
-      description: "Sunday, December 03, 2023 at 9:00 AM",
+      description: `Data: ${formattedDate}, Hora: ${formattedTime}`,
       action: {
         label: "Dispensar",
         onClick: () => console.log("Undo"),
