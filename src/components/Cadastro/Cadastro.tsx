@@ -17,6 +17,15 @@ import { Separator } from "../ui/separator";
 import Inputs from "../Inputs/Inputs";
 import EyeOpen from "@/assets/icons/EyeOpen";
 import { toast } from "sonner";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import dog from "../../assets/okDog.png";
 interface IFormCadastro {
   // repassword: string;
   // username: string;
@@ -40,6 +49,7 @@ const cadastroSchema = yup
 
 const Cadastro = () => {
   const [visibilityState, setVisibilityState] = useState(false);
+  const [openSucessCadastro, setOpenSucessCadastro] = useState(false);
   const navigate = useNavigate();
   const now = new Date();
   const day = now.getDate();
@@ -73,6 +83,7 @@ const Cadastro = () => {
         console.error("Form submission error:", error);
       });
     // console.log(data);
+    setOpenSucessCadastro((prevState) => !prevState);
     toast("Cadastro realizado com sucesso", {
       description: `Data: ${formattedDate}, Hora: ${formattedTime}`,
       action: {
@@ -95,6 +106,17 @@ const Cadastro = () => {
   return (
     <section className="flex items-center">
       <>
+        <Dialog open={openSucessCadastro} onOpenChange={() => setOpenSucessCadastro(false)}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Sucesso!</DialogTitle>
+              <DialogDescription>
+                O seu cadastro foi realizado com sucesso! Aproveite!
+                <img src={dog} />
+              </DialogDescription>
+            </DialogHeader>
+          </DialogContent>
+        </Dialog>
         <Card className="w-full border-none">
           <CardHeader>
             <CardTitle>Bem vindo</CardTitle>
