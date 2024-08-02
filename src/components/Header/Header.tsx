@@ -29,7 +29,7 @@ const Header = () => {
     <>
       <header className="bg-[#4EBA9D] h-[80px] text-primary-foreground px-10 flex items-center">
         <Link
-          to='/home'
+          to="/home"
           className="flex items-center justify-center font-bold text-3xl"
         >
           VetCare
@@ -48,6 +48,7 @@ const Header = () => {
             Preços
           </Link>
           <Link
+            to=""
             className="text-sm font-medium hover:underline underline-offset-4"
           >
             Team
