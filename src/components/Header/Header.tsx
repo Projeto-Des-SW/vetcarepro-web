@@ -42,14 +42,12 @@ const Header = () => {
             Home
           </Link>
           <Link
-            href="#"
             to="/pricing"
             className="text-sm font-medium hover:underline underline-offset-4"
           >
             Preços
           </Link>
           <Link
-            href="#"
             className="text-sm font-medium hover:underline underline-offset-4"
             disabled
           >
