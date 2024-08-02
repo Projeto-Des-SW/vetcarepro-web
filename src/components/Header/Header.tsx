@@ -3,10 +3,27 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
 import { useUserSelector } from "@/store/hooks";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Separator } from "../ui/separator";
+import { useDispatch } from "react-redux";
+import { setCurrentUser } from "@/store/user-slice";
 
 const Header = () => {
   const navigate = useNavigate();
   const user = useUserSelector((state) => state.user);
+  const dispatch = useDispatch();
+
+  const handleLogout = () => {
+    dispatch(setCurrentUser({ email: "" }));
+    navigate("/home");
+  };
 
   return (
     <>
@@ -42,23 +59,42 @@ const Header = () => {
           >
             Team
           </Link>
-          <Button onClick={() => navigate("/login")}>Teste gratis</Button>
+
           {user.email === "" ? (
-            <Button
-              onClick={() => navigate("/login")}
-              variant={"outline"}
-              className="text-black"
-            >
-              Login
-            </Button>
+            <>
+              <Button onClick={() => navigate("/login")}>Teste gratis</Button>
+              <Button
+                onClick={() => navigate("/login")}
+                variant={"outline"}
+                className="text-black"
+              >
+                Login
+              </Button>
+            </>
           ) : (
-            <Button
-              onClick={() => navigate("/login")}
-              variant={"outline"}
-              className="text-black"
-            >
-              Minha conta
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <Button
+                  onClick={() => navigate("/login")}
+                  variant={"outline"}
+                  className="text-black"
+                >
+                  Minha conta
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuLabel>{user.email}</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>Profile</DropdownMenuItem>
+                <DropdownMenuItem>Billing</DropdownMenuItem>
+                <DropdownMenuItem>Team</DropdownMenuItem>
+                <DropdownMenuItem>Subscription</DropdownMenuItem>
+                <Separator />
+                <DropdownMenuItem onClick={handleLogout}>
+                  Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           )}
         </nav>
       </header>
