@@ -62,7 +62,6 @@ const Cadastro = () => {
       .catch((error) => {
         console.error("Form submission error:", error);
       });
-    navigate("/home");
     // console.log(data);
     toast("Cadastro realizado com sucesso", {
       description: "Sunday, December 03, 2023 at 9:00 AM",
