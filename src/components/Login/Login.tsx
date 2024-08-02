@@ -18,11 +18,15 @@ import {
 import { Switch } from "../ui/switch";
 import Inputs from "../Inputs/Inputs";
 import { Label } from "../ui/label";
+import { useUserSelector } from "@/store/hooks";
+import { useDispatch } from "react-redux";
+import { setCurrentUser } from "@/store/user-slice";
 
 interface IFormInput {
   email: string;
   password: string;
 }
+
 const loginSchema = yup
   .object({
     email: yup.string().required("Email é obrigatório").email("Email inválido"),
@@ -44,6 +48,10 @@ const Login = () => {
   });
 
   // console.log(errors);
+  const user = useUserSelector((state) => state.user);
+  const dispatch = useDispatch();
+
+  console.log(user);
 
   const onSubmit: SubmitHandler<IFormInput> = (data) => {
     fetch("https://df23-2804-214-822c-257b-dd83-41b4-246c-d0b/sessions", {
@@ -68,6 +76,7 @@ const Login = () => {
       });
     navigate("/dashboard");
     // console.log(data);
+    dispatch(setCurrentUser(data));
   };
 
   return (

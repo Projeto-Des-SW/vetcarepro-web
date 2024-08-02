@@ -2,9 +2,11 @@
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
+import { useUserSelector } from "@/store/hooks";
 
 const Header = () => {
   const navigate = useNavigate();
+  const user = useUserSelector((state) => state.user);
 
   return (
     <>
@@ -41,13 +43,23 @@ const Header = () => {
             Team
           </Link>
           <Button onClick={() => navigate("/login")}>Teste gratis</Button>
-          <Button
-            onClick={() => navigate("/login")}
-            variant={"outline"}
-            className="text-black"
-          >
-            Login
-          </Button>
+          {user.email === "" ? (
+            <Button
+              onClick={() => navigate("/login")}
+              variant={"outline"}
+              className="text-black"
+            >
+              Login
+            </Button>
+          ) : (
+            <Button
+              onClick={() => navigate("/login")}
+              variant={"outline"}
+              className="text-black"
+            >
+              Minha conta
+            </Button>
+          )}
         </nav>
       </header>
     </>
