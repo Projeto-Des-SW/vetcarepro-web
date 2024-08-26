@@ -66,9 +66,16 @@ const Login = () => {
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
-        if (data.id) {
-          console.log("Form submitted successfully");
-          navigate("/");
+        if (data) {
+          dispatch(setCurrentUser(data));
+          navigate("/dashboard");
+          toast("Login realizado com sucesso", {
+            description: "Sunday, December 03, 2023 at 9:00 AM",
+            action: {
+              label: "Dispensar",
+              onClick: () => console.log("Undo"),
+            },
+          });
         } else {
           throw new Error("Failed to submit form");
         }
@@ -76,15 +83,7 @@ const Login = () => {
       .catch((error) => {
         console.error("Form submission error:", error);
       });
-    dispatch(setCurrentUser(data));
-    navigate("/dashboard");
-    toast("Login realizado com sucesso", {
-      description: "Sunday, December 03, 2023 at 9:00 AM",
-      action: {
-        label: "Dispensar",
-        onClick: () => console.log("Undo"),
-      },
-    });
+
     // console.log(data);
   };
 
