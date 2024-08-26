@@ -50,7 +50,6 @@ const cadastroSchema = yup
 const Cadastro = () => {
   const [visibilityState, setVisibilityState] = useState(false);
   const [openSucessCadastro, setOpenSucessCadastro] = useState(false);
-  const navigate = useNavigate();
   const now = new Date();
   const day = now.getDate();
   const month = now.getMonth() + 1; // Months are zero-based
@@ -72,9 +71,16 @@ const Cadastro = () => {
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
-        if (data.id) {
+        if (data) {
           console.log("Form submitted successfully");
-          navigate("/");
+          setOpenSucessCadastro((prevState) => !prevState);
+          toast("Cadastro realizado com sucesso", {
+            description: `Data: ${formattedDate}, Hora: ${formattedTime}`,
+            action: {
+              label: "Dispensar",
+              onClick: () => console.log("Undo"),
+            },
+          });
         } else {
           throw new Error("Failed to submit form");
         }
@@ -82,15 +88,6 @@ const Cadastro = () => {
       .catch((error) => {
         console.error("Form submission error:", error);
       });
-    // console.log(data);
-    setOpenSucessCadastro((prevState) => !prevState);
-    toast("Cadastro realizado com sucesso", {
-      description: `Data: ${formattedDate}, Hora: ${formattedTime}`,
-      action: {
-        label: "Dispensar",
-        onClick: () => console.log("Undo"),
-      },
-    });
   };
 
   const {
@@ -106,7 +103,10 @@ const Cadastro = () => {
   return (
     <section className="flex items-center">
       <>
-        <Dialog open={openSucessCadastro} onOpenChange={() => setOpenSucessCadastro(false)}>
+        <Dialog
+          open={openSucessCadastro}
+          onOpenChange={() => setOpenSucessCadastro(false)}
+        >
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Sucesso!</DialogTitle>
