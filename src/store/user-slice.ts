@@ -5,7 +5,7 @@ export interface UserDataProps {
 }
 
 const userInicialState: UserDataProps = {
-  email: "",
+  email: "admin@gmail.com",
 };
 
 const userSlice = createSlice({
