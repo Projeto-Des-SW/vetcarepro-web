@@ -19,7 +19,7 @@ const Header = () => {
   const navigate = useNavigate();
   const user = useUserSelector((state) => state.user);
   const dispatch = useDispatch();
-
+  // console.log(user);
   const handleLogout = () => {
     dispatch(setCurrentUser({ email: "" }));
     navigate("/home");
@@ -79,12 +79,12 @@ const Header = () => {
               <DropdownMenuContent>
                 <DropdownMenuLabel>{user.email}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => navigate("dashboard/listagemClinica")}>
+                <DropdownMenuItem
+                  onClick={() => navigate("dashboard/listagemClinica")}
+                >
                   Dashboard
                 </DropdownMenuItem>
-                <DropdownMenuItem>Billing</DropdownMenuItem>
-                <DropdownMenuItem>Team</DropdownMenuItem>
-                <DropdownMenuItem>Subscription</DropdownMenuItem>
+
                 <Separator />
                 <DropdownMenuItem onClick={handleLogout}>
                   Logout

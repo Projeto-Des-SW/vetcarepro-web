@@ -29,6 +29,8 @@ interface IFormInput {
   password: string;
 }
 
+const baseUrl = import.meta.env.VITE_URL as string;
+
 const loginSchema = yup
   .object({
     email: yup.string().required("Email é obrigatório").email("Email inválido"),
@@ -56,7 +58,9 @@ const Login = () => {
   console.log(user);
 
   const onSubmit: SubmitHandler<IFormInput> = (data) => {
-    fetch("https://df23-2804-214-822c-257b-dd83-41b4-246c-d0b/sessions", {
+    console.log(data)
+    const myEmail = data.email
+    fetch(`${baseUrl}/sessions`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -66,8 +70,11 @@ const Login = () => {
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
-        if (data) {
-          dispatch(setCurrentUser(data));
+        if (data && data.token) {
+          console.log(data);
+          console.log(data.token);
+          dispatch(setCurrentUser({ email: myEmail, token: data.token }));
+
           navigate("/dashboard");
           toast("Login realizado com sucesso", {
             description: "Sunday, December 03, 2023 at 9:00 AM",
@@ -77,6 +84,7 @@ const Login = () => {
             },
           });
         } else {
+          console.log(data);
           throw new Error("Failed to submit form");
         }
       })

@@ -1,18 +1,20 @@
-import React, { useEffect, useState } from "react";
-import Inputs from "@/components/Inputs/Inputs";
+import { useEffect, useState } from "react";
+import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { SubmitHandler, useForm } from "react-hook-form";
 import * as yup from "yup";
-import boasVindas from "../../assets/boasVindas.png";
+import Inputs from "@/components/Inputs/Inputs";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import boasVindas from "../../assets/boasVindas.png";
 import { IPet } from "@/interfaces/paciente";
 import { ICrud } from "@/interfaces/clinicas";
 import { useParams } from "react-router-dom";
+import { useUserSelector } from "@/store/hooks";
+import axios from "axios";
 
 const petSchema = yup
   .object({
-    clinic_id: yup.string().required("Clinic ID is required"),
+    clinic_id: yup.string(),
     name: yup.string().required("Pet name is required"),
     species: yup.string().required("Species is required"),
     age: yup.string().required("Age is required"),
@@ -30,24 +32,36 @@ const petSchema = yup
   .required();
 
 const CadastrarPaciente = ({ mode = "create" }: ICrud) => {
-  const [clinics, setClinics] = useState<{ id: string; title: string }[]>([]);
-  const {id} = useParams()
-
-  useEffect(() => {
-    // Fetch the clinics from the API
-    fetch("https://jsonplaceholder.typicode.com/todos")
-      .then((response) => response.json())
-      .then((data) => setClinics(data))
-      .catch((error) => console.error("Error fetching clinics:", error));
-  }, []);
+  const { id, idClinica } = useParams();
+  const user = useUserSelector((state) => state.user);
+  const baseUrl = import.meta.env.VITE_URL as string;
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset, 
   } = useForm<IPet>({
     resolver: yupResolver(petSchema),
   });
+
+  useEffect(() => {
+    if (mode === "edit" && id && idClinica) {
+      axios
+        .get(`${baseUrl}/clinics/${idClinica}/patients/${id}`, {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        })
+        .then((response) => {
+          const petData = response.data;
+          reset(petData); 
+        })
+        .catch((error) => {
+          console.error("Erro ao buscar dados do paciente:", error);
+        });
+    }
+  }, [mode, id, idClinica, reset, user.token, baseUrl]);
 
   const now = new Date();
   const day = now.getDate();
@@ -55,53 +69,44 @@ const CadastrarPaciente = ({ mode = "create" }: ICrud) => {
   const year = now.getFullYear();
   const hours = now.getHours();
   const minutes = now.getMinutes();
-
   const formattedDate = `${day}/${month}/${year}`;
   const formattedTime = `${hours}:${minutes.toString().padStart(2, "0")}`;
 
-  const handleSubmitClinica: SubmitHandler<IPet> = (data) => {
-    console.log(data)
+  const handleSubmitPaciente: SubmitHandler<IPet> = (data) => {
     const url =
       mode === "create"
-        ? "https://df23-2804-214-822c-257b-dd83-41b4-246c-d0b/users"
-        : "https://df23-2804-214-822c-257b-dd83-41b4-246c-d0b/users";
+        ? `${baseUrl}/clinics/${id}/patients`
+        : `${baseUrl}/clinics/${idClinica}/patients/${id}`;
 
     const method = mode === "create" ? "POST" : "PUT";
+    const requestData = {
+      ...data,
+      clinic_id: id,
+    };
 
-    fetch(url, {
+    axios({
       method,
+      url,
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${user.token}`,
       },
-      body: JSON.stringify(data),
+      data: requestData,
     })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        if (data) {
-          console.log("Form submitted successfully");
-          toast("Cadastro realizado com sucesso", {
-            description: `Data: ${formattedDate}, Hora: ${formattedTime}`,
-            action: {
-              label: "Dispensar",
-              onClick: () => console.log("Undo"),
-            },
-          });
-        } else {
-          throw new Error("Failed to submit form");
-        }
+      .then((response) => {
+        toast("Cadastro realizado com sucesso", {
+          description: `Data: ${formattedDate}, Hora: ${formattedTime}`,
+        });
       })
       .catch((error) => {
-        console.error("Form submission error:", error);
+        console.error("Erro ao enviar o formulário:", error);
       });
   };
-
-  console.log(errors)
 
   return (
     <section className="flex p-8 w-full justify-evenly">
       <form
-        onSubmit={handleSubmit(handleSubmitClinica)}
+        onSubmit={handleSubmit(handleSubmitPaciente)}
         className="flex flex-col w-[500px] gap-4"
       >
         <h1>{mode === "create" ? "Cadastre" : "Edite"} o paciente</h1>
@@ -115,9 +120,9 @@ const CadastrarPaciente = ({ mode = "create" }: ICrud) => {
           className="w-full"
         />
         <Inputs
-          label="Digite a especie"
+          label="Digite a espécie"
           name="species"
-          placeholder="Digite a especie"
+          placeholder="Digite a espécie"
           register={register}
           error={errors}
         />
@@ -130,14 +135,14 @@ const CadastrarPaciente = ({ mode = "create" }: ICrud) => {
           error={errors}
         />
         <Inputs
-          label="Digite o tipo sanguineo"
+          label="Digite o tipo sanguíneo"
           name="breed"
-          placeholder="Digite o tipo sanguineo"
+          placeholder="Digite o tipo sanguíneo"
           register={register}
           error={errors}
         />
         <Inputs
-          label="Digite o nome do guardião"
+          label="Nome do guardião"
           name="guardian_name"
           register={register}
           placeholder="Digite o nome do guardião"
@@ -145,16 +150,15 @@ const CadastrarPaciente = ({ mode = "create" }: ICrud) => {
           type="text"
         />
         <Inputs
-          label="Digite o CPF do guardião"
+          label="CPF do guardião"
           name="guardian_cpf"
           register={register}
           placeholder="Digite o CPF do guardião"
           error={errors}
           type="text"
         />
-
         <Inputs
-          label="Digite o contato do guardião"
+          label="Contato do guardião"
           name="guardian_contact"
           register={register}
           placeholder="Digite o contato do guardião"
@@ -162,27 +166,12 @@ const CadastrarPaciente = ({ mode = "create" }: ICrud) => {
           type="text"
         />
 
-        <select
-          {...register("clinic_id")}
-          className={`w-full p-2 border ${
-            errors.clinic_id ? "border-red-500" : "border-gray-300"
-          }`}
-        >
-          <option value="">Selecione a clínica</option>
-          {clinics.map((clinic) => (
-            <option key={clinic.id} value={clinic.id}>
-              {clinic.title}
-            </option>
-          ))}
-        </select>
-        {errors.clinic_id && (
-          <span className="text-red-500">{errors.clinic_id.message}</span>
-        )}
-
-        <Button>Criar</Button>
+        <Button type="submit">
+          {mode === "create" ? "Criar" : "Salvar alterações"}
+        </Button>
       </form>
       <picture className="flex h-auto items-center">
-        <img src={boasVindas} alt="" />
+        <img src={boasVindas} alt="Imagem de boas-vindas" />
       </picture>
     </section>
   );

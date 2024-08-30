@@ -8,6 +8,7 @@ export interface IClinicaList {
   address: string;
   created_at: Date;
   updated_at: Date;
+  clinic_id: string;
 }
 
 export interface ICrud {

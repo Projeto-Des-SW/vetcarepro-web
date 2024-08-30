@@ -33,7 +33,7 @@ interface IFormCadastro {
   email: string;
   password: string;
 }
-
+const baseUrl = import.meta.env.VITE_URL as string;
 const cadastroSchema = yup
   .object({
     email: yup.string().required("Email é obrigatório").email("Email inválido"),
@@ -61,10 +61,10 @@ const Cadastro = () => {
   const formattedTime = `${hours}:${minutes.toString().padStart(2, "0")}`;
 
   const onSubmit: SubmitHandler<IFormCadastro> = (data) => {
-    fetch("https://df23-2804-214-822c-257b-dd83-41b4-246c-d0b/users", {
+    fetch(`${baseUrl}/users`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
       body: JSON.stringify(data),
     })

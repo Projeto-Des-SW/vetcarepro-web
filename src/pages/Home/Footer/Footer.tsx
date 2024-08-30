@@ -5,7 +5,7 @@ const Footer = () => {
     <footer className="bg-[#AAFAEF] h-[80px] flex justify-evenly items-center">
       <Toaster />
       <p className="font-bold text-3xl">VetCare</p>
-      Todos os direitos reservados - VetCare 2024
+      <p>Todos os direitos reservados - VetCare 2024</p>
       <p>Social Midia</p>
     </footer>
   );

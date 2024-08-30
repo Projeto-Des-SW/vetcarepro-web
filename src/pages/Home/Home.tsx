@@ -5,7 +5,7 @@ import Recursos from "@/components/Recursos/Recursos";
 
 const Home = () => {
   return (
-    <section>
+    <section className="">
       <FrontHome />
       <Recursos />
       <Depoimentos />

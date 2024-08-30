@@ -10,18 +10,19 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@/components/ui/skeleton"; // Importando Skeleton
 import { useNavigate, useParams } from "react-router-dom";
 import { useUserSelector } from "@/store/hooks";
 
-const ListagemPaciente = () => {
+const ListagemServico = () => {
   const navigate = useNavigate();
   const baseUrl = import.meta.env.VITE_URL as string;
-  const { id } = useParams();
+  const { id, idClinica } = useParams();
+  console.log(id, idClinica)
   const user = useUserSelector((state) => state.user);
 
-  const fetchPacientsList = async (): Promise<IPet[]> => {
-    const response = await axios.get(`${baseUrl}/clinics/${id}/patients`, {
+  const fetchClinicasList = async (): Promise<ITemp[]> => {
+    const response = await axios.get(`${baseUrl}/clinics/${id}/services`, {
       headers: {
         Authorization: `Bearer ${user.token}`,
       },
@@ -30,17 +31,15 @@ const ListagemPaciente = () => {
   };
 
   const { data, error, isLoading } = useQuery({
-    queryKey: ["PacienteList"],
-    queryFn: fetchPacientsList,
+    queryKey: ["ServicoList"],
+    queryFn: fetchClinicasList,
   });
 
   if (error) return <div>Error fetching clinics</div>;
 
   return (
     <section className="flex-wrap gap-2 flex-col">
-      <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0">
-        Seus pacientes
-      </h2>
+      <h1>Listagem dos serviços</h1>
       <div className="flex flex-wrap gap-2">
         {isLoading
           ? Array.from({ length: 6 }).map((_, index) => (
@@ -61,25 +60,21 @@ const ListagemPaciente = () => {
           : data?.map((pet) => (
               <Card key={pet.id}>
                 <CardHeader>
-                  <CardTitle>{pet.name}</CardTitle>
-                  <CardDescription>Especie: {pet.species}</CardDescription>
+                  <CardTitle>{pet.title}</CardTitle>
+                  <CardDescription>{pet.title}</CardDescription>
                 </CardHeader>
                 <CardContent></CardContent>
                 <CardFooter className="flex gap-2">
                   <Button
                     onClick={() =>
-                      navigate(`/internalClinica/detailsPaciente/${pet.id}/${id}`)
+                      navigate(
+                        `/internalClinica/detailsServico/${pet.id}/${id}`
+                      )
                     }
                   >
                     Visualizar
                   </Button>
-                  <Button
-                    onClick={() =>
-                      navigate(`/internalClinica/editarPaciente/${pet.id}`)
-                    }
-                  >
-                    Editar
-                  </Button>
+
                   <Button>Apagar</Button>
                 </CardFooter>
               </Card>
@@ -89,4 +84,4 @@ const ListagemPaciente = () => {
   );
 };
 
-export default ListagemPaciente;
+export default ListagemServico;

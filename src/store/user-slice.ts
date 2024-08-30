@@ -2,10 +2,12 @@ import { type PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 export interface UserDataProps {
   email: string;
+  token?: string;
 }
 
 const userInicialState: UserDataProps = {
-  email: "admin@gmail.com",
+  email: "",
+  token: "",
 };
 
 const userSlice = createSlice({
@@ -14,6 +16,7 @@ const userSlice = createSlice({
   reducers: {
     setCurrentUser(state, action: PayloadAction<UserDataProps>) {
       state.email = action.payload.email;
+      state.token = action.payload.token;
     },
   },
 });

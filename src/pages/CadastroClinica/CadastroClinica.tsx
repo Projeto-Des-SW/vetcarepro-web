@@ -1,17 +1,24 @@
-import Inputs from "@/components/Inputs/Inputs";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { SubmitHandler, useForm } from "react-hook-form";
 import * as yup from "yup";
-import boasVindas from "../../assets/boasVindas.png";
+import { useParams } from "react-router-dom";
+import axios from "axios";
+import Inputs from "@/components/Inputs/Inputs";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import boasVindas from "../../assets/boasVindas.png";
+import { useUserSelector } from "@/store/hooks";
+
 interface IFromClinica {
   title: string;
   description: string;
   email: string;
   phone: string;
   address: string;
+  cnpj: string;
 }
-import { toast } from "sonner";
+
 interface ICrudClinia {
   mode?: "create" | "edit";
 }
@@ -23,87 +30,63 @@ const cadastroSchema = yup
     email: yup.string().required(),
     phone: yup.string().required(),
     address: yup.string().required(),
+    cnpj: yup.string().required(),
   })
   .required();
 
 const CadastroClinica = ({ mode = "create" }: ICrudClinia) => {
+  const { id } = useParams();
+  const user = useUserSelector((state) => state.user);
+  const baseUrl = import.meta.env.VITE_URL as string;
+
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset, // Usado para resetar os valores do formulário
   } = useForm<IFromClinica>({
     resolver: yupResolver(cadastroSchema),
   });
 
-  const now = new Date();
-  const day = now.getDate();
-  const month = now.getMonth() + 1;
-  const year = now.getFullYear();
-  const hours = now.getHours();
-  const minutes = now.getMinutes();
-
-  const formattedDate = `${day}/${month}/${year}`;
-  const formattedTime = `${hours}:${minutes.toString().padStart(2, "0")}`;
-
-  const handleSubmitClinica: SubmitHandler<IFromClinica> = (data) => {
-    if (mode === "create") {
-      console.log("criando");
-      fetch("https://df23-2804-214-822c-257b-dd83-41b4-246c-d0b/users", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log(data);
-          if (data) {
-            console.log("Form submitted successfully");
-            toast("Cadastro realizado com sucesso", {
-              description: `Data: ${formattedDate}, Hora: ${formattedTime}`,
-              action: {
-                label: "Dispensar",
-                onClick: () => console.log("Undo"),
-              },
-            });
-          } else {
-            throw new Error("Failed to submit form");
-          }
+  // Função para buscar os dados da clínica e preencher o formulário
+  useEffect(() => {
+    if (mode === "edit" && id) {
+      axios
+        .get(`${baseUrl}/clinics/${id}`, {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        })
+        .then((response) => {
+          const clinicaData = response.data;
+          reset(clinicaData); // Preenche o formulário com os dados da clínica
         })
         .catch((error) => {
-          console.error("Form submission error:", error);
-        });
-    } else {
-      console.log("edit");
-      fetch("https://df23-2804-214-822c-257b-dd83-41b4-246c-d0b/users", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log(data);
-          if (data) {
-            console.log("Form submitted successfully");
-            toast("Cadastro realizado com sucesso", {
-              description: `Data: ${formattedDate}, Hora: ${formattedTime}`,
-              action: {
-                label: "Dispensar",
-                onClick: () => console.log("Undo"),
-              },
-            });
-          } else {
-            throw new Error("Failed to submit form");
-          }
-        })
-        .catch((error) => {
-          console.error("Form submission error:", error);
+          console.error("Erro ao buscar dados da clínica:", error);
         });
     }
-    console.log(data);
+  }, [mode, id, reset, user.token, baseUrl]);
+
+  const handleSubmitClinica: SubmitHandler<IFromClinica> = (data) => {
+    const url =
+      mode === "create" ? `${baseUrl}/clinics` : `${baseUrl}/clinics/${id}`;
+    const method = mode === "create" ? "POST" : "PUT";
+
+    axios({
+      method,
+      url,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${user.token}`,
+      },
+      data,
+    })
+      .then((response) => {
+        toast("Cadastro realizado com sucesso");
+      })
+      .catch((error) => {
+        console.error("Erro ao enviar o formulário:", error);
+      });
   };
 
   return (
@@ -112,50 +95,57 @@ const CadastroClinica = ({ mode = "create" }: ICrudClinia) => {
         onSubmit={handleSubmit(handleSubmitClinica)}
         className="flex flex-col w-[500px] gap-4"
       >
-        <h1>{mode === "create" ? "Cadastre" : "Edite"} sua clinica</h1>
+        <h1>{mode === "create" ? "Cadastre" : "Edite"} sua clínica</h1>
 
         <Inputs
-          label="Nome da clinica"
+          label="Nome da clínica"
           name="title"
-          placeholder="Digite seu melhor email"
+          placeholder="Digite o nome da clínica"
           register={register}
           error={errors}
-          className="w-full"
         />
         <Inputs
-          label="Descrição da clinica"
+          label="Descrição da clínica"
           name="description"
-          placeholder="Digite seu melhor email"
+          placeholder="Digite a descrição da clínica"
           register={register}
           error={errors}
         />
         <Inputs
-          label="Digite um email para a clinica"
+          label="Email da clínica"
           name="email"
-          placeholder="Digite seu melhor email"
+          placeholder="Digite o email da clínica"
           register={register}
           error={errors}
         />
         <Inputs
-          label="Telefone de contato"
+          label="Telefone da clínica"
           name="phone"
-          placeholder="Digite seu melhor email"
+          placeholder="Digite o telefone da clínica"
+          register={register}
+          error={errors}
+        />
+        <Inputs
+          label="CNPJ"
+          name="cnpj"
+          placeholder="Digite o CNPJ da clínica"
           register={register}
           error={errors}
         />
         <Inputs
           label="Endereço"
           name="address"
+          placeholder="Digite o endereço da clínica"
           register={register}
-          placeholder="Digite sua senha"
           error={errors}
-          type="text"
         />
 
-        <Button>Criar</Button>
+        <Button type="submit">
+          {mode === "create" ? "Criar" : "Salvar alterações"}
+        </Button>
       </form>
       <picture className="flex h-auto items-center">
-        <img src={boasVindas} alt="" />
+        <img src={boasVindas} alt="Imagem de boas-vindas" />
       </picture>
     </section>
   );
