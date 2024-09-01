@@ -71,9 +71,7 @@ const DetailsPaciente = () => {
               <p>Contato do guardião: {data?.guardian_contact}</p>
             </CardContent>
             <CardFooter className="flex gap-2">
-              <Button
-                onClick={() => navigate(`/internalClinica/editarPaciente/${id}/${idClinica} `)}
-              >
+              <Button onClick={() => navigate(`../editarPaciente/${id} `)}>
                 Editar
               </Button>
               <Button>Apagar</Button>

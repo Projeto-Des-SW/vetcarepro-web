@@ -19,7 +19,7 @@ const DetailsServico = () => {
   const user = useUserSelector((state) => state.user);
   const { id, idClinica } = useParams();
   const navigate = useNavigate();
-  console.log(id, idClinica)
+  console.log(id, idClinica);
 
   const fetchClinicasList = async (): Promise<IService> => {
     const response = await axios.get(
@@ -70,11 +70,7 @@ const DetailsServico = () => {
               <p>Quantidade: {data?.amount}</p>
             </CardContent>
             <CardFooter className="flex gap-2">
-              <Button
-                onClick={() =>
-                  navigate(`/internalClinica/editarServico/${id}/${idClinica}`)
-                }
-              >
+              <Button onClick={() => navigate(`../editarServico/${id}`)}>
                 Editar
               </Button>
               <Button>Apagar</Button>

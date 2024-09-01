@@ -35,43 +35,43 @@ const AppRoutes = () => {
               />
             </Route>
 
-            <Route path="internalClinica" element={<Interna />}>
+            <Route path="internalClinica/:idClinica" element={<Interna />}>
               <Route
-                path="detailsPaciente/:id/:idClinica"
+                path="detailsPaciente/:id"
                 element={<DetailsPaciente />}
               />
               <Route
-                path="detailsServico/:id/:idClinica"
+                path="detailsServico/:id"
                 element={<DetailsServico />}
               />
 
               <Route
-                path="listagemPaciente/:id"
+                path="listagemPaciente"
                 element={<ListagemPaciente />}
               />
-              <Route path="listagemServico/:id" element={<ListagemServico />} />
+              <Route path="listagemServico" element={<ListagemServico />} />
 
               <Route
-                path="cadastrarPaciente/:id"
+                path="cadastrarPaciente"
                 element={<CadastrarPaciente />}
               />
               <Route
-                path="cadastrarServico/:id"
+                path="cadastrarServico"
                 element={<CadastrarServico />}
               />
-              <Route path="dashboard/:id" element={<DashboardClinica />} />
+              <Route path="dashboard" element={<DashboardClinica />} />
 
               <Route
-                path="editarPaciente/:id/:idClinica"
+                path="editarPaciente/:id"
                 element={<CadastrarPaciente mode="edit" />}
               />
               <Route
-                path="editarServico/:id/:idClinica"
+                path="editarServico/:id"
                 element={<CadastrarServico mode="edit" />}
               />
             </Route>
 
-            <Route path="*" element={<Navigate to="/dashboard" />} />
+            {/* <Route path="*" element={<Navigate to="/dashboard" />} /> */}
           </>
         ) : (
           <>

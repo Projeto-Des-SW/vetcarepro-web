@@ -42,7 +42,7 @@ const CadastrarServico = ({
   useEffect(() => {
     if (mode === "edit") {
       axios
-        .get(`${baseUrl}/clinics/${id}/services`, {
+        .get(`${baseUrl}/clinics/${idClinica}/services/${id}`, {
           headers: {
             Authorization: `Bearer ${user.token}`,
           },
@@ -69,8 +69,8 @@ const CadastrarServico = ({
   const handleSubmitClinica: SubmitHandler<IService> = (data) => {
     const url =
       mode === "create"
-        ? `${baseUrl}/clinics/${id}/services`
-        : `${baseUrl}/services/${id}/services/${idClinica}`;
+        ? `${baseUrl}/clinics/${idClinica}/services`
+        : `${baseUrl}/clinics/${idClinica}/services/${id}`;
 
     const method = mode === "create" ? "POST" : "PUT";
 

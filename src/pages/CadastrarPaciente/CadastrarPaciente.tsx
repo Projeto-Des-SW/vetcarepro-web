@@ -75,7 +75,7 @@ const CadastrarPaciente = ({ mode = "create" }: ICrud) => {
   const handleSubmitPaciente: SubmitHandler<IPet> = (data) => {
     const url =
       mode === "create"
-        ? `${baseUrl}/clinics/${id}/patients`
+        ? `${baseUrl}/clinics/${idClinica}/patients`
         : `${baseUrl}/clinics/${idClinica}/patients/${id}`;
 
     const method = mode === "create" ? "POST" : "PUT";

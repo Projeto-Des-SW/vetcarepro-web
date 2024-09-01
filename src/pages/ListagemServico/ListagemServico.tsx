@@ -18,15 +18,18 @@ const ListagemServico = () => {
   const navigate = useNavigate();
   const baseUrl = import.meta.env.VITE_URL as string;
   const { id, idClinica } = useParams();
-  console.log(id, idClinica)
+  console.log(id, idClinica);
   const user = useUserSelector((state) => state.user);
 
   const fetchClinicasList = async (): Promise<ITemp[]> => {
-    const response = await axios.get(`${baseUrl}/clinics/${id}/services`, {
-      headers: {
-        Authorization: `Bearer ${user.token}`,
-      },
-    });
+    const response = await axios.get(
+      `${baseUrl}/clinics/${idClinica}/services`,
+      {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      }
+    );
     return response.data;
   };
 
@@ -39,7 +42,9 @@ const ListagemServico = () => {
 
   return (
     <section className="flex-wrap gap-2 flex-col">
-      <h1>Listagem dos serviços</h1>
+      <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0">
+        Seus serviços
+      </h2>
       <div className="flex flex-wrap gap-2">
         {isLoading
           ? Array.from({ length: 6 }).map((_, index) => (
@@ -57,20 +62,16 @@ const ListagemServico = () => {
                 </CardFooter>
               </Card>
             ))
-          : data?.map((pet) => (
-              <Card key={pet.id}>
+          : data?.map((servico) => (
+              <Card key={servico.id}>
                 <CardHeader>
-                  <CardTitle>{pet.title}</CardTitle>
-                  <CardDescription>{pet.title}</CardDescription>
+                  <CardTitle>{servico.title}</CardTitle>
+                  <CardDescription>{servico.title}</CardDescription>
                 </CardHeader>
                 <CardContent></CardContent>
                 <CardFooter className="flex gap-2">
                   <Button
-                    onClick={() =>
-                      navigate(
-                        `/internalClinica/detailsServico/${pet.id}/${id}`
-                      )
-                    }
+                    onClick={() => navigate(`../detailsServico/${servico.id}`)}
                   >
                     Visualizar
                   </Button>

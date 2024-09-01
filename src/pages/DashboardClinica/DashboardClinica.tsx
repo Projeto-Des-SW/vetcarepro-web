@@ -11,19 +11,25 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { IClinicaList } from "@/interfaces/clinicas";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useUserSelector } from "@/store/hooks";
 const baseUrl = import.meta.env.VITE_URL as string;
 
 const DashboardClinica = () => {
-  const { id } = useParams();
+  const { idClinica } = useParams();
+  console.log(idClinica);
   const user = useUserSelector((state) => state.user);
+  const navigate = useNavigate();
+
   const fetchClinicasList = async (): Promise<IClinicaList[]> => {
-    const response = await axios.get(`${baseUrl}/clinics/${id}/patients`, {
-      headers: {
-        Authorization: `Bearer ${user.token}`,
-      },
-    });
+    const response = await axios.get(
+      `${baseUrl}/clinics/${idClinica}/patients`,
+      {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      }
+    );
     return response.data;
   };
 
@@ -145,7 +151,14 @@ const DashboardClinica = () => {
                   <TableBody>
                     {data?.map((item, index) => (
                       <TableRow key={index}>
-                        <TableCell>{item.name}</TableCell>
+                        <TableCell
+                          onClick={() =>
+                            navigate(`../detailsPaciente/${item.id}`)
+                          }
+                          className="cursor-pointer"
+                        >
+                          {item.name}
+                        </TableCell>
                         <TableCell>{item.species}</TableCell>
                         <TableCell>{item.guardian_name}</TableCell>
                         <TableCell>{item.age}</TableCell>

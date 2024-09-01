@@ -13,19 +13,23 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useNavigate, useParams } from "react-router-dom";
 import { useUserSelector } from "@/store/hooks";
+import PetsIcon from "@mui/icons-material/Pets";
 
 const ListagemPaciente = () => {
   const navigate = useNavigate();
   const baseUrl = import.meta.env.VITE_URL as string;
-  const { id } = useParams();
+  const { idClinica } = useParams();
   const user = useUserSelector((state) => state.user);
 
   const fetchPacientsList = async (): Promise<IPet[]> => {
-    const response = await axios.get(`${baseUrl}/clinics/${id}/patients`, {
-      headers: {
-        Authorization: `Bearer ${user.token}`,
-      },
-    });
+    const response = await axios.get(
+      `${baseUrl}/clinics/${idClinica}/patients`,
+      {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      }
+    );
     return response.data;
   };
 
@@ -59,28 +63,26 @@ const ListagemPaciente = () => {
               </Card>
             ))
           : data?.map((pet) => (
-              <Card key={pet.id}>
+              <Card key={pet.id} className="w-[400px]">
                 <CardHeader>
-                  <CardTitle>{pet.name}</CardTitle>
+                  <CardTitle>Nome: {pet.name}</CardTitle>
                   <CardDescription>Especie: {pet.species}</CardDescription>
                 </CardHeader>
-                <CardContent></CardContent>
+                <CardContent className="flex justify-center"></CardContent>
                 <CardFooter className="flex gap-2">
                   <Button
-                    onClick={() =>
-                      navigate(`/internalClinica/detailsPaciente/${pet.id}/${id}`)
-                    }
+                    onClick={() => navigate(`../detailsPaciente/${pet.id}`)}
                   >
                     Visualizar
                   </Button>
-                  <Button
-                    onClick={() =>
-                      navigate(`/internalClinica/editarPaciente/${pet.id}`)
-                    }
-                  >
-                    Editar
-                  </Button>
-                  <Button>Apagar</Button>
+                  {/* <Button
+                onClick={() =>
+                  navigate(`/internalClinica/editarPaciente/${pet.id}`)
+                }
+              >
+                Editar
+              </Button>
+              <Button>Apagar</Button> */}
                 </CardFooter>
               </Card>
             ))}

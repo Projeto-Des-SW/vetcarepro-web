@@ -110,7 +110,7 @@ const ListagemClinica = () => {
                 <CardFooter className="flex gap-2">
                   <Button
                     onClick={() =>
-                      navigate(`/internalClinica/dashboard/${clinica.id}`)
+                      navigate(`/internalClinica/${clinica.id}/dashboard`)
                     }
                   >
                     Visualizar
