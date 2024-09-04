@@ -1,4 +1,4 @@
-import { IPet, ITemp } from "@/interfaces/paciente";
+import { IPet } from "@/interfaces/paciente";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import {
@@ -13,7 +13,6 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useNavigate, useParams } from "react-router-dom";
 import { useUserSelector } from "@/store/hooks";
-import PetsIcon from "@mui/icons-material/Pets";
 
 const ListagemPaciente = () => {
   const navigate = useNavigate();

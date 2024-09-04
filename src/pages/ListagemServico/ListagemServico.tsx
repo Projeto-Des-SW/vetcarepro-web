@@ -1,4 +1,3 @@
-import { IPet, ITemp } from "@/interfaces/paciente";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import {
@@ -10,9 +9,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton"; // Importando Skeleton
+import { Skeleton } from "@/components/ui/skeleton"; 
 import { useNavigate, useParams } from "react-router-dom";
 import { useUserSelector } from "@/store/hooks";
+import { IService } from "@/interfaces/servico";
 
 const ListagemServico = () => {
   const navigate = useNavigate();
@@ -21,7 +21,7 @@ const ListagemServico = () => {
   console.log(id, idClinica);
   const user = useUserSelector((state) => state.user);
 
-  const fetchClinicasList = async (): Promise<ITemp[]> => {
+  const fetchClinicasList = async (): Promise<IService[]> => {
     const response = await axios.get(
       `${baseUrl}/clinics/${idClinica}/services`,
       {

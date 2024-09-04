@@ -46,7 +46,7 @@ const ListagemClinica = () => {
     queryFn: fetchClinicasList,
   });
 
-  const handleDelete = async (clinicaId: number) => {
+  const handleDelete = async (clinicaId: string) => {
     if (window.confirm("Tem certeza que deseja deletar esta clínica?")) {
       try {
         await axios.delete(`${baseUrl}/clinics/${clinicaId}`, {
@@ -63,7 +63,7 @@ const ListagemClinica = () => {
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentItems = data !== undefined && data?.slice(startIndex, endIndex);
+  const currentItems = data?.slice(startIndex, endIndex);
 
   const totalPages = Math.ceil((data?.length || 0) / itemsPerPage);
 
@@ -75,7 +75,7 @@ const ListagemClinica = () => {
         <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0">
           Suas clínicas veterinárias
         </h2>
-        <Button onClick={() => navigate("/dashboard/adicionarClinica")}>
+        <Button onClick={() => navigate("/dashboard/cadastrarClinica")}>
           Adicionar clínica
         </Button>
       </div>
