@@ -15,6 +15,8 @@ import ListagemServico from "@/pages/ListagemServico/ListagemServico";
 import DetailsPaciente from "@/pages/DetailsPaciente/DetailsPaciente";
 import Interna from "@/pages/Interna/Interna";
 import DetailsServico from "@/pages/DetailsServico/DetailsServico";
+import AgendarConsulta from "@/pages/AgendarConsulta/AgendarConsulta";
+import Me from "@/pages/Me/Me";
 
 const AppRoutes = () => {
   const user = useUserSelector((state) => state.user);
@@ -27,6 +29,7 @@ const AppRoutes = () => {
         {user.email ? (
           <>
             <Route path="dashboard" element={<Dashboard />}>
+              <Route path="profile" element={<Me />} />
               <Route path="cadastrarClinica" element={<CadastroClinica />} />
               <Route path="listagemClinica" element={<ListagemClinica />} />
               <Route
@@ -36,29 +39,15 @@ const AppRoutes = () => {
             </Route>
 
             <Route path="internalClinica/:idClinica" element={<Interna />}>
-              <Route
-                path="detailsPaciente/:id"
-                element={<DetailsPaciente />}
-              />
-              <Route
-                path="detailsServico/:id"
-                element={<DetailsServico />}
-              />
+              <Route path="detailsPaciente/:id" element={<DetailsPaciente />} />
+              <Route path="detailsServico/:id" element={<DetailsServico />} />
 
-              <Route
-                path="listagemPaciente"
-                element={<ListagemPaciente />}
-              />
+              <Route path="listagemPaciente" element={<ListagemPaciente />} />
               <Route path="listagemServico" element={<ListagemServico />} />
 
-              <Route
-                path="cadastrarPaciente"
-                element={<CadastrarPaciente />}
-              />
-              <Route
-                path="cadastrarServico"
-                element={<CadastrarServico />}
-              />
+              <Route path="cadastrarPaciente" element={<CadastrarPaciente />} />
+              <Route path="cadastrarServico" element={<CadastrarServico />} />
+              <Route path="agendamento" element={<AgendarConsulta />} />
               <Route path="dashboard" element={<DashboardClinica />} />
 
               <Route

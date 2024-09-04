@@ -1,16 +1,14 @@
 import { Outlet, useNavigate, useParams } from "react-router-dom";
 import { NavLink } from "react-router-dom";
-import HomeIcon from "@mui/icons-material/Home";
 import HomeWorkIcon from "@mui/icons-material/HomeWork";
 import LogoutIcon from "@mui/icons-material/Logout";
-import ListAltIcon from "@mui/icons-material/ListAlt";
 import PersonIcon from "@mui/icons-material/Person";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import HomeRepairServiceIcon from "@mui/icons-material/HomeRepairService";
 import DesignServicesIcon from "@mui/icons-material/DesignServices";
 import { useUserSelector } from "@/store/hooks";
 import { useDispatch } from "react-redux";
-import { setCurrentUser } from "@/store/user-slice";
+import { logoutUser } from "@/store/user-slice";
 import { Button } from "@/components/ui/button";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 
@@ -21,15 +19,15 @@ const Interna = () => {
   const { idClinica } = useParams();
 
   const handleLogout = () => {
-    dispatch(setCurrentUser({ email: "", token: "" }));
+    dispatch(logoutUser());
     navigate("/home");
   };
 
   console.log(user);
 
   return (
-    <div className="flex gap-4">
-      <aside className="inset-y-0 left-0 z-10 flex w-64 flex-col border-r bg-background sm:flex">
+    <div className="flex gap-4 h-full">
+      <aside className=" left-0 z-10 flex w-64 flex-col border-r bg-background sm:flex  ">
         <div className="flex flex-col items-start gap-4 px-4 py-5">
           <NavLink
             to="/dashboard/listagemClinica"
@@ -109,6 +107,19 @@ const Interna = () => {
             <DesignServicesIcon />
             <span>Cadastrar Serviço</span>
           </NavLink>
+          <NavLink
+            to={`agendamento`}
+            className={({ isActive }) =>
+              `flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
+                isActive
+                  ? "bg-accent text-accent-foreground"
+                  : "text-muted-foreground hover:bg-muted/50"
+              }`
+            }
+          >
+            <DesignServicesIcon />
+            <span>Novo Agendamento</span>
+          </NavLink>
         </div>
         <div className="mt-auto flex flex-col items-start gap-2 px-4 py-5">
           <Button
@@ -121,7 +132,7 @@ const Interna = () => {
           </Button>
         </div>
       </aside>
-      <div className="flex flex-col gap-2 w-full">
+      <div className="flex flex-col gap-2 w-full items-center p-8">
         <Outlet />
       </div>
     </div>

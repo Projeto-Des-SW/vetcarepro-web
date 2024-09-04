@@ -75,7 +75,7 @@ const Login = () => {
           console.log(data.token);
           dispatch(setCurrentUser({ email: myEmail, token: data.token }));
 
-          navigate("/dashboard");
+          navigate("/dashboard/listagemClinica");
           toast("Login realizado com sucesso", {
             description: "Sunday, December 03, 2023 at 9:00 AM",
             action: {
