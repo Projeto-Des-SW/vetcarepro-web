@@ -12,9 +12,8 @@ interface INotifications {
 }
 
 const userInicialState: UserDataProps = {
-  email: "admin@gmail.com",
-  token:
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmNjUwYWUyMy1kZjVkLTRhYTQtYThmNC1iMjhjNGE3MDQ4MWYiLCJpYXQiOjE3MjUxOTU5MzN9.suxA8pMjU8yvhGd4vWfuWPhrpEF6ZxG6CIWhmlWfIAw",
+  email: "",
+  token: "",
   notifications: [{ title: "", description: "" }],
 };
 
