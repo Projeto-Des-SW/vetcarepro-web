@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -41,6 +41,7 @@ const CadastrarPaciente = ({ mode = "create" }: ICrud) => {
   const user = useUserSelector((state) => state.user);
   const baseUrl = import.meta.env.VITE_URL as string;
   const dispatch = useDispatch();
+  const [errorForm, setErrorForm] = useState("");
 
   const {
     register,
@@ -90,7 +91,6 @@ const CadastrarPaciente = ({ mode = "create" }: ICrud) => {
       clinic_id: id,
     };
 
-    // Função auxiliar para envio de notificação
     const notify = (title: string, description: string) => {
       dispatch(
         addNotification({
@@ -113,11 +113,11 @@ const CadastrarPaciente = ({ mode = "create" }: ICrud) => {
         const successMessage = `Paciente - ${response.statusText}`;
         const successDescription = `Data: ${formattedDate}, Hora: ${formattedTime}`;
 
-        toast("Cadastro realizado com sucesso", {
+        toast(`${mode} realizado com sucesso`, {
           description: successDescription,
         });
 
-        notify(successMessage, successDescription); // Notificação de sucesso
+        notify(successMessage, successDescription);
       })
       .catch((error) => {
         const errorMessage = "Erro ao cadastrar paciente";
@@ -125,6 +125,18 @@ const CadastrarPaciente = ({ mode = "create" }: ICrud) => {
 
         notify(errorMessage, errorDescription);
         console.error("Erro ao enviar o formulário:", error);
+
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.message
+        ) {
+          setErrorForm(error.response.data.message);
+        } else {
+          setErrorForm(
+            "Ocorreu um erro inesperado. Por favor, tente novamente."
+          );
+        }
       });
   };
 
@@ -203,6 +215,9 @@ const CadastrarPaciente = ({ mode = "create" }: ICrud) => {
         <Button type="submit">
           {mode === "create" ? "Criar" : "Salvar alterações"}
         </Button>
+
+        {errorForm && <div className="text-red-500">{errorForm}</div>}
+
       </form>
       <picture className="flex h-auto items-center flex-col ">
         <img

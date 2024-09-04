@@ -12,6 +12,9 @@ import dogPuto from "../../assets/dogPuto.png";
 import dogTriste from "../../assets/dogTriste.png";
 import { useUserSelector } from "@/store/hooks";
 import { Card } from "@/components/ui/card";
+import { useDispatch } from "react-redux";
+import { addNotification } from "@/store/user-slice";
+import { formattedDate, formattedTime } from "@/utils/const.utils";
 
 interface IFromClinica {
   title: string;
@@ -39,9 +42,10 @@ const cadastroSchema = yup
 
 const CadastroClinica = ({ mode = "create" }: ICrudClinia) => {
   const { id } = useParams();
+  const dispatch = useDispatch();
   const user = useUserSelector((state) => state.user);
   const baseUrl = import.meta.env.VITE_URL as string;
-  const [errorForm, setErrorForm] = useState('')
+  const [errorForm, setErrorForm] = useState("");
 
   const {
     register,
@@ -77,6 +81,15 @@ const CadastroClinica = ({ mode = "create" }: ICrudClinia) => {
       mode === "create" ? `${baseUrl}/clinics` : `${baseUrl}/clinics/${id}`;
     const method = mode === "create" ? "POST" : "PUT";
 
+    const notify = (title: string, description: string) => {
+      dispatch(
+        addNotification({
+          title,
+          description,
+        })
+      );
+    };
+
     axios({
       method,
       url,
@@ -86,17 +99,30 @@ const CadastroClinica = ({ mode = "create" }: ICrudClinia) => {
       },
       data,
     })
-      .then(() => {
-        toast("Cadastro realizado com sucesso");
+      .then((response) => {
+        const successMessage = `Clinica - ${response.statusText}`;
+        const successDescription = `Data: ${formattedDate}, Hora: ${formattedTime}`;
+
+        toast(`${mode} realizado com sucesso`, {
+          description: successDescription,
+        });
+
+        notify(successMessage, successDescription);
       })
       .catch((error) => {
         console.error("Erro ao enviar o formulário:", error);
-        if (error.response && error.response.data && error.response.data.message) {
-          setErrorForm(error.response.data.message); 
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.message
+        ) {
+          setErrorForm(error.response.data.message);
         } else {
-          setErrorForm("Ocorreu um erro inesperado. Por favor, tente novamente."); 
+          setErrorForm(
+            "Ocorreu um erro inesperado. Por favor, tente novamente."
+          );
         }
-        console.log(data)
+        console.log(data);
       });
   };
 

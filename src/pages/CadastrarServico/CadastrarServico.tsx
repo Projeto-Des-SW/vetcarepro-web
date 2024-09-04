@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -13,6 +13,9 @@ import dogHappy from "../../assets/dogHappy.png";
 import dogPuto from "../../assets/dogPuto.png";
 import dogTriste from "../../assets/dogTriste.png";
 import { Card } from "@/components/ui/card";
+import { formattedDate, formattedTime } from "@/utils/const.utils";
+import { useDispatch } from "react-redux";
+import { addNotification } from "@/store/user-slice";
 
 const petSchema = yup
   .object({
@@ -32,6 +35,8 @@ const CadastrarServico = ({
   console.log(id, idClinica);
   const user = useUserSelector((state) => state.user);
   const baseUrl = import.meta.env.VITE_URL as string;
+  const [errorForm, setErrorForm] = useState("");
+  const dispatch = useDispatch();
 
   const {
     register,
@@ -60,14 +65,6 @@ const CadastrarServico = ({
     }
   }, [mode, reset, user.token, baseUrl]);
 
-  const now = new Date();
-  const day = now.getDate();
-  const month = now.getMonth() + 1;
-  const year = now.getFullYear();
-  const hours = now.getHours();
-  const minutes = now.getMinutes();
-  const formattedDate = `${day}/${month}/${year}`;
-  const formattedTime = `${hours}:${minutes.toString().padStart(2, "0")}`;
   const errorCount = Object.keys(errors).length;
   const handleSubmitClinica: SubmitHandler<IService> = (data) => {
     const url =
@@ -82,6 +79,15 @@ const CadastrarServico = ({
       clinic_id: id,
     };
 
+    const notify = (title: string, description: string) => {
+      dispatch(
+        addNotification({
+          title,
+          description,
+        })
+      );
+    };
+
     axios({
       method,
       url,
@@ -91,13 +97,34 @@ const CadastrarServico = ({
       },
       data: requestData,
     })
-      .then(() => {
-        toast("Cadastro realizado com sucesso", {
-          description: `Data: ${formattedDate}, Hora: ${formattedTime}`,
+      .then((response) => {
+        const successMessage = `Serviço - ${response.statusText}`;
+        const successDescription = `Data: ${formattedDate}, Hora: ${formattedTime}`;
+
+        toast(`${mode} realizado com sucesso`, {
+          description: successDescription,
         });
+
+        notify(successMessage, successDescription);
       })
       .catch((error) => {
+        const errorMessage = "Erro ao cadastrar paciente";
+        const errorDescription = `Erro: ${error.message}, Data: ${formattedDate}, Hora: ${formattedTime}`;
+
+        notify(errorMessage, errorDescription);
         console.error("Erro ao enviar o formulário:", error);
+
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.message
+        ) {
+          setErrorForm(error.response.data.message);
+        } else {
+          setErrorForm(
+            "Ocorreu um erro inesperado. Por favor, tente novamente."
+          );
+        }
       });
   };
 
@@ -139,6 +166,9 @@ const CadastrarServico = ({
         <Button type="submit">
           {mode === "create" ? "Criar" : "Salvar alterações"}
         </Button>
+
+        {errorForm && <div className="text-red-500">{errorForm}</div>}
+
       </form>
       <picture className="flex h-auto items-center flex-col ">
         <img
