@@ -26,6 +26,9 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import dog from "../../assets/okDog.png";
+import { formattedDate, formattedTime } from "@/utils/const.utils";
+import { useDispatch } from "react-redux";
+import { addNotification } from "@/store/user-slice";
 interface IFormCadastro {
   // repassword: string;
   // username: string;
@@ -37,7 +40,7 @@ const baseUrl = import.meta.env.VITE_URL as string;
 const cadastroSchema = yup
   .object({
     email: yup.string().required("Email é obrigatório").email("Email inválido"),
-    password: yup.string().required("Senha é obrigatória"),
+    password: yup.string().required("Senha é obrigatória").min(6),
     // repassword: yup
     //   .string()
     //   .oneOf([yup.ref("password")], "As senhas devem corresponder")
@@ -50,41 +53,35 @@ const cadastroSchema = yup
 const Cadastro = () => {
   const [visibilityState, setVisibilityState] = useState(false);
   const [openSucessCadastro, setOpenSucessCadastro] = useState(false);
-  const now = new Date();
-  const day = now.getDate();
-  const month = now.getMonth() + 1; // Months are zero-based
-  const year = now.getFullYear();
-  const hours = now.getHours();
-  const minutes = now.getMinutes();
-
-  const formattedDate = `${day}/${month}/${year}`;
-  const formattedTime = `${hours}:${minutes.toString().padStart(2, "0")}`;
+  const dispatch = useDispatch();
+  const [errorForm, setErrorForm] = useState("");
 
   const onSubmit: SubmitHandler<IFormCadastro> = (data) => {
+  
     fetch(`${baseUrl}/users`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
     })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        if (data) {
-          console.log("Form submitted successfully");
-          setOpenSucessCadastro((prevState) => !prevState);
-          toast("Cadastro realizado com sucesso", {
-            description: `Data: ${formattedDate}, Hora: ${formattedTime}`,
-            action: {
-              label: "Dispensar",
-              onClick: () => console.log("Undo"),
-            },
-          });
+      .then((response) => {
+        console.log(response);
+        const successDescription = `Data: ${formattedDate}, Hora: ${formattedTime}`;
+        let title = "Cadastrado com sucesso!";
+        if (response.status === 200 || response.status === 201) {
+          title = "Cadastrado com sucesso!";
         } else {
-          throw new Error("Failed to submit form");
+          title = "Ocorreu um erro, tente mais tarde!";
         }
+
+        toast(`${title}`, {
+          description: successDescription,
+        });
+
+        return response.json();
       })
+
       .catch((error) => {
         console.error("Form submission error:", error);
       });

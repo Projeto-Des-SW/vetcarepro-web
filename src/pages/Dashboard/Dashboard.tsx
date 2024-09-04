@@ -4,10 +4,17 @@ import HomeIcon from "@mui/icons-material/Home";
 import HomeWorkIcon from "@mui/icons-material/HomeWork";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useUserSelector } from "@/store/hooks";
+import { useDispatch } from "react-redux";
+import { logoutUser } from "@/store/user-slice";
 
 const Dashboard = () => {
   const user = useUserSelector((state) => state.user);
-
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    dispatch(logoutUser());
+    navigate("/home");
+  };
   console.log(user);
 
   return (
@@ -44,6 +51,7 @@ const Dashboard = () => {
         <div className="mt-auto flex flex-col items-start gap-2 px-4 py-5">
           <Button
             variant="ghost"
+            onClick={handleLogout}
             className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:bg-muted/50"
           >
             <LogoutIcon />

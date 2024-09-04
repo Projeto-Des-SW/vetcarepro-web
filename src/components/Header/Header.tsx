@@ -32,6 +32,7 @@ import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Separator } from "../ui/separator";
 import { Skeleton } from "../ui/skeleton";
+import { Toaster } from "../ui/sonner";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -109,6 +110,7 @@ const Header = () => {
           VetCare
         </Link>
         <nav className="ml-auto flex gap-2 items-center">
+          <Toaster />
           {user.email === "" ? (
             <>
               <Link
@@ -157,6 +159,7 @@ const Header = () => {
                             <NotificationsActiveIcon />
                           )}
                         </NavigationMenuTrigger>
+
                         <NavigationMenuContent className="flex flex-col w-full">
                           <ul className="flex flex-col w-[250px] gap-3 p-4">
                             {user.notifications.map((notification, index) => (

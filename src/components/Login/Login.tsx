@@ -23,6 +23,7 @@ import { useDispatch } from "react-redux";
 import { setCurrentUser } from "@/store/user-slice";
 import { Toaster } from "../ui/sonner";
 import { toast } from "sonner";
+import { formattedDate, formattedTime } from "@/utils/const.utils";
 
 interface IFormInput {
   email: string;
@@ -58,8 +59,8 @@ const Login = () => {
   console.log(user);
 
   const onSubmit: SubmitHandler<IFormInput> = (data) => {
-    console.log(data)
-    const myEmail = data.email
+    console.log(data);
+    const myEmail = data.email;
     fetch(`${baseUrl}/sessions`, {
       method: "POST",
       headers: {
@@ -67,22 +68,36 @@ const Login = () => {
       },
       body: JSON.stringify(data),
     })
-      .then((response) => response.json())
+      .then((response) => {
+        console.log(response);
+        const successDescription = `Data: ${formattedDate}, Hora: ${formattedTime}`;
+        let title = "Cadastrado com sucesso!";
+        if (response.status === 200 || response.status === 201) {
+          title = "Cadastrado com sucesso!";
+        } else {
+          title = "Ocorreu um erro, tente mais tarde!";
+        }
+
+        toast(`${title}`, {
+          description: successDescription,
+        });
+
+        return response.json();
+      })
       .then((data) => {
         console.log(data);
         if (data && data.token) {
           console.log(data);
           console.log(data.token);
-          dispatch(setCurrentUser({ email: myEmail, token: data.token }));
+          dispatch(
+            setCurrentUser({
+              email: myEmail,
+              token: data.token,
+              notifications: [],
+            })
+          );
 
           navigate("/dashboard/listagemClinica");
-          toast("Login realizado com sucesso", {
-            description: "Sunday, December 03, 2023 at 9:00 AM",
-            action: {
-              label: "Dispensar",
-              onClick: () => console.log("Undo"),
-            },
-          });
         } else {
           console.log(data);
           throw new Error("Failed to submit form");
@@ -162,7 +177,7 @@ const Login = () => {
               <Button className="bg-[#4EBA9D]" type="submit">
                 Login
               </Button>
-              <Toaster />
+
             </form>
           </motion.main>
         </CardContent>
