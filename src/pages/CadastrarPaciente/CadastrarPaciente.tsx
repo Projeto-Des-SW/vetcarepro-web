@@ -1,17 +1,22 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import Inputs from "@/components/Inputs/Inputs";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import boasVindas from "../../assets/boasVindas.png";
 import { IPet } from "@/interfaces/paciente";
 import { ICrud } from "@/interfaces/clinicas";
 import { useParams } from "react-router-dom";
 import { useUserSelector } from "@/store/hooks";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { addNotification } from "@/store/user-slice";
+import { Card } from "@/components/ui/card";
 
+import dogHappy from "../../assets/dogHappy.png";
+import dogPuto from "../../assets/dogPuto.png";
+import dogTriste from "../../assets/dogTriste.png";
 const petSchema = yup
   .object({
     clinic_id: yup.string(),
@@ -35,16 +40,17 @@ const CadastrarPaciente = ({ mode = "create" }: ICrud) => {
   const { id, idClinica } = useParams();
   const user = useUserSelector((state) => state.user);
   const baseUrl = import.meta.env.VITE_URL as string;
+  const dispatch = useDispatch();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-    reset, 
+    reset,
   } = useForm<IPet>({
     resolver: yupResolver(petSchema),
   });
-
+  const errorCount = Object.keys(errors).length;
   useEffect(() => {
     if (mode === "edit" && id && idClinica) {
       axios
@@ -55,7 +61,7 @@ const CadastrarPaciente = ({ mode = "create" }: ICrud) => {
         })
         .then((response) => {
           const petData = response.data;
-          reset(petData); 
+          reset(petData);
         })
         .catch((error) => {
           console.error("Erro ao buscar dados do paciente:", error);
@@ -84,6 +90,16 @@ const CadastrarPaciente = ({ mode = "create" }: ICrud) => {
       clinic_id: id,
     };
 
+    // Função auxiliar para envio de notificação
+    const notify = (title: string, description: string) => {
+      dispatch(
+        addNotification({
+          title,
+          description,
+        })
+      );
+    };
+
     axios({
       method,
       url,
@@ -94,69 +110,87 @@ const CadastrarPaciente = ({ mode = "create" }: ICrud) => {
       data: requestData,
     })
       .then((response) => {
+        const successMessage = `Paciente - ${response.statusText}`;
+        const successDescription = `Data: ${formattedDate}, Hora: ${formattedTime}`;
+
         toast("Cadastro realizado com sucesso", {
-          description: `Data: ${formattedDate}, Hora: ${formattedTime}`,
+          description: successDescription,
         });
+
+        notify(successMessage, successDescription); // Notificação de sucesso
       })
       .catch((error) => {
+        const errorMessage = "Erro ao cadastrar paciente";
+        const errorDescription = `Erro: ${error.message}, Data: ${formattedDate}, Hora: ${formattedTime}`;
+
+        notify(errorMessage, errorDescription);
         console.error("Erro ao enviar o formulário:", error);
       });
   };
 
   return (
-    <section className="flex p-8 w-full justify-evenly">
+    <Card className="flex p-8 w-fit items-center gap-4">
       <form
         onSubmit={handleSubmit(handleSubmitPaciente)}
         className="flex flex-col w-[500px] gap-4"
       >
         <h1>{mode === "create" ? "Cadastre" : "Edite"} o paciente</h1>
 
-        <Inputs
-          label="Nome do pet"
-          name="name"
-          placeholder="Digite o nome do pet"
-          register={register}
-          error={errors}
-          className="w-full"
-        />
-        <Inputs
-          label="Digite a espécie"
-          name="species"
-          placeholder="Digite a espécie"
-          register={register}
-          error={errors}
-        />
-        <Inputs
-          label="Digite a idade"
-          name="age"
-          type="number"
-          placeholder="Digite a idade"
-          register={register}
-          error={errors}
-        />
-        <Inputs
-          label="Digite o tipo sanguíneo"
-          name="breed"
-          placeholder="Digite o tipo sanguíneo"
-          register={register}
-          error={errors}
-        />
-        <Inputs
-          label="Nome do guardião"
-          name="guardian_name"
-          register={register}
-          placeholder="Digite o nome do guardião"
-          error={errors}
-          type="text"
-        />
-        <Inputs
-          label="CPF do guardião"
-          name="guardian_cpf"
-          register={register}
-          placeholder="Digite o CPF do guardião"
-          error={errors}
-          type="text"
-        />
+        <div className="flex gap-4">
+          <Inputs
+            label="Nome do pet"
+            name="name"
+            placeholder="Digite o nome do pet"
+            register={register}
+            error={errors}
+            className="w-full"
+          />
+          <Inputs
+            label="Digite a espécie"
+            name="species"
+            placeholder="Digite a espécie"
+            register={register}
+            error={errors}
+          />
+        </div>
+
+        <div className="flex gap-4">
+          <Inputs
+            label="Digite a idade"
+            name="age"
+            type="number"
+            placeholder="Digite a idade"
+            register={register}
+            error={errors}
+          />
+          <Inputs
+            label="Digite o tipo sanguíneo"
+            name="breed"
+            placeholder="Digite o tipo sanguíneo"
+            register={register}
+            error={errors}
+          />
+        </div>
+
+        <div className="flex gap-4">
+          <Inputs
+            label="Nome do guardião"
+            name="guardian_name"
+            register={register}
+            placeholder="Digite o nome do guardião"
+            error={errors}
+            type="text"
+          />
+          <Inputs
+            label="CPF do guardião"
+            name="guardian_cpf"
+            register={register}
+            placeholder="Digite o CPF do guardião"
+            error={errors}
+            type="text"
+          />
+        </div>
+
         <Inputs
           label="Contato do guardião"
           name="guardian_contact"
@@ -170,10 +204,23 @@ const CadastrarPaciente = ({ mode = "create" }: ICrud) => {
           {mode === "create" ? "Criar" : "Salvar alterações"}
         </Button>
       </form>
-      <picture className="flex h-auto items-center">
-        <img src={boasVindas} alt="Imagem de boas-vindas" />
+      <picture className="flex h-auto items-center flex-col ">
+        <img
+          src={
+            errorCount == 1 ? dogTriste : errorCount > 0 ? dogPuto : dogHappy
+          }
+          alt="Imagem de boas-vindas"
+        />
+
+        <h1>
+          {errorCount == 1
+            ? "Corrige esse erro ..."
+            : errorCount > 0
+            ? "Quantos erros, me ajuda ai!"
+            : "Tudo certo, como deve ser!"}
+        </h1>
       </picture>
-    </section>
+    </Card>
   );
 };
 

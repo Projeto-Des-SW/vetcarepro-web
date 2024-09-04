@@ -1,15 +1,18 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import Inputs from "@/components/Inputs/Inputs";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import boasVindas from "../../assets/boasVindas.png";
 import { useParams } from "react-router-dom";
 import { IService } from "@/interfaces/servico";
 import { useUserSelector } from "@/store/hooks";
 import axios from "axios";
+import dogHappy from "../../assets/dogHappy.png";
+import dogPuto from "../../assets/dogPuto.png";
+import dogTriste from "../../assets/dogTriste.png";
+import { Card } from "@/components/ui/card";
 
 const petSchema = yup
   .object({
@@ -34,7 +37,7 @@ const CadastrarServico = ({
     register,
     handleSubmit,
     formState: { errors },
-    reset, // Usado para resetar os valores do formulário
+    reset,
   } = useForm<IService>({
     resolver: yupResolver(petSchema),
   });
@@ -65,7 +68,7 @@ const CadastrarServico = ({
   const minutes = now.getMinutes();
   const formattedDate = `${day}/${month}/${year}`;
   const formattedTime = `${hours}:${minutes.toString().padStart(2, "0")}`;
-
+  const errorCount = Object.keys(errors).length;
   const handleSubmitClinica: SubmitHandler<IService> = (data) => {
     const url =
       mode === "create"
@@ -88,7 +91,7 @@ const CadastrarServico = ({
       },
       data: requestData,
     })
-      .then((response) => {
+      .then(() => {
         toast("Cadastro realizado com sucesso", {
           description: `Data: ${formattedDate}, Hora: ${formattedTime}`,
         });
@@ -99,28 +102,31 @@ const CadastrarServico = ({
   };
 
   return (
-    <section className="flex w-full gap-4 justify-center">
+    <Card className="flex p-8 w-fit items-center gap-4">
       <form
         onSubmit={handleSubmit(handleSubmitClinica)}
         className="flex flex-col items w-[500px] gap-4 justify-center"
       >
         <h1>{mode === "create" ? "Cadastre" : "Edite"} o serviço</h1>
 
-        <Inputs
-          label="Nome do serviço"
-          name="title"
-          placeholder="Digite o nome do serviço"
-          register={register}
-          error={errors}
-          className="w-full"
-        />
-        <Inputs
-          label="Tipo de serviço"
-          name="type"
-          placeholder="Digite o tipo do serviço"
-          register={register}
-          error={errors}
-        />
+        <div className="flex gap-4">
+          <Inputs
+            label="Nome do serviço"
+            name="title"
+            placeholder="Digite o nome do serviço"
+            register={register}
+            error={errors}
+            className="w-full"
+          />
+          <Inputs
+            label="Tipo de serviço"
+            name="type"
+            placeholder="Digite o tipo do serviço"
+            register={register}
+            error={errors}
+          />
+        </div>
+
         <Inputs
           label="Quantidade"
           name="amount"
@@ -134,8 +140,23 @@ const CadastrarServico = ({
           {mode === "create" ? "Criar" : "Salvar alterações"}
         </Button>
       </form>
-      <img src={boasVindas} alt="Imagem de boas-vindas" />
-    </section>
+      <picture className="flex h-auto items-center flex-col ">
+        <img
+          src={
+            errorCount == 1 ? dogTriste : errorCount > 0 ? dogPuto : dogHappy
+          }
+          alt="Imagem de boas-vindas"
+        />
+
+        <h1>
+          {errorCount == 1
+            ? "Corrige esse erro ..."
+            : errorCount > 0
+            ? "Quantos erros, me ajuda ai!"
+            : "Tudo certo, como deve ser!"}
+        </h1>
+      </picture>
+    </Card>
   );
 };
 
