@@ -8,11 +8,11 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
-import { IClinicaList } from "@/interfaces/clinicas";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { useUserSelector } from "@/store/hooks";
+import { IPet } from "@/interfaces/paciente";
 const baseUrl = import.meta.env.VITE_URL as string;
 
 const DashboardClinica = () => {
@@ -21,7 +21,7 @@ const DashboardClinica = () => {
   const user = useUserSelector((state) => state.user);
   const navigate = useNavigate();
 
-  const fetchClinicasList = async (): Promise<IClinicaList[]> => {
+  const fetchClinicasList = async (): Promise<IPet[]> => {
     const response = await axios.get(
       `${baseUrl}/clinics/${idClinica}/patients`,
       {
@@ -33,7 +33,7 @@ const DashboardClinica = () => {
     return response.data;
   };
 
-  const { data, error, isLoading } = useQuery({
+  const { data, isPending } = useQuery({
     queryKey: ["ClinicaListInternal"],
     queryFn: fetchClinicasList,
   });
@@ -44,7 +44,7 @@ const DashboardClinica = () => {
     <section className="flex h-full">
       <main className="flex-1bg-background p-8 flex flex-col">
         <div className="grid grid-cols-4 gap-8">
-          {isLoading ? (
+          {isPending ? (
             Array.from({ length: 4 }).map((_, index) => (
               <Card key={index}>
                 <CardHeader>
@@ -93,7 +93,7 @@ const DashboardClinica = () => {
           )}
         </div>
         <div className="grid grid-cols-2 gap-8 mt-8">
-          {isLoading ? (
+          {isPending ? (
             Array.from({ length: 2 }).map((_, index) => (
               <Card key={index}>
                 <CardHeader>
@@ -122,7 +122,7 @@ const DashboardClinica = () => {
           )}
         </div>
         <div className="mt-8">
-          {isLoading ? (
+          {isPending ? (
             <Card>
               <CardHeader>
                 <Skeleton className="h-6 w-1/2" />
