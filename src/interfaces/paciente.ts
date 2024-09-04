@@ -1,5 +1,6 @@
 export interface IPet {
-  clinic_id: string;
+  id?: string
+  clinic_id?: string;
   name: string;
   species: string;
   age: string;
