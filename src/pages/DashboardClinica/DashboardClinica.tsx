@@ -38,6 +38,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import AccessAlarmIcon from "@mui/icons-material/AccessAlarm";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 
 const DashboardClinica = () => {
   const [searchConsulta, setSearchConsulta] = useState("");
@@ -50,6 +58,7 @@ const DashboardClinica = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(5);
+  const [itemsPerPageServices, setItemsPerPageServices] = useState(5);
 
   const INTERVAL_TIME = 10000;
   const PROGRESS_INCREMENT = 100 / (INTERVAL_TIME / 100);
@@ -94,17 +103,23 @@ const DashboardClinica = () => {
     queryFn: () => fetchServiceList(idClinica, user.token),
   });
 
-  if (isPendingAgendamentos || isPendingServices || isPendingPacientes)
-    return <div>carregando</div>;
-
   const totalPages = splitIntoGroups(
     (dataAgendamentos ?? [])
       .sort((a, b) => dayjs(a.date).diff(dayjs()) - dayjs(b.date).diff(dayjs()))
       .filter((value) => !dayjs(value.date).isBefore(dayjs())),
     itemsPerPage
   );
+  if (isPendingServices)
+    return (
+      <div>
+        <Skeleton className="h-16 w-1/2" />
+      </div>
+    );
 
-  const totalPagesService = splitIntoGroups(services as any, itemsPerPage);
+  const totalPagesService = splitIntoGroups(
+    services as any,
+    itemsPerPageServices
+  );
 
   const receitaUsuario = dataAgendamentos?.filter((value) =>
     dayjs(value.date).isBefore(dayjs())
@@ -146,11 +161,28 @@ const DashboardClinica = () => {
                 </CardContent>
               </Card>
               <Card>
-                <CardHeader>
-                  <CardTitle>Proximas consultas</CardTitle>
+                <CardHeader className="pb-0">
+                  <CardTitle className="flex justify-between items-center ">
+                    Proximas consultas
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <AccessAlarmIcon />
+                        </TooltipTrigger>
+                        <TooltipContent
+                          side="bottom"
+                          className="max-w-xs p-2 text-sm"
+                        >
+                          Suas próximas 5 consultas serão apresentadas abaixo
+                          com intervalos de 10 segundos entre cada consulta.
+                          Para mais detalhes, veja no quadro de consultas.
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {isPendingPacientes || isPendingAgendamentos ? (
+                  {isPendingAgendamentos ? (
                     <Skeleton className="h-10 w-24" />
                   ) : (
                     <>
@@ -204,12 +236,32 @@ const DashboardClinica = () => {
               </Card>
               <Card className="flex flex-col justify-center">
                 <CardHeader>
-                  <CardTitle>Lucro</CardTitle>
+                  <CardTitle className="flex justify-between items-center">
+                    Lucro
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <AttachMoneyIcon />
+                        </TooltipTrigger>
+                        <TooltipContent
+                          side="bottom"
+                          className="max-w-xs p-2 text-sm"
+                        >
+                          O seu lucro bruto é exibido abaixo. Para fins de
+                          praticidade, o valor é ajustado após a data da
+                          consulta ter sido atingida. Para consultar quanto cada
+                          consulta rendeu, acesse a listagem de consultas. Em
+                          breve teremos uma dashboard financeira detalhada
+                          disponivel.
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </CardTitle>
                 </CardHeader>
 
                 <CardContent className="flex justify-between items-center">
                   <div className="text-4xl font-bold">
-                    {isExibirLucro ? `R$ ${myReceita}` : "R$ ********"}
+                    {isExibirLucro ? `R$ ${myReceita}` : "R$ *****"}
                   </div>
 
                   {!isExibirLucro ? (
@@ -231,7 +283,7 @@ const DashboardClinica = () => {
           )}
         </div>
         <div className="grid grid-cols-1 gap-8 mt-8">
-          {isPendingAgendamentos || isPendingPacientes || isPendingServices ? (
+          {isPendingAgendamentos ? (
             Array.from({ length: 2 }).map((_, index) => (
               <Card key={index}>
                 <CardHeader>
@@ -266,16 +318,32 @@ const DashboardClinica = () => {
                           <SelectValue placeholder="Consultas por página" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem key={5} value="5">
+                          <SelectItem
+                            key={5}
+                            value="5"
+                            disabled={dataAgendamentos?.length < 5}
+                          >
                             5
                           </SelectItem>
-                          <SelectItem key={7} value="7">
+                          <SelectItem
+                            key={7}
+                            value="7"
+                            disabled={dataAgendamentos?.length < 5}
+                          >
                             7
                           </SelectItem>
-                          <SelectItem key={10} value="10">
+                          <SelectItem
+                            key={10}
+                            value="10"
+                            disabled={dataAgendamentos?.length < 5}
+                          >
                             10
                           </SelectItem>
-                          <SelectItem key={20} value="20">
+                          <SelectItem
+                            key={20}
+                            value="20"
+                            disabled={dataAgendamentos?.length < 5}
+                          >
                             20
                           </SelectItem>
                         </SelectContent>
@@ -308,9 +376,7 @@ const DashboardClinica = () => {
                         .map((item) => (
                           <TableRow key={item.id}>
                             <TableCell
-                              onClick={() =>
-                                navigate(`../detailsPaciente/${item.id}`)
-                              }
+                              onClick={() => navigate(`../listagemAgendamento`)}
                               className="cursor-pointer"
                             >
                               {dayjs(item.date).format("DD/MM/YYYY - HH:MM")}
@@ -377,7 +443,7 @@ const DashboardClinica = () => {
           )}
         </div>
         <div className="mt-8">
-          {isPendingPacientes ? (
+          {isPendingServices ? (
             <Card>
               <CardHeader>
                 <Skeleton className="h-6 w-1/2" />
@@ -390,13 +456,59 @@ const DashboardClinica = () => {
             </Card>
           ) : (
             <Card className="mb-12">
-              <CardHeader className="w-fit">
-                <CardTitle>Serviços disponiveis</CardTitle>
-                <input
-                  type="text"
-                  placeholder="Pesquisar serviços"
-                  onChange={(e) => setSearchServices(e.target.value)}
-                />
+              <CardHeader>
+                <div className="flex justify-between">
+                  <div>
+                    <CardTitle>Serviços disponiveis</CardTitle>
+                    <input
+                      type="text"
+                      placeholder="Pesquisar serviços"
+                      onChange={(e) => setSearchServices(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="min-w-[140px]">
+                    <Select
+                      onValueChange={(value) =>
+                        setItemsPerPageServices(parseInt(value))
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Serviços por página" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem
+                          key={5}
+                          value="5"
+                          disabled={services?.length < 5}
+                        >
+                          5
+                        </SelectItem>
+                        <SelectItem
+                          key={7}
+                          value="7"
+                          disabled={services?.length < 7}
+                        >
+                          7
+                        </SelectItem>
+                        <SelectItem
+                          key={10}
+                          value="10"
+                          disabled={services?.length < 10}
+                        >
+                          10
+                        </SelectItem>
+                        <SelectItem
+                          key={20}
+                          value="20"
+                          disabled={services?.length < 20}
+                        >
+                          20
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
               </CardHeader>
               <CardContent>
                 <Table>

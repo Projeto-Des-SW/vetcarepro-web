@@ -29,6 +29,7 @@ import { Separator } from "@/components/ui/separator";
 import dayjs from "dayjs";
 import { IAgendamentoGet } from "@/interfaces/agendamento";
 
+
 const ListagemAgendamento = () => {
   const { idClinica } = useParams();
   const queryClient = useQueryClient();
@@ -99,7 +100,7 @@ const ListagemAgendamento = () => {
                     <TableCell>{paciente.service.title}</TableCell>
                     <TableCell>{paciente.service.amount}</TableCell>
                     <TableCell>
-                      {dayjs().isBefore(dayjs()) === false
+                      {!dayjs().isBefore(paciente.date) === false
                         ? "A ser realizado"
                         : "Concluido"}
                     </TableCell>

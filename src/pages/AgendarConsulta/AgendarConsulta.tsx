@@ -24,6 +24,11 @@ import {
 } from "@/components/ui/popover";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Card } from "@/components/ui/card";
+import { toast } from "sonner";
+import { useDispatch } from "react-redux";
+import { addNotification } from "@/store/user-slice";
+import { formattedDate, formattedTime } from "@/utils/const.utils";
+import { useState } from "react";
 
 const AgendamentoSchema = yup
   .object({
@@ -39,6 +44,8 @@ const AgendarConsulta = ({ mode = "create" }: { mode?: "create" | "edit" }) => {
   const { idClinica, id } = useParams();
   const user = useUserSelector((state) => state.user);
   const baseUrl = import.meta.env.VITE_URL as string;
+  const [errorForm, setErrorForm] = useState('')
+  const dispatch = useDispatch()
 
   const {
     handleSubmit,
@@ -84,9 +91,10 @@ const AgendarConsulta = ({ mode = "create" }: { mode?: "create" | "edit" }) => {
     queryFn: fetchServiceList,
   });
 
-  const handleSubmitClinica: SubmitHandler<any> = (data) => {
+  const handleSubmitAgendamento: SubmitHandler<any> = (data) => {
     console.log(data);
 
+    // Formatar a data e hora
     const selectedDate = new Date(data.date);
     const [hours, minutes] = data.horario.split(":");
 
@@ -98,19 +106,66 @@ const AgendarConsulta = ({ mode = "create" }: { mode?: "create" | "edit" }) => {
       date: format(selectedDate, "yyyy-MM-dd HH:mm:ss"),
     };
 
+    // Definir URL e método baseado no modo
     const url =
       mode === "create"
         ? `${baseUrl}/clinics/${idClinica}/schedules`
         : `${baseUrl}/clinics/${idClinica}/schedules/${id}`;
 
-    axios
-      .post(url, formattedData, {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
+    axios({
+      method: mode === "create" ? "POST" : "PUT",
+      url,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${user.token}`,
+      },
+      data: formattedData,
+    })
+      .then((response) => {
+        const successMessage = `Agendamento ${
+          mode === "create" ? "criado" : "atualizado"
+        } com sucesso`;
+        const successDescription = `Data: ${formattedDate}, Hora: ${formattedTime}`;
+
+        toast(successMessage, {
+          description: successDescription,
+        });
+
+        dispatch(
+          addNotification({
+            title: successMessage,
+            description: successDescription,
+          })
+        );
       })
       .catch((error) => {
+        const errorMessage = "Erro ao agendar";
+        const errorDescription = `Erro: ${error.message}, Data: ${formattedDate}, Hora: ${formattedTime}`;
+
+        toast.error(errorMessage, {
+          description: errorDescription,
+        });
+
+        dispatch(
+          addNotification({
+            title: errorMessage,
+            description: errorDescription,
+          })
+        );
+
         console.error("Erro ao enviar o formulário:", error);
+
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.message
+        ) {
+          setErrorForm(error.response.data.message);
+        } else {
+          setErrorForm(
+            "Ocorreu um erro inesperado. Por favor, tente novamente."
+          );
+        }
       });
   };
 
@@ -121,7 +176,7 @@ const AgendarConsulta = ({ mode = "create" }: { mode?: "create" | "edit" }) => {
   return (
     <Card className="flex p-8 w-fit h-fit items-center gap-4">
       <form
-        onSubmit={handleSubmit(handleSubmitClinica)}
+        onSubmit={handleSubmit(handleSubmitAgendamento)}
         className="flex flex-col items w-[500px] gap-4 justify-center"
       >
         <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0">
@@ -138,7 +193,7 @@ const AgendarConsulta = ({ mode = "create" }: { mode?: "create" | "edit" }) => {
               </SelectTrigger>
               <SelectContent>
                 {pacientes?.map((paciente) => (
-                  <SelectItem key={paciente.id} value={paciente.id || ''}>
+                  <SelectItem key={paciente.id} value={paciente.id || ""}>
                     {paciente.name}
                   </SelectItem>
                 ))}
@@ -158,7 +213,7 @@ const AgendarConsulta = ({ mode = "create" }: { mode?: "create" | "edit" }) => {
               </SelectTrigger>
               <SelectContent>
                 {services?.map((service) => (
-                  <SelectItem key={service.id} value={service.id || ''}>
+                  <SelectItem key={service.id} value={service.id || ""}>
                     {service.title}
                   </SelectItem>
                 ))}
