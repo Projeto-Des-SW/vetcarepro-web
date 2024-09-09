@@ -89,7 +89,7 @@ const DashboardClinica = () => {
   console.log(dataAgendamentos);
 
   return (
-    <section className="flex h-full">
+    <section className="flex h-full w-full">
       <main className="flex-1 bg-background flex flex-col min-w-[80vw]">
         <div className="grid grid-cols-3 gap-8">
           {isPendingPacientes ? (
