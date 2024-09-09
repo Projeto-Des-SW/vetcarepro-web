@@ -31,20 +31,50 @@ import {
 } from "@/components/ui/pagination";
 import { Carousel, CarouselContent } from "@/components/ui/carousel";
 import { motion } from "framer-motion";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const DashboardClinica = () => {
-  const { idClinica } = useParams();
-  const [isExibirLucro, setIsExibirLucro] = useState(false);
-  const user = useUserSelector((state) => state.user);
-  const navigate = useNavigate();
-  const [currentPage, setCurrentPage] = useState(0);
-  const [currentPageServices, setCurrentPageServices] = useState(0);
   const [searchConsulta, setSearchConsulta] = useState("");
   const [searchServices, setSearchServices] = useState("");
-  const [progressBar, setProgressBar] = useState(0);
-  const itemsPerPage = 5;
 
+  const [isExibirLucro, setIsExibirLucro] = useState(false);
+
+  const [progressBar, setProgressBar] = useState(0);
+  const [currentPageServices, setCurrentPageServices] = useState(0);
+  const [currentPage, setCurrentPage] = useState(0);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
+
+  const INTERVAL_TIME = 10000;
+  const PROGRESS_INCREMENT = 100 / (INTERVAL_TIME / 100);
+
+  const { idClinica } = useParams();
+  const user = useUserSelector((state) => state.user);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const progressInterval = setInterval(() => {
+      setProgressBar((prevState) =>
+        prevState >= 100 ? 0 : prevState + PROGRESS_INCREMENT
+      );
+    }, 100);
+
+    const carouselInterval = setInterval(() => {
+      setCurrentIndex((prevIndex) => (prevIndex === 4 ? 0 : prevIndex + 1));
+      setProgressBar(0);
+    }, INTERVAL_TIME);
+
+    return () => {
+      clearInterval(progressInterval);
+      clearInterval(carouselInterval);
+    };
+  }, []);
 
   const { data: listagemPaciente, isPending: isPendingPacientes } = useQuery({
     queryKey: ["PacienteList"],
@@ -64,7 +94,8 @@ const DashboardClinica = () => {
     queryFn: () => fetchServiceList(idClinica, user.token),
   });
 
-  if (isPendingAgendamentos || isPendingServices) return <div>carregando</div>;
+  if (isPendingAgendamentos || isPendingServices || isPendingPacientes)
+    return <div>carregando</div>;
 
   const totalPages = splitIntoGroups(
     (dataAgendamentos ?? [])
@@ -72,6 +103,7 @@ const DashboardClinica = () => {
       .filter((value) => !dayjs(value.date).isBefore(dayjs())),
     itemsPerPage
   );
+
   const totalPagesService = splitIntoGroups(services as any, itemsPerPage);
 
   const receitaUsuario = dataAgendamentos?.filter((value) =>
@@ -82,48 +114,15 @@ const DashboardClinica = () => {
     return total + parseFloat(item.service.amount);
   }, 0);
 
-  const INTERVAL_TIME = 10000;
-  const PROGRESS_INCREMENT = 100 / (INTERVAL_TIME / 100);
-
-  useEffect(() => {
-    let interval: any;
-    let progressInterval: any;
-
-    const startProgress = () => {
-      progressInterval = setInterval(() => {
-        setProgressBar((prevState) => {
-          if (prevState >= 100) {
-            return 0;
-          }
-          return prevState + PROGRESS_INCREMENT;
-        });
-      }, 100);
-    };
-
-    const startCarousel = () => {
-      interval = setInterval(() => {
-        setCurrentIndex((prevIndex) => (prevIndex === 4 ? 0 : prevIndex + 1));
-        setProgressBar(0);
-      }, INTERVAL_TIME);
-    };
-
-    startProgress();
-    startCarousel();
-
-    return () => {
-      clearInterval(interval);
-      clearInterval(progressInterval);
-    };
-  }, [currentIndex]);
   return (
     <section className="flex h-full w-full">
       <main className="flex-1 bg-background flex flex-col min-w-[80vw]">
         <div className="grid grid-cols-3 gap-8">
           {isPendingPacientes ? (
-            Array.from({ length: 4 }).map((_, index) => (
+            Array.from({ length: 3 }).map((_, index) => (
               <Card key={index}>
                 <CardHeader>
-                  <Skeleton className="h-6 w-1/2" />
+                  <Skeleton className="h-16 w-1/2" />
                 </CardHeader>
                 <CardContent>
                   <Skeleton className="h-10 w-1/2" />
@@ -151,7 +150,7 @@ const DashboardClinica = () => {
                   <CardTitle>Proximas consultas</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {isPendingPacientes ? (
+                  {isPendingPacientes || isPendingAgendamentos ? (
                     <Skeleton className="h-10 w-24" />
                   ) : (
                     <>
@@ -173,25 +172,25 @@ const DashboardClinica = () => {
                             >
                               Paciente: {item.patient.name} -{" "}
                               {dayjs(item.date).format("DD/MM/YYYY - HH:MM")}
-                             
                               {dayjs(item.date).diff(dayjs(), "days") === 0 ? (
                                 dayjs(item.date).diff(dayjs(), "hours") ===
                                 0 ? (
                                   <p className="text-red-500">
-                                     Quando:{" "}Em{" "}
+                                    Quando: Em{" "}
                                     {dayjs(item.date).diff(dayjs(), "minutes")}{" "}
                                     minutos
                                   </p>
                                 ) : (
                                   <p className="text-orange-500">
-                                     Quando:{" "}Em {dayjs(item.date).diff(dayjs(), "hours")}{" "}
+                                    Quando: Em{" "}
+                                    {dayjs(item.date).diff(dayjs(), "hours")}{" "}
                                     horas
                                   </p>
                                 )
                               ) : (
                                 <p className="text-green-500">
-                                   Quando:{" "}Em {dayjs(item.date).diff(dayjs(), "days")}{" "}
-                                  dias
+                                  Quando: Em{" "}
+                                  {dayjs(item.date).diff(dayjs(), "days")} dias
                                 </p>
                               )}
                             </motion.div>
@@ -232,7 +231,7 @@ const DashboardClinica = () => {
           )}
         </div>
         <div className="grid grid-cols-1 gap-8 mt-8">
-          {isPendingAgendamentos ? (
+          {isPendingAgendamentos || isPendingPacientes || isPendingServices ? (
             Array.from({ length: 2 }).map((_, index) => (
               <Card key={index}>
                 <CardHeader>
@@ -246,13 +245,43 @@ const DashboardClinica = () => {
           ) : (
             <>
               <Card>
-                <CardHeader className="w-fit">
-                  <CardTitle>Consultas</CardTitle>{" "}
-                  <input
-                    type="text"
-                    placeholder="Pesquisar consultas"
-                    onChange={(e) => setSearchConsulta(e.target.value)}
-                  />
+                <CardHeader className=" ">
+                  <div className="flex justify-between">
+                    <div>
+                      <CardTitle>Consultas</CardTitle>{" "}
+                      <input
+                        type="text"
+                        placeholder="Pesquisar consultas"
+                        onChange={(e) => setSearchConsulta(e.target.value)}
+                      />
+                    </div>
+
+                    <div className="min-w-[140px]">
+                      <Select
+                        onValueChange={(value) =>
+                          setItemsPerPage(parseInt(value))
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Consultas por página" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem key={5} value="5">
+                            5
+                          </SelectItem>
+                          <SelectItem key={7} value="7">
+                            7
+                          </SelectItem>
+                          <SelectItem key={10} value="10">
+                            10
+                          </SelectItem>
+                          <SelectItem key={20} value="20">
+                            20
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
                 </CardHeader>
                 <CardContent>
                   <Table>

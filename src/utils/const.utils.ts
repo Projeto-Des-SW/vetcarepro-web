@@ -17,3 +17,6 @@ export const splitIntoGroups = (array: any[], size: number) => {
 
   return result;
 };
+
+export const INTERVAL_TIME = 10000;
+export const PROGRESS_INCREMENT = 100 / (INTERVAL_TIME / 100);
