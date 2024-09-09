@@ -4,6 +4,7 @@ import { IPet } from "@/interfaces/paciente";
 import { IClinicaList } from "@/interfaces/clinicas";
 import { IFuncionario } from "@/interfaces/funcionario";
 import { IAgendamentoGet } from "@/interfaces/agendamento";
+import { Iuser } from "@/interfaces/user";
 const baseUrl = import.meta.env.VITE_URL as string;
 
 //Obter a lista de serviços
@@ -67,6 +68,21 @@ export const fetchAgendamentosList = async (
 ): Promise<IAgendamentoGet[]> => {
   const response = await axios.get(
     `${baseUrl}/clinics/${idClinica}/schedules`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return response.data;
+};
+
+//Obter detalhes do usuario
+export const fetchUserData = async (
+  token?: string
+): Promise<Iuser> => {
+  const response = await axios.get(
+    `${baseUrl}/me`,
     {
       headers: {
         Authorization: `Bearer ${token}`,

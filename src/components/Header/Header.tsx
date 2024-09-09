@@ -187,7 +187,7 @@ const Header = () => {
                       <NavigationMenuItem>
                         <NavigationMenuTrigger className="flex items-center gap-2 p-2 text-white bg-transparent">
                           <Avatar className="w-9 h-9">
-                            <AvatarFallback className="text-black ">
+                            <AvatarFallback className="text-black  ">
                               {data?.name.charAt(0)}
                             </AvatarFallback>
                           </Avatar>

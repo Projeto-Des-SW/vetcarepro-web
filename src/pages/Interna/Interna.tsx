@@ -18,13 +18,21 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useState } from "react";
 import Diversity3Icon from "@mui/icons-material/Diversity3";
 import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { useQuery } from "@tanstack/react-query";
+import { fetchUserData } from "@/Services/GetServices";
 
 const Interna = () => {
   const navigate = useNavigate();
@@ -37,10 +45,21 @@ const Interna = () => {
   const dispatch = useDispatch();
   const { idClinica } = useParams();
 
+  console.log(user);
   const handleLogout = () => {
     dispatch(logoutUser());
     navigate("/home");
   };
+
+  const {
+    data: userData,
+    isPending,
+  } = useQuery({
+    queryKey: ["userData"],
+    queryFn: () => fetchUserData(user.token),
+  });
+  if (isPending) return <div>Carregando</div>;
+  console.log();
 
   return (
     <div className="flex h-screen">
@@ -256,53 +275,120 @@ const Interna = () => {
             <DashboardIcon className="h-5 w-5" />
             {openMenu && <span>Dashboard</span>}
           </NavLink>
-          <Button
-            className="flex items-center gap-3 rounded-lg px-3 py-2 transition-all text-muted-foreground hover:bg-muted/50"
-            variant={"ghost"}
-            onClick={() => setOpenPacientes((prevState) => !prevState)}
-          >
-            <PersonIcon />
-            {openMenu && <span>Meus pacientes</span>}
-          </Button>
 
-          <Button
-            className="flex items-center gap-3 rounded-lg px-3 py-2 transition-all text-muted-foreground hover:bg-muted/50"
-            variant={"ghost"}
-            onClick={() => setOpenServices((prevState) => !prevState)}
-          >
-            <HomeRepairServiceIcon />
-            {openMenu && <span>Meus Serviços</span>}
-          </Button>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  className="flex items-center gap-3 rounded-lg px-3 py-2 transition-all text-muted-foreground hover:bg-muted/50"
+                  variant={"ghost"}
+                  onClick={() => setOpenPacientes((prevState) => !prevState)}
+                >
+                  <PersonIcon />
+                  {openMenu && <span>Meus pacientes</span>}
+                </Button>
+              </TooltipTrigger>
+              {!openMenu && (
+                <TooltipContent side="right">
+                  <p>Meus pacientes</p>
+                </TooltipContent>
+              )}
+            </Tooltip>
+          </TooltipProvider>
 
-          <Button
-            className="flex items-center gap-3 rounded-lg px-3 py-2 transition-all text-muted-foreground hover:bg-muted/50"
-            variant={"ghost"}
-            onClick={() => setOpenFuncionarios((prevState) => !prevState)}
-          >
-            <Diversity3Icon />
-            {openMenu && <span> Meus funcionarios</span>}
-          </Button>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  className="flex items-center gap-3 rounded-lg px-3 py-2 transition-all text-muted-foreground hover:bg-muted/50"
+                  variant={"ghost"}
+                  onClick={() => setOpenServices((prevState) => !prevState)}
+                >
+                  <HomeRepairServiceIcon />
+                  {openMenu && <span>Meus Serviços</span>}
+                </Button>
+              </TooltipTrigger>
+              {!openMenu && (
+                <TooltipContent side="right">
+                  <p>Meus serviços</p>
+                </TooltipContent>
+              )}
+            </Tooltip>
+          </TooltipProvider>
 
-          <Button
-            className="flex items-center gap-3 rounded-lg px-3 py-2 transition-all text-muted-foreground hover:bg-muted/50"
-            variant={"ghost"}
-            onClick={() => setOpenAgendamento((prevState) => !prevState)}
-          >
-            <MedicalServicesIcon />
-            {openMenu && <span> Meus agendamentos</span>}
-          </Button>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  className="flex items-center gap-3 rounded-lg px-3 py-2 transition-all text-muted-foreground hover:bg-muted/50"
+                  variant={"ghost"}
+                  onClick={() => setOpenFuncionarios((prevState) => !prevState)}
+                >
+                  <Diversity3Icon />
+                  {openMenu && <span> Meus funcionarios</span>}
+                </Button>
+              </TooltipTrigger>
+              {!openMenu && (
+                <TooltipContent side="right">
+                  <p>Meus funcionarios</p>
+                </TooltipContent>
+              )}
+            </Tooltip>
+          </TooltipProvider>
+
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  className="flex items-center gap-3 rounded-lg px-3 py-2 transition-all text-muted-foreground hover:bg-muted/50"
+                  variant={"ghost"}
+                  onClick={() => setOpenAgendamento((prevState) => !prevState)}
+                >
+                  <MedicalServicesIcon />
+                  {openMenu && <span> Meus agendamentos</span>}
+                </Button>
+              </TooltipTrigger>
+              {!openMenu && (
+                <TooltipContent side="right">
+                  <p>Meus agendamentos</p>
+                </TooltipContent>
+              )}
+            </Tooltip>
+          </TooltipProvider>
         </div>
 
         <Separator />
         <div className="mt-auto flex flex-col items-start gap-2 px-4 py-5">
-          <Button
-            onClick={handleLogout}
-            variant="ghost"
-            className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:bg-muted/50"
-          >
-            <LogoutIcon />
-            {openMenu && <span>Logout</span>}
-          </Button>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  onClick={handleLogout}
+                  variant="ghost"
+                  className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:bg-muted/50"
+                >
+                  <LogoutIcon />
+                  {openMenu && <span>Logout</span>}
+                </Button>
+              </TooltipTrigger>
+              {!openMenu && (
+                <TooltipContent side="right">
+                  <p>Logout</p>
+                </TooltipContent>
+              )}
+            </Tooltip>
+          </TooltipProvider>
+        </div>
+
+        <div className="bottom-0 absolute p-4 ">
+          <div className="flex items-center gap-2 justify-center">
+            <Avatar className="w-10 h-10">
+              <AvatarFallback className="text-white bg-[#4EBA9D]">
+                {userData?.name.charAt(0)}
+              </AvatarFallback>
+            </Avatar>{" "}
+            {openMenu && <p className="text-sm">Olá, {userData?.name}</p>}
+          </div>
         </div>
       </aside>
 

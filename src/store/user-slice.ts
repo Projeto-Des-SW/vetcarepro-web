@@ -3,6 +3,7 @@ import { type PayloadAction, createSlice } from "@reduxjs/toolkit";
 export interface UserDataProps {
   email: string;
   token?: string;
+  name?: string;
   notifications: INotifications[];
 }
 

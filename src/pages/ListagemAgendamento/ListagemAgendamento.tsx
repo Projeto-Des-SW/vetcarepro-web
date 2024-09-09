@@ -24,7 +24,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { handleDeletePacient } from "@/Services/DeleteServices";
+import {
+  handleDeleteAgendamento,
+  handleDeletePacient,
+} from "@/Services/DeleteServices";
 import { Separator } from "@/components/ui/separator";
 import dayjs from "dayjs";
 import { IAgendamentoGet } from "@/interfaces/agendamento";
@@ -45,8 +48,8 @@ const ListagemAgendamento = () => {
   console.log(data);
 
   const mutation = useMutation({
-    mutationFn: (idClinica?: string) =>
-      handleDeletePacient(idClinica, user.token),
+    mutationFn: (id?: string) =>
+      handleDeleteAgendamento(idClinica, id, user.token),
     onSuccess: () => {
       queryClient.invalidateQueries(["AgendamentosListInternal"]);
     },
@@ -106,13 +109,6 @@ const ListagemAgendamento = () => {
                     </TableCell>
 
                     <TableCell className="flex justify-end gap-2 ">
-                      <Button
-                        onClick={() =>
-                          navigate(`../detailsPaciente/${paciente.id}`)
-                        }
-                      >
-                        Detalhes
-                      </Button>
                       <Button
                         onClick={() => mutation.mutate(paciente.id)}
                         variant={"destructive"}
