@@ -4,4 +4,5 @@ export interface IService {
   type: string;
   amount: string;
   clinic_id?: string;
+  created_at?: string;
 }
