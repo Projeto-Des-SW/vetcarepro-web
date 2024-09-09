@@ -1,18 +1,4 @@
-import { IPet } from "@/interfaces/paciente";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
-import { useNavigate, useParams } from "react-router-dom";
-import { useUserSelector } from "@/store/hooks";
-import { fetchPacientsList } from "@/Services/GetServices";
-import {
-  Pagination,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
-import { useState } from "react";
-import { splitIntoGroups } from "@/utils/const.utils";
+import axios from "axios";
 import {
   Table,
   TableBody,
@@ -21,47 +7,75 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { handleDeletePacient } from "@/Services/DeleteServices";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useNavigate, useParams } from "react-router-dom";
+import { useUserSelector } from "@/store/hooks";
+import { IService } from "@/interfaces/servico";
+import { useState } from "react";
+import {
+  Pagination,
+  PaginationNext,
+  PaginationPrevious,
+  PaginationLink,
+} from "@/components/ui/pagination";
 import { Separator } from "@/components/ui/separator";
+import { splitIntoGroups } from "@/utils/const.utils";
+import { useQuery } from "@tanstack/react-query";
+import { IFuncionario } from "@/interfaces/funcionario";
+import { fetchFuncionariosList } from "@/Services/GetServices";
 
-const ListagemPaciente = () => {
+const ListagemFuncionario = () => {
   const navigate = useNavigate();
+  const baseUrl = import.meta.env.VITE_URL as string;
   const { idClinica } = useParams();
-  const queryClient = useQueryClient();
   const user = useUserSelector((state) => state.user);
+
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 7;
 
+  const handleDelete = async (idService?: string) => {
+    if (window.confirm("Tem certeza que deseja deletar esta clínica?")) {
+      try {
+        await axios.delete(
+          `${baseUrl}/clinics/${idClinica}/services/${idService}`,
+          {
+            headers: {
+              Authorization: `Bearer ${user.token}`,
+            },
+          }
+        );
+        navigate(`internalClinica/${idClinica}/dashboard`);
+      } catch (error) {
+        console.error("Erro ao deletar a clínica", error);
+      }
+    }
+  };
+
   const { data, error, isPending } = useQuery({
-    queryKey: ["PacienteList"],
-    queryFn: () => fetchPacientsList(idClinica, user.token),
+    queryKey: ["FuncionariosList"],
+    queryFn: () => fetchFuncionariosList(idClinica, user.token),
   });
 
-  const mutation = useMutation({
-    mutationFn: (id?: string) => handleDeletePacient(idClinica, id, user.token),
-    onSuccess: () => {
-      queryClient.invalidateQueries(["PacienteList"]);
-    },
-  });
-
+  console.log(data);
   if (isPending) return <div>carregando</div>;
   if (error) return <div>Error fetching clinics</div>;
 
   const totalPages = splitIntoGroups(data, itemsPerPage);
+  console.log(currentPage);
 
   return (
     <section className="flex-wrap gap-2 flex-col w-full">
       <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0">
-        Seus pacientes
+        Seus serviços
       </h2>
       <div className="flex flex-wrap gap-2">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[100px]">Titulo</TableHead>
-              <TableHead>Tipo do serviço</TableHead>
-              <TableHead>Valor</TableHead>
-              <TableHead></TableHead>
+              <TableHead className="w-[100px]">Nome</TableHead>
+              <TableHead>Email</TableHead>
+              <TableHead>Cargo</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -82,23 +96,23 @@ const ListagemPaciente = () => {
                     </TableCell>
                   </TableRow>
                 ))
-              : totalPages[currentPage]?.map((paciente: IPet) => (
-                  <TableRow key={paciente.id}>
+              : totalPages[currentPage]?.map((service: IFuncionario) => (
+                  <TableRow key={service.id}>
                     <TableCell className="font-medium">
-                      {paciente.name}
+                      {service.name}
                     </TableCell>
-                    <TableCell>{paciente.species}</TableCell>
-                    <TableCell>{paciente.age}</TableCell>
+                    <TableCell>{service.email}</TableCell>
+                    {/* <TableCell>{service.amount}</TableCell> */}
                     <TableCell className="flex justify-end gap-2 ">
                       <Button
                         onClick={() =>
-                          navigate(`../detailsPaciente/${paciente.id}`)
+                          navigate(`../detailsServico/${service.id}`)
                         }
                       >
                         Detalhes
                       </Button>
                       <Button
-                        onClick={() => mutation.mutate(paciente.id)}
+                        onClick={() => handleDelete(service.id)}
                         variant={"destructive"}
                       >
                         Apagar
@@ -119,7 +133,7 @@ const ListagemPaciente = () => {
             }
           />
 
-          {totalPages.map((_item, index) => (
+          {totalPages.map((item, index) => (
             <PaginationLink
               key={index}
               onClick={() => setCurrentPage(index)}
@@ -141,4 +155,4 @@ const ListagemPaciente = () => {
   );
 };
 
-export default ListagemPaciente;
+export default ListagemFuncionario;

@@ -1,6 +1,4 @@
-import { IClinicaList } from "@/interfaces/clinicas";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import {
   Card,
@@ -23,43 +21,20 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { useNavigate } from "react-router-dom";
 import { useUserSelector } from "@/store/hooks";
-
-const baseUrl = import.meta.env.VITE_URL as string;
+import { fetchClinicasList } from "@/Services/GetServices";
+import { handleDeleteClinic } from "@/Services/DeleteServices";
 
 const ListagemClinica = () => {
   const navigate = useNavigate();
   const user = useUserSelector((state) => state.user);
+  const queryClient = useQueryClient();
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
 
-  const fetchClinicasList = async (): Promise<IClinicaList[]> => {
-    const response = await axios.get(`${baseUrl}/clinics`, {
-      headers: {
-        Authorization: `Bearer ${user.token}`,
-      },
-    });
-    return response.data;
-  };
-
   const { data, error, isLoading } = useQuery({
     queryKey: ["ClinicaListagem"],
-    queryFn: fetchClinicasList,
+    queryFn: () => fetchClinicasList(user.token),
   });
-
-  const handleDelete = async (clinicaId: string) => {
-    if (window.confirm("Tem certeza que deseja deletar esta clínica?")) {
-      try {
-        await axios.delete(`${baseUrl}/clinics/${clinicaId}`, {
-          headers: {
-            Authorization: `Bearer ${user.token}`,
-          },
-        });
-        navigate("/");
-      } catch (error) {
-        console.error("Erro ao deletar a clínica", error);
-      }
-    }
-  };
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
@@ -68,6 +43,14 @@ const ListagemClinica = () => {
   const totalPages = Math.ceil((data?.length || 0) / itemsPerPage);
 
   if (error) return <div>Error fetching clinics</div>;
+
+  const mutation = useMutation({
+    mutationFn: (serviceId: string) =>
+      handleDeleteClinic(serviceId, user.token),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["ClinicaListagem"]);
+    },
+  });
 
   return (
     <div className="flex-wrap gap-2 flex-col p-4">
@@ -124,7 +107,7 @@ const ListagemClinica = () => {
                   </Button>
                   <Button
                     variant="destructive"
-                    onClick={() => handleDelete(clinica.id)}
+                    onClick={() => mutation.mutate(clinica.id)}
                   >
                     Deletar
                   </Button>
