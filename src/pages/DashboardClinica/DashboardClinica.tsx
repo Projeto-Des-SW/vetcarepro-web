@@ -1,4 +1,5 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
 import {
   Table,
   TableHeader,
@@ -20,7 +21,7 @@ import {
 } from "@/Services/GetServices";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { splitIntoGroups } from "@/utils/const.utils";
 import {
   Pagination,
@@ -28,6 +29,8 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { Carousel, CarouselContent } from "@/components/ui/carousel";
+import { motion } from "framer-motion";
 
 const DashboardClinica = () => {
   const { idClinica } = useParams();
@@ -38,8 +41,10 @@ const DashboardClinica = () => {
   const [currentPageServices, setCurrentPageServices] = useState(0);
   const [searchConsulta, setSearchConsulta] = useState("");
   const [searchServices, setSearchServices] = useState("");
+  const [progressBar, setProgressBar] = useState(0);
   const itemsPerPage = 5;
-  console.log(searchConsulta);
+
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   const { data: listagemPaciente, isPending: isPendingPacientes } = useQuery({
     queryKey: ["PacienteList"],
@@ -54,10 +59,7 @@ const DashboardClinica = () => {
     }
   );
 
-  const {
-    data: services,
-    isPending: isPendingServices,
-  } = useQuery({
+  const { data: services, isPending: isPendingServices } = useQuery({
     queryKey: ["ServicoList"],
     queryFn: () => fetchServiceList(idClinica, user.token),
   });
@@ -72,10 +74,6 @@ const DashboardClinica = () => {
   );
   const totalPagesService = splitIntoGroups(services as any, itemsPerPage);
 
-  const totalProximasConsultas = dataAgendamentos?.filter(
-    (value) => !dayjs(value.date).isBefore(dayjs())
-  );
-
   const receitaUsuario = dataAgendamentos?.filter((value) =>
     dayjs(value.date).isBefore(dayjs())
   );
@@ -84,9 +82,39 @@ const DashboardClinica = () => {
     return total + parseFloat(item.service.amount);
   }, 0);
 
-  console.log(receitaUsuario);
-  console.log(dataAgendamentos);
+  const INTERVAL_TIME = 10000;
+  const PROGRESS_INCREMENT = 100 / (INTERVAL_TIME / 100);
 
+  useEffect(() => {
+    let interval: any;
+    let progressInterval: any;
+
+    const startProgress = () => {
+      progressInterval = setInterval(() => {
+        setProgressBar((prevState) => {
+          if (prevState >= 100) {
+            return 0;
+          }
+          return prevState + PROGRESS_INCREMENT;
+        });
+      }, 100);
+    };
+
+    const startCarousel = () => {
+      interval = setInterval(() => {
+        setCurrentIndex((prevIndex) => (prevIndex === 4 ? 0 : prevIndex + 1));
+        setProgressBar(0);
+      }, INTERVAL_TIME);
+    };
+
+    startProgress();
+    startCarousel();
+
+    return () => {
+      clearInterval(interval);
+      clearInterval(progressInterval);
+    };
+  }, [currentIndex]);
   return (
     <section className="flex h-full w-full">
       <main className="flex-1 bg-background flex flex-col min-w-[80vw]">
@@ -104,7 +132,7 @@ const DashboardClinica = () => {
             ))
           ) : (
             <>
-              <Card>
+              <Card className="flex flex-col justify-center">
                 <CardHeader>
                   <CardTitle>Total de pacientes</CardTitle>
                 </CardHeader>
@@ -126,13 +154,56 @@ const DashboardClinica = () => {
                   {isPendingPacientes ? (
                     <Skeleton className="h-10 w-24" />
                   ) : (
-                    <div className="text-4xl font-bold">
-                      {totalProximasConsultas?.length}
-                    </div>
+                    <>
+                      <Carousel className="flex flex-col gap-2">
+                        <CarouselContent>
+                          {totalPages[0].map((item, index) => (
+                            <motion.div
+                              key={index}
+                              initial={{ opacity: 0 }}
+                              animate={{
+                                opacity: currentIndex === index ? 1 : 0,
+                                y: 0,
+                              }}
+                              exit={{ opacity: 0, y: 20 }}
+                              transition={{ duration: 0.3 }}
+                              className={`${
+                                currentIndex === index ? "block" : "hidden"
+                              } pl-4`}
+                            >
+                              Paciente: {item.patient.name} -{" "}
+                              {dayjs(item.date).format("DD/MM/YYYY - HH:MM")}
+                             
+                              {dayjs(item.date).diff(dayjs(), "days") === 0 ? (
+                                dayjs(item.date).diff(dayjs(), "hours") ===
+                                0 ? (
+                                  <p className="text-red-500">
+                                     Quando:{" "}Em{" "}
+                                    {dayjs(item.date).diff(dayjs(), "minutes")}{" "}
+                                    minutos
+                                  </p>
+                                ) : (
+                                  <p className="text-orange-500">
+                                     Quando:{" "}Em {dayjs(item.date).diff(dayjs(), "hours")}{" "}
+                                    horas
+                                  </p>
+                                )
+                              ) : (
+                                <p className="text-green-500">
+                                   Quando:{" "}Em {dayjs(item.date).diff(dayjs(), "days")}{" "}
+                                  dias
+                                </p>
+                              )}
+                            </motion.div>
+                          ))}
+                        </CarouselContent>
+                        <Progress value={progressBar} />
+                      </Carousel>
+                    </>
                   )}
                 </CardContent>
               </Card>
-              <Card>
+              <Card className="flex flex-col justify-center">
                 <CardHeader>
                   <CardTitle>Lucro</CardTitle>
                 </CardHeader>
@@ -176,7 +247,7 @@ const DashboardClinica = () => {
             <>
               <Card>
                 <CardHeader className="w-fit">
-                  <CardTitle>Próximas consultas</CardTitle>{" "}
+                  <CardTitle>Consultas</CardTitle>{" "}
                   <input
                     type="text"
                     placeholder="Pesquisar consultas"
