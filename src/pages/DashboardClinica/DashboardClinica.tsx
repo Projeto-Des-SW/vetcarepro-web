@@ -318,7 +318,7 @@ const DashboardClinica = () => {
                       <TableRow key={index}>
                         <TableCell
                           onClick={() =>
-                            navigate(`../detailsPaciente/${item.id}`)
+                            navigate(`../detailsServico/${item.id}`)
                           }
                           className="cursor-pointer"
                         >
