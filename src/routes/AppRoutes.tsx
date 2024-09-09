@@ -17,6 +17,8 @@ import Interna from "@/pages/Interna/Interna";
 import DetailsServico from "@/pages/DetailsServico/DetailsServico";
 import AgendarConsulta from "@/pages/AgendarConsulta/AgendarConsulta";
 import Me from "@/pages/Me/Me";
+import CadastroFuncionario from "@/pages/CadastroFuncionario/CadastroFuncionario";
+import ListagemFuncionario from "@/pages/listagemFuncionario/listagemFuncionario";
 
 const AppRoutes = () => {
   const user = useUserSelector((state) => state.user);
@@ -44,9 +46,17 @@ const AppRoutes = () => {
 
               <Route path="listagemPaciente" element={<ListagemPaciente />} />
               <Route path="listagemServico" element={<ListagemServico />} />
+              <Route
+                path="listagemFuncionario"
+                element={<ListagemFuncionario />}
+              />
 
               <Route path="cadastrarPaciente" element={<CadastrarPaciente />} />
               <Route path="cadastrarServico" element={<CadastrarServico />} />
+              <Route
+                path="cadastrarFuncionario"
+                element={<CadastroFuncionario />}
+              />
               <Route path="agendamento" element={<AgendarConsulta />} />
               <Route path="dashboard" element={<DashboardClinica />} />
 
@@ -57,6 +67,10 @@ const AppRoutes = () => {
               <Route
                 path="editarServico/:id"
                 element={<CadastrarServico mode="edit" />}
+              />
+              <Route
+                path="editarAgendamento"
+                element={<AgendarConsulta mode="edit" />}
               />
             </Route>
 
