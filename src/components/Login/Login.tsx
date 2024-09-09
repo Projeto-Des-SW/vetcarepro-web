@@ -21,7 +21,6 @@ import { Label } from "../ui/label";
 import { useUserSelector } from "@/store/hooks";
 import { useDispatch } from "react-redux";
 import { setCurrentUser } from "@/store/user-slice";
-import { Toaster } from "../ui/sonner";
 import { toast } from "sonner";
 import { formattedDate, formattedTime } from "@/utils/const.utils";
 
