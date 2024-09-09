@@ -292,7 +292,7 @@ const DashboardClinica = () => {
               </CardContent>
             </Card>
           ) : (
-            <Card className="mb-4">
+            <Card className="mb-12">
               <CardHeader className="w-fit">
                 <CardTitle>Serviços disponiveis</CardTitle>
                 <input

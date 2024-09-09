@@ -218,11 +218,13 @@ const Interna = () => {
             {openMenu ? (
               <KeyboardArrowLeftIcon
                 sx={{ color: "white" }}
+                className="cursor-pointer"
                 onClick={() => setOpenMenu((prevState) => !prevState)}
               />
             ) : (
               <KeyboardArrowRightIcon
                 sx={{ color: "white" }}
+                className="cursor-pointer"
                 onClick={() => setOpenMenu((prevState) => !prevState)}
               />
             )}
