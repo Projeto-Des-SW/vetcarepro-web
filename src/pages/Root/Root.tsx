@@ -8,7 +8,7 @@ const Root = () => {
         <Header />
       </div>
 
-      <main className="flex-grow min-h-0 ">
+      <main className="flex-grow min-h-0 overflow-y-auto ">
         <Outlet />
       </main>
     </div>

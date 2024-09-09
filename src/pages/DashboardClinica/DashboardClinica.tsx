@@ -28,6 +28,13 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import InfoIcon from "@mui/icons-material/Info";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const DashboardClinica = () => {
   const { idClinica } = useParams();
@@ -38,6 +45,7 @@ const DashboardClinica = () => {
   const [currentPageServices, setCurrentPageServices] = useState(0);
   const [searchConsulta, setSearchConsulta] = useState("");
   const [searchServices, setSearchServices] = useState("");
+  const [tooltip, setTooltip] = useState(false);
   const itemsPerPage = 5;
   console.log(searchConsulta);
 
@@ -135,12 +143,16 @@ const DashboardClinica = () => {
               </Card>
               <Card>
                 <CardHeader>
-                  <CardTitle>Lucro</CardTitle>
+                  <CardTitle>
+                    Lucro
+                  </CardTitle>
                 </CardHeader>
+
                 <CardContent className="flex justify-between items-center">
                   <div className="text-4xl font-bold">
                     {isExibirLucro ? `R$ ${myReceita}` : "R$ ********"}
                   </div>
+
                   {!isExibirLucro ? (
                     <VisibilityIcon
                       onClick={() =>
@@ -174,7 +186,7 @@ const DashboardClinica = () => {
           ) : (
             <>
               <Card>
-                <CardHeader>
+                <CardHeader className="w-fit">
                   <CardTitle>Próximas consultas</CardTitle>{" "}
                   <input
                     type="text"
