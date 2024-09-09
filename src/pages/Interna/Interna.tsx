@@ -11,6 +11,7 @@ import { useDispatch } from "react-redux";
 import { logoutUser } from "@/store/user-slice";
 import { Button } from "@/components/ui/button";
 import DashboardIcon from "@mui/icons-material/Dashboard";
+import { Separator } from "@/components/ui/separator";
 
 const Interna = () => {
   const navigate = useNavigate();
@@ -23,11 +24,9 @@ const Interna = () => {
     navigate("/home");
   };
 
-  console.log(user);
-
   return (
-    <div className="flex gap-4 h-full">
-      <aside className=" left-0 z-10 flex w-64 flex-col border-r bg-background sm:flex  ">
+    <div className="flex h-screen">
+      <aside className="flex-shrink-0 w-64 border-r-2 bg-background">
         <div className="flex flex-col items-start gap-4 px-4 py-5">
           <NavLink
             to="/dashboard/listagemClinica"
@@ -120,7 +119,35 @@ const Interna = () => {
             <DesignServicesIcon />
             <span>Novo Agendamento</span>
           </NavLink>
+          <NavLink
+            to={`cadastrarFuncionario`}
+            className={({ isActive }) =>
+              `flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
+                isActive
+                  ? "bg-accent text-accent-foreground"
+                  : "text-muted-foreground hover:bg-muted/50"
+              }`
+            }
+          >
+            <DesignServicesIcon />
+            <span>Cadastrar funcionário</span>
+          </NavLink>
+          <NavLink
+            to={`listagemFuncionario`}
+            className={({ isActive }) =>
+              `flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
+                isActive
+                  ? "bg-accent text-accent-foreground"
+                  : "text-muted-foreground hover:bg-muted/50"
+              }`
+            }
+          >
+            <DesignServicesIcon />
+            <span>Listagem funcionário</span>
+          </NavLink>
         </div>
+
+        <Separator />
         <div className="mt-auto flex flex-col items-start gap-2 px-4 py-5">
           <Button
             onClick={handleLogout}
@@ -132,9 +159,10 @@ const Interna = () => {
           </Button>
         </div>
       </aside>
-      <div className="flex flex-col gap-2 w-full items-center p-8">
+
+      <main className="flex-1 flex m-10 box-border w-full overflow-y-auto">
         <Outlet />
-      </div>
+      </main>
     </div>
   );
 };

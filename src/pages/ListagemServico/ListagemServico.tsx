@@ -1,85 +1,155 @@
-import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton"; 
+import { Skeleton } from "@/components/ui/skeleton";
 import { useNavigate, useParams } from "react-router-dom";
 import { useUserSelector } from "@/store/hooks";
 import { IService } from "@/interfaces/servico";
+import { useState } from "react";
+import {
+  Pagination,
+  PaginationNext,
+  PaginationPrevious,
+  PaginationLink,
+} from "@/components/ui/pagination";
+import { Separator } from "@/components/ui/separator";
+import { fetchServiceList } from "@/Services/GetServices";
+import { splitIntoGroups } from "@/utils/const.utils";
+import { useQuery } from "@tanstack/react-query";
 
 const ListagemServico = () => {
   const navigate = useNavigate();
   const baseUrl = import.meta.env.VITE_URL as string;
-  const { id, idClinica } = useParams();
-  console.log(id, idClinica);
+  const { idClinica } = useParams();
   const user = useUserSelector((state) => state.user);
 
-  const fetchClinicasList = async (): Promise<IService[]> => {
-    const response = await axios.get(
-      `${baseUrl}/clinics/${idClinica}/services`,
-      {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 7;
+
+  const handleDelete = async (idService?: string) => {
+    if (window.confirm("Tem certeza que deseja deletar esta clínica?")) {
+      try {
+        await axios.delete(
+          `${baseUrl}/clinics/${idClinica}/services/${idService}`,
+          {
+            headers: {
+              Authorization: `Bearer ${user.token}`,
+            },
+          }
+        );
+        navigate(`internalClinica/${idClinica}/dashboard`);
+      } catch (error) {
+        console.error("Erro ao deletar a clínica", error);
       }
-    );
-    return response.data;
+    }
   };
 
-  const { data, error, isLoading } = useQuery({
+  const { data, error, isPending } = useQuery({
     queryKey: ["ServicoList"],
-    queryFn: fetchClinicasList,
+    queryFn: () => fetchServiceList(idClinica, user.token),
   });
 
+  console.log(data);
+  if (isPending) return <div>carregando</div>;
   if (error) return <div>Error fetching clinics</div>;
 
+  const totalPages = splitIntoGroups(data, itemsPerPage);
+  console.log(currentPage);
+
   return (
-    <section className="flex-wrap gap-2 flex-col">
+    <section className="flex-wrap gap-2 flex-col w-full">
       <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0">
         Seus serviços
       </h2>
       <div className="flex flex-wrap gap-2">
-        {isLoading
-          ? Array.from({ length: 6 }).map((_, index) => (
-              <Card key={index}>
-                <CardHeader>
-                  <Skeleton className="h-6 w-1/2" />
-                  <Skeleton className="h-4 w-3/4 mt-2" />
-                </CardHeader>
-                <CardContent>
-                  <Skeleton className="h-4 w-full" />
-                </CardContent>
-                <CardFooter className="flex gap-2">
-                  <Skeleton className="h-8 w-20" />
-                  <Skeleton className="h-8 w-20" />
-                </CardFooter>
-              </Card>
-            ))
-          : data?.map((servico) => (
-              <Card key={servico.id}>
-                <CardHeader>
-                  <CardTitle>{servico.title}</CardTitle>
-                  <CardDescription>{servico.title}</CardDescription>
-                </CardHeader>
-                <CardContent></CardContent>
-                <CardFooter className="flex gap-2">
-                  <Button
-                    onClick={() => navigate(`../detailsServico/${servico.id}`)}
-                  >
-                    Visualizar
-                  </Button>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[100px]">Titulo</TableHead>
+              <TableHead>Tipo do serviço</TableHead>
+              <TableHead>Valor</TableHead>
+              <TableHead></TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {isPending
+              ? Array.from({ length: itemsPerPage }).map((_, index) => (
+                  <TableRow key={index}>
+                    <TableCell>
+                      <Skeleton className="h-4 w-32" />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton className="h-4 w-32" />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton className="h-4 w-16" />
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <Skeleton className="h-8 w-20" />
+                    </TableCell>
+                  </TableRow>
+                ))
+              : totalPages[currentPage]?.map((service: IService) => (
+                  <TableRow key={service.id}>
+                    <TableCell className="font-medium">
+                      {service.title}
+                    </TableCell>
+                    <TableCell>{service.type}</TableCell>
+                    <TableCell>{service.amount}</TableCell>
+                    <TableCell className="flex justify-end gap-2 ">
+                      <Button
+                        onClick={() =>
+                          navigate(`../detailsServico/${service.id}`)
+                        }
+                      >
+                        Detalhes
+                      </Button>
+                      <Button
+                        onClick={() => handleDelete(service.id)}
+                        variant={"destructive"}
+                      >
+                        Apagar
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+          </TableBody>
+        </Table>
 
-                  <Button>Apagar</Button>
-                </CardFooter>
-              </Card>
-            ))}
+        <Separator />
+      </div>
+      <div className="flex justify-center mt-4">
+        <Pagination>
+          <PaginationPrevious
+            onClick={() =>
+              currentPage !== 0 && setCurrentPage((prevState) => prevState - 1)
+            }
+          />
+
+          {totalPages.map((item, index) => (
+            <PaginationLink
+              key={index}
+              onClick={() => setCurrentPage(index)}
+              isActive={currentPage === index}
+            >
+              {index + 1}
+            </PaginationLink>
+          ))}
+
+          <PaginationNext
+            onClick={() =>
+              currentPage !== totalPages.length - 1 &&
+              setCurrentPage((prevState) => prevState + 1)
+            }
+          />
+        </Pagination>
       </div>
     </section>
   );
