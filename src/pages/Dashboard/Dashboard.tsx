@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import HomeIcon from "@mui/icons-material/Home";
 import HomeWorkIcon from "@mui/icons-material/HomeWork";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useUserSelector } from "@/store/hooks";

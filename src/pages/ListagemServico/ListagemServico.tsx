@@ -133,7 +133,7 @@ const ListagemServico = () => {
             }
           />
 
-          {totalPages.map((item, index) => (
+          {totalPages.map((_item, index) => (
             <PaginationLink
               key={index}
               onClick={() => setCurrentPage(index)}

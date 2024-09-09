@@ -11,7 +11,6 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useNavigate, useParams } from "react-router-dom";
 import { useUserSelector } from "@/store/hooks";
-import { IService } from "@/interfaces/servico";
 import { useState } from "react";
 import {
   Pagination,
@@ -133,7 +132,7 @@ const ListagemFuncionario = () => {
             }
           />
 
-          {totalPages.map((item, index) => (
+          {totalPages.map((_item, index) => (
             <PaginationLink
               key={index}
               onClick={() => setCurrentPage(index)}

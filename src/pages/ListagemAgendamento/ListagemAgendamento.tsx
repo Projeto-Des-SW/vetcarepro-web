@@ -1,12 +1,10 @@
-import { IPet } from "@/interfaces/paciente";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useUserSelector } from "@/store/hooks";
 import {
   fetchAgendamentosList,
-  fetchPacientsList,
 } from "@/Services/GetServices";
 import {
   Pagination,
@@ -25,15 +23,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
-  handleDeleteAgendamento,
-  handleDeletePacient,
+  handleDeleteAgendamento
 } from "@/Services/DeleteServices";
 import { Separator } from "@/components/ui/separator";
 import dayjs from "dayjs";
 import { IAgendamentoGet } from "@/interfaces/agendamento";
 
 const ListagemAgendamento = () => {
-  const navigate = useNavigate();
   const { idClinica } = useParams();
   const queryClient = useQueryClient();
   const user = useUserSelector((state) => state.user);
@@ -51,7 +47,7 @@ const ListagemAgendamento = () => {
     mutationFn: (id?: string) =>
       handleDeleteAgendamento(idClinica, id, user.token),
     onSuccess: () => {
-      queryClient.invalidateQueries(["AgendamentosListInternal"]);
+      queryClient.invalidateQueries({ queryKey: ["AgendamentosListInternal"] });
     },
   });
 

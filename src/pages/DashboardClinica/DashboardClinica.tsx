@@ -56,7 +56,6 @@ const DashboardClinica = () => {
 
   const {
     data: services,
-    error,
     isPending: isPendingServices,
   } = useQuery({
     queryKey: ["ServicoList"],
@@ -66,7 +65,7 @@ const DashboardClinica = () => {
   if (isPendingAgendamentos || isPendingServices) return <div>carregando</div>;
 
   const totalPages = splitIntoGroups(
-    dataAgendamentos
+    (dataAgendamentos ?? [])
       .sort((a, b) => dayjs(a.date).diff(dayjs()) - dayjs(b.date).diff(dayjs()))
       .filter((value) => !dayjs(value.date).isBefore(dayjs())),
     itemsPerPage
@@ -135,9 +134,7 @@ const DashboardClinica = () => {
               </Card>
               <Card>
                 <CardHeader>
-                  <CardTitle>
-                    Lucro
-                  </CardTitle>
+                  <CardTitle>Lucro</CardTitle>
                 </CardHeader>
 
                 <CardContent className="flex justify-between items-center">
@@ -257,7 +254,7 @@ const DashboardClinica = () => {
                       }
                     />
 
-                    {totalPages.map((item, index) => (
+                    {totalPages.map((_item, index) => (
                       <PaginationLink
                         key={index}
                         onClick={() => setCurrentPage(index)}

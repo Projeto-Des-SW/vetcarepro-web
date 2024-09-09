@@ -40,7 +40,7 @@ const ListagemPaciente = () => {
   const mutation = useMutation({
     mutationFn: (id?: string) => handleDeletePacient(idClinica, id, user.token),
     onSuccess: () => {
-      queryClient.invalidateQueries(["PacienteList"]);
+      queryClient.invalidateQueries({ queryKey: ["PacienteList"] });
     },
   });
 
