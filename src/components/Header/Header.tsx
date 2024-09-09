@@ -51,14 +51,14 @@ const Header = () => {
   };
 
   const fetchClinicasList = async (): Promise<IUser> => {
-    const response = await axios.get(`${baseUrl}/users/me`, {
+    const response = await axios.get(`${baseUrl}/me`, {
       headers: {
         Authorization: `Bearer ${user.token}`,
       },
     });
     return response.data;
   };
-  console.log(user.notifications.length);
+
   const { data, isPending } = useQuery({
     queryKey: ["userData"],
     queryFn: fetchClinicasList,
@@ -151,7 +151,7 @@ const Header = () => {
                 <>
                   <NavigationMenu>
                     <NavigationMenuList>
-                      <NavigationMenuItem>
+                      <NavigationMenuItem className="">
                         <NavigationMenuTrigger className="flex items-center gap-4 p-2 text-white bg-transparent">
                           {user.notifications.length <= 1 ? (
                             <NotificationsNoneIcon />
