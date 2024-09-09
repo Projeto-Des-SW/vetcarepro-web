@@ -21,6 +21,10 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useState } from "react";
+import Diversity3Icon from "@mui/icons-material/Diversity3";
+import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 
 const Interna = () => {
   const navigate = useNavigate();
@@ -29,6 +33,7 @@ const Interna = () => {
   const [openServices, setOpenServices] = useState(false);
   const [openFuncionarios, setOpenFuncionarios] = useState(false);
   const [openAgendamento, setOpenAgendamento] = useState(false);
+  const [openMenu, setOpenMenu] = useState(false);
   const dispatch = useDispatch();
   const { idClinica } = useParams();
 
@@ -171,6 +176,20 @@ const Interna = () => {
             <DialogTitle>Meus agendamentos</DialogTitle>
             <DialogDescription className="flex gap-2 justify-center p-4">
               <NavLink
+                to={`listagemAgendamento`}
+                onClick={() => setOpenAgendamento((prevState) => !prevState)}
+                className={({ isActive }) =>
+                  `flex flex-col items-center justify-center p-4 rounded-2xl gap-3 w-48 h-48 text-lg font-bold transition-all shadow-lg ${
+                    isActive
+                      ? "bg-blue-500 text-white"
+                      : "bg-gray-200 text-gray-700 hover:bg-gray-300 hover:text-gray-900"
+                  }`
+                }
+              >
+                <PersonIcon sx={{ fontSize: "100px" }} />
+                <span>Listagem agendamentos</span>
+              </NavLink>
+              <NavLink
                 to={`agendamento`}
                 onClick={() => setOpenAgendamento((prevState) => !prevState)}
                 className={({ isActive }) =>
@@ -188,8 +207,26 @@ const Interna = () => {
           </DialogHeader>
         </DialogContent>
       </Dialog>
-      <aside className="flex-shrink-0 w-64 border-r-2 bg-background">
+
+      <aside className="flex-shrink-0 w-fit border-r-2 bg-background">
         <div className="flex flex-col items-start gap-4 px-4 py-5">
+          <div
+            className={`absolute ${
+              openMenu ? "left-[221px]" : "left-[69px]"
+            } bg-slate-600 rounded-2xl flex items-center`}
+          >
+            {openMenu ? (
+              <KeyboardArrowLeftIcon
+                sx={{ color: "white" }}
+                onClick={() => setOpenMenu((prevState) => !prevState)}
+              />
+            ) : (
+              <KeyboardArrowRightIcon
+                sx={{ color: "white" }}
+                onClick={() => setOpenMenu((prevState) => !prevState)}
+              />
+            )}
+          </div>
           <NavLink
             to="/dashboard/listagemClinica"
             className={({ isActive }) =>
@@ -201,7 +238,7 @@ const Interna = () => {
             }
           >
             <HomeWorkIcon />
-            <span>Minhas clinicas</span>
+            {openMenu && <span>Minhas clinicas</span>}
           </NavLink>
 
           <NavLink
@@ -215,7 +252,7 @@ const Interna = () => {
             }
           >
             <DashboardIcon className="h-5 w-5" />
-            <span>Dashboard</span>
+            {openMenu && <span>Dashboard</span>}
           </NavLink>
           <Button
             className="flex items-center gap-3 rounded-lg px-3 py-2 transition-all text-muted-foreground hover:bg-muted/50"
@@ -223,7 +260,7 @@ const Interna = () => {
             onClick={() => setOpenPacientes((prevState) => !prevState)}
           >
             <PersonIcon />
-            Meus pacientes
+            {openMenu && <span>Meus pacientes</span>}
           </Button>
 
           <Button
@@ -232,7 +269,7 @@ const Interna = () => {
             onClick={() => setOpenServices((prevState) => !prevState)}
           >
             <HomeRepairServiceIcon />
-            Meus Serviços
+            {openMenu && <span>Meus Serviços</span>}
           </Button>
 
           <Button
@@ -240,8 +277,8 @@ const Interna = () => {
             variant={"ghost"}
             onClick={() => setOpenFuncionarios((prevState) => !prevState)}
           >
-            <HomeRepairServiceIcon />
-            Meus funcionarios
+            <Diversity3Icon />
+            {openMenu && <span> Meus funcionarios</span>}
           </Button>
 
           <Button
@@ -249,8 +286,8 @@ const Interna = () => {
             variant={"ghost"}
             onClick={() => setOpenAgendamento((prevState) => !prevState)}
           >
-            <HomeRepairServiceIcon />
-            Meus agendamentos
+            <MedicalServicesIcon />
+            {openMenu && <span> Meus agendamentos</span>}
           </Button>
         </div>
 
@@ -262,7 +299,7 @@ const Interna = () => {
             className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:bg-muted/50"
           >
             <LogoutIcon />
-            <span>Logout</span>
+            {openMenu && <span>Logout</span>}
           </Button>
         </div>
       </aside>

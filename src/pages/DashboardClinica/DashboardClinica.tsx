@@ -28,13 +28,6 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import InfoIcon from "@mui/icons-material/Info";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 
 const DashboardClinica = () => {
   const { idClinica } = useParams();
@@ -45,7 +38,6 @@ const DashboardClinica = () => {
   const [currentPageServices, setCurrentPageServices] = useState(0);
   const [searchConsulta, setSearchConsulta] = useState("");
   const [searchServices, setSearchServices] = useState("");
-  const [tooltip, setTooltip] = useState(false);
   const itemsPerPage = 5;
   console.log(searchConsulta);
 

@@ -19,6 +19,8 @@ import AgendarConsulta from "@/pages/AgendarConsulta/AgendarConsulta";
 import Me from "@/pages/Me/Me";
 import CadastroFuncionario from "@/pages/CadastroFuncionario/CadastroFuncionario";
 import ListagemFuncionario from "@/pages/listagemFuncionario/listagemFuncionario";
+import ListagemAgendamento from "@/pages/ListagemAgendamento/ListagemAgendamento";
+
 
 const AppRoutes = () => {
   const user = useUserSelector((state) => state.user);
@@ -49,6 +51,10 @@ const AppRoutes = () => {
               <Route
                 path="listagemFuncionario"
                 element={<ListagemFuncionario />}
+              />
+              <Route
+                path="listagemAgendamento"
+                element={<ListagemAgendamento />}
               />
 
               <Route path="cadastrarPaciente" element={<CadastrarPaciente />} />
