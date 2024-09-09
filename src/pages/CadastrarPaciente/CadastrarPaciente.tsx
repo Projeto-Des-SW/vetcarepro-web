@@ -141,12 +141,14 @@ const CadastrarPaciente = ({ mode = "create" }: ICrud) => {
   };
 
   return (
-    <Card className="flex p-8 w-fit items-center gap-4">
+    <Card className="flex p-8 w-fit h-fit items-center gap-4">
       <form
         onSubmit={handleSubmit(handleSubmitPaciente)}
         className="flex flex-col w-[500px] gap-4"
       >
-        <h1>{mode === "create" ? "Cadastre" : "Edite"} o paciente</h1>
+        <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0">
+          {mode === "create" ? "Cadastre" : "Edite"} o paciente
+        </h2>
 
         <div className="flex gap-4">
           <Inputs
@@ -217,7 +219,6 @@ const CadastrarPaciente = ({ mode = "create" }: ICrud) => {
         </Button>
 
         {errorForm && <div className="text-red-500">{errorForm}</div>}
-
       </form>
       <picture className="flex h-auto items-center flex-col ">
         <img
