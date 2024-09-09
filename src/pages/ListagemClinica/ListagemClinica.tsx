@@ -48,7 +48,7 @@ const ListagemClinica = () => {
     mutationFn: (serviceId: string) =>
       handleDeleteClinic(serviceId, user.token),
     onSuccess: () => {
-      queryClient.invalidateQueries(["ClinicaListagem"]);
+      queryClient.invalidateQueries({ queryKey: ["ClinicaListagem"] });
     },
   });
 

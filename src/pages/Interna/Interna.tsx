@@ -60,7 +60,6 @@ const Interna = () => {
   });
   if (isPending) return <div>Carregando</div>;
   console.log();
-
   return (
     <div className="flex h-screen">
       <Dialog
@@ -248,6 +247,7 @@ const Interna = () => {
               />
             )}
           </div>
+
           <NavLink
             to="/dashboard/listagemClinica"
             className={({ isActive }) =>
