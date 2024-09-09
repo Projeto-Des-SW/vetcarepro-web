@@ -9,42 +9,90 @@ import {
 } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import "dayjs/locale/es";
 import { useNavigate, useParams } from "react-router-dom";
 import { useUserSelector } from "@/store/hooks";
-import { IPet } from "@/interfaces/paciente";
-const baseUrl = import.meta.env.VITE_URL as string;
+import dayjs from "dayjs";
+import {
+  fetchAgendamentosList,
+  fetchPacientsList,
+  fetchServiceList,
+} from "@/Services/GetServices";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import { useState } from "react";
+import { splitIntoGroups } from "@/utils/const.utils";
+import {
+  Pagination,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 const DashboardClinica = () => {
   const { idClinica } = useParams();
-  console.log(idClinica);
+  const [isExibirLucro, setIsExibirLucro] = useState(false);
   const user = useUserSelector((state) => state.user);
   const navigate = useNavigate();
+  const [currentPage, setCurrentPage] = useState(0);
+  const [currentPageServices, setCurrentPageServices] = useState(0);
+  const [searchConsulta, setSearchConsulta] = useState("");
+  const [searchServices, setSearchServices] = useState("");
+  const itemsPerPage = 5;
+  console.log(searchConsulta);
 
-  const fetchClinicasList = async (): Promise<IPet[]> => {
-    const response = await axios.get(
-      `${baseUrl}/clinics/${idClinica}/patients`,
-      {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      }
-    );
-    return response.data;
-  };
-
-  const { data, isPending } = useQuery({
-    queryKey: ["ClinicaListInternal"],
-    queryFn: fetchClinicasList,
+  const { data: listagemPaciente, isPending: isPendingPacientes } = useQuery({
+    queryKey: ["PacienteList"],
+    queryFn: () => fetchPacientsList(idClinica, user.token),
   });
 
-  console.log(data);
+  const { data: dataAgendamentos, isPending: isPendingAgendamentos } = useQuery(
+    {
+      queryKey: ["AgendamentosListInternal"],
+      queryFn: () => fetchAgendamentosList(idClinica, user.token),
+      refetchOnMount: true,
+    }
+  );
+
+  const {
+    data: services,
+    error,
+    isPending: isPendingServices,
+  } = useQuery({
+    queryKey: ["ServicoList"],
+    queryFn: () => fetchServiceList(idClinica, user.token),
+  });
+
+  if (isPendingAgendamentos || isPendingServices) return <div>carregando</div>;
+
+  const totalPages = splitIntoGroups(
+    dataAgendamentos
+      .sort((a, b) => dayjs(a.date).diff(dayjs()) - dayjs(b.date).diff(dayjs()))
+      .filter((value) => !dayjs(value.date).isBefore(dayjs())),
+    itemsPerPage
+  );
+  const totalPagesService = splitIntoGroups(services as any, itemsPerPage);
+
+  const totalProximasConsultas = dataAgendamentos?.filter(
+    (value) => !dayjs(value.date).isBefore(dayjs())
+  );
+
+  const receitaUsuario = dataAgendamentos?.filter((value) =>
+    dayjs(value.date).isBefore(dayjs())
+  );
+
+  const myReceita = receitaUsuario?.reduce((total, item) => {
+    return total + parseFloat(item.service.amount);
+  }, 0);
+
+  console.log(receitaUsuario);
+  console.log(dataAgendamentos);
 
   return (
     <section className="flex h-full">
-      <main className="flex-1bg-background p-8 flex flex-col">
-        <div className="grid grid-cols-4 gap-8">
-          {isPending ? (
+      <main className="flex-1 bg-background flex flex-col min-w-[80vw]">
+        <div className="grid grid-cols-3 gap-8">
+          {isPendingPacientes ? (
             Array.from({ length: 4 }).map((_, index) => (
               <Card key={index}>
                 <CardHeader>
@@ -59,41 +107,60 @@ const DashboardClinica = () => {
             <>
               <Card>
                 <CardHeader>
-                  <CardTitle>Total Patients</CardTitle>
+                  <CardTitle>Total de pacientes</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-4xl font-bold">1,234</div>
+                  {isPendingPacientes ? (
+                    <Skeleton className="h-10 w-24" />
+                  ) : (
+                    <div className="text-4xl font-bold">
+                      {listagemPaciente?.length}
+                    </div>
+                  )}
                 </CardContent>
               </Card>
               <Card>
                 <CardHeader>
-                  <CardTitle>Scheduled Appointments</CardTitle>
+                  <CardTitle>Proximas consultas</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-4xl font-bold">87</div>
+                  {isPendingPacientes ? (
+                    <Skeleton className="h-10 w-24" />
+                  ) : (
+                    <div className="text-4xl font-bold">
+                      {totalProximasConsultas?.length}
+                    </div>
+                  )}
                 </CardContent>
               </Card>
               <Card>
                 <CardHeader>
-                  <CardTitle>Revenue</CardTitle>
+                  <CardTitle>Lucro</CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <div className="text-4xl font-bold">$45,231.89</div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader>
-                  <CardTitle>Expenses</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-4xl font-bold">$12,345.67</div>
+                <CardContent className="flex justify-between items-center">
+                  <div className="text-4xl font-bold">
+                    {isExibirLucro ? `R$ ${myReceita}` : "R$ ********"}
+                  </div>
+                  {!isExibirLucro ? (
+                    <VisibilityIcon
+                      onClick={() =>
+                        setIsExibirLucro((prevState) => !prevState)
+                      }
+                    />
+                  ) : (
+                    <VisibilityOffIcon
+                      onClick={() =>
+                        setIsExibirLucro((prevState) => !prevState)
+                      }
+                    />
+                  )}
                 </CardContent>
               </Card>
             </>
           )}
         </div>
-        <div className="grid grid-cols-2 gap-8 mt-8">
-          {isPending ? (
+        <div className="grid grid-cols-1 gap-8 mt-8">
+          {isPendingAgendamentos ? (
             Array.from({ length: 2 }).map((_, index) => (
               <Card key={index}>
                 <CardHeader>
@@ -108,21 +175,108 @@ const DashboardClinica = () => {
             <>
               <Card>
                 <CardHeader>
-                  <CardTitle>Patients by Species</CardTitle>
+                  <CardTitle>Próximas consultas</CardTitle>{" "}
+                  <input
+                    type="text"
+                    placeholder="Pesquisar consultas"
+                    onChange={(e) => setSearchConsulta(e.target.value)}
+                  />
                 </CardHeader>
-                <CardContent></CardContent>
-              </Card>
-              <Card>
-                <CardHeader>
-                  <CardTitle>Appointments by Month</CardTitle>
-                </CardHeader>
-                <CardContent></CardContent>
+                <CardContent>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Data</TableHead>
+                        <TableHead>Paciente</TableHead>
+                        <TableHead>Serviço</TableHead>
+                        <TableHead>Status</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {(searchConsulta === ""
+                        ? totalPages[currentPage]
+                        : dataAgendamentos
+                      )
+                        ?.filter((value) =>
+                          searchConsulta !== ""
+                            ? value.patient.name
+                                .toLocaleLowerCase()
+                                .includes(searchConsulta.toLocaleLowerCase())
+                            : true
+                        )
+                        .map((item) => (
+                          <TableRow key={item.id}>
+                            <TableCell
+                              onClick={() =>
+                                navigate(`../detailsPaciente/${item.id}`)
+                              }
+                              className="cursor-pointer"
+                            >
+                              {dayjs(item.date).format("DD/MM/YYYY - HH:MM")}
+                            </TableCell>
+                            <TableCell>{item.patient.name}</TableCell>
+                            <TableCell>{item.service.title}</TableCell>
+                            <TableCell>
+                              {dayjs(item.date).diff(dayjs(), "days") === 0 ? (
+                                dayjs(item.date).diff(dayjs(), "hours") ===
+                                0 ? (
+                                  <p className="text-red-500">
+                                    Em{" "}
+                                    {dayjs(item.date).diff(dayjs(), "minutes")}{" "}
+                                    minutos
+                                  </p>
+                                ) : (
+                                  <p className="text-orange-500">
+                                    Em {dayjs(item.date).diff(dayjs(), "hours")}{" "}
+                                    horas
+                                  </p>
+                                )
+                              ) : (
+                                <p className="text-green-500">
+                                  Em {dayjs(item.date).diff(dayjs(), "days")}{" "}
+                                  dias
+                                </p>
+                              )}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  </Table>
+                </CardContent>
+
+                <div className="flex justify-center m-4">
+                  <Pagination>
+                    <PaginationPrevious
+                      onClick={() =>
+                        currentPage !== 0 &&
+                        setCurrentPage((prevState) => prevState - 1)
+                      }
+                    />
+
+                    {totalPages.map((item, index) => (
+                      <PaginationLink
+                        key={index}
+                        onClick={() => setCurrentPage(index)}
+                        isActive={currentPage === index}
+                      >
+                        {index + 1}
+                      </PaginationLink>
+                    ))}
+
+                    <PaginationNext
+                      onClick={() =>
+                        currentPage !== totalPages.length - 1 &&
+                        setCurrentPage((prevState) => prevState + 1)
+                      }
+                    />
+                  </Pagination>
+                </div>
               </Card>
             </>
           )}
         </div>
         <div className="mt-8">
-          {isPending ? (
+          {isPendingPacientes ? (
             <Card>
               <CardHeader>
                 <Skeleton className="h-6 w-1/2" />
@@ -134,22 +288,33 @@ const DashboardClinica = () => {
               </CardContent>
             </Card>
           ) : (
-            <Card>
-              <CardHeader>
-                <CardTitle>Upcoming Appointments</CardTitle>
+            <Card className="mb-4">
+              <CardHeader className="w-fit">
+                <CardTitle>Serviços disponiveis</CardTitle>
+                <input
+                  type="text"
+                  placeholder="Pesquisar serviços"
+                  onChange={(e) => setSearchServices(e.target.value)}
+                />
               </CardHeader>
               <CardContent>
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Species</TableHead>
-                      <TableHead>Guardião</TableHead>
-                      <TableHead>idade</TableHead>
+                      <TableHead>Titulo</TableHead>
+                      <TableHead>Tipo do serviço</TableHead>
+                      <TableHead>Valor do serviço</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {data?.map((item, index) => (
+                    {(searchServices === ""
+                      ? totalPagesService[currentPageServices]
+                      : services?.filter((item) =>
+                          item.title
+                            .toLocaleLowerCase()
+                            .includes(searchServices.toLocaleLowerCase())
+                        )
+                    )?.map((item, index) => (
                       <TableRow key={index}>
                         <TableCell
                           onClick={() =>
@@ -157,16 +322,42 @@ const DashboardClinica = () => {
                           }
                           className="cursor-pointer"
                         >
-                          {item.name}
+                          {item.title}
                         </TableCell>
-                        <TableCell>{item.species}</TableCell>
-                        <TableCell>{item.guardian_name}</TableCell>
-                        <TableCell>{item.age}</TableCell>
+                        <TableCell>{item.type}</TableCell>
+                        <TableCell>{item.amount}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
                 </Table>
               </CardContent>
+              <div className="flex justify-center m-4">
+                <Pagination>
+                  <PaginationPrevious
+                    onClick={() =>
+                      currentPageServices !== 0 &&
+                      setCurrentPageServices((prevState) => prevState - 1)
+                    }
+                  />
+
+                  {totalPagesService.map((_item, index) => (
+                    <PaginationLink
+                      key={index}
+                      onClick={() => setCurrentPageServices(index)}
+                      isActive={currentPageServices === index}
+                    >
+                      {index + 1}
+                    </PaginationLink>
+                  ))}
+
+                  <PaginationNext
+                    onClick={() =>
+                      currentPageServices !== totalPagesService.length - 1 &&
+                      setCurrentPageServices((prevState) => prevState + 1)
+                    }
+                  />
+                </Pagination>
+              </div>
             </Card>
           )}
         </div>
