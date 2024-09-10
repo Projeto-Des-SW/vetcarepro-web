@@ -181,7 +181,7 @@ const DetailsPaciente = () => {
                                     </span>
                                     <span>
                                       {dayjs(item.date).format(
-                                        "DD/MM/YYYY - HH:MM"
+                                        "DD/MM/YYYY - HH:mm"
                                       )}
                                     </span>
                                   </div>

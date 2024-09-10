@@ -80,39 +80,83 @@ const ListagemClinica = () => {
               </Card>
             ))
           : currentItems?.map((clinica) => (
-              <Card key={clinica.id} className="w-[30%] h-fit">
-                <CardHeader>
-                  <CardTitle>{clinica.title}</CardTitle>
-                  <CardDescription>{clinica.description}</CardDescription>
-                </CardHeader>
-                <CardContent className="flex flex-col">
-                  <p>{clinica.email}</p>
-                  <p>{clinica.phone}</p>
-                  <p>{clinica.address}</p>
-                </CardContent>
-                <CardFooter className="flex gap-2">
-                  <Button
-                    onClick={() =>
-                      navigate(`/internalClinica/${clinica.id}/dashboard`)
-                    }
-                  >
-                    Visualizar
-                  </Button>
-                  <Button
-                    onClick={() =>
-                      navigate(`/dashboard/editarClinica/${clinica.id}`)
-                    }
-                  >
-                    Editar
-                  </Button>
-                  <Button
-                    variant="destructive"
-                    onClick={() => mutation.mutate(clinica.id)}
-                  >
-                    Deletar
-                  </Button>
-                </CardFooter>
-              </Card>
+              <>
+                <Card className="h-fit max-h-[300px] max-w-[600px]">
+                  <CardHeader className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        className="h-8 w-8"
+                      >
+                        <circle cx="11" cy="4" r="2"></circle>
+                        <circle cx="18" cy="8" r="2"></circle>
+                        <circle cx="20" cy="16" r="2"></circle>
+                        <path d="M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-6.84 1.045Q6.52 17.48 4.46 16.84A3.5 3.5 0 0 1 5.5 10Z"></path>
+                      </svg>
+                      <div className="max-w-[350px]">
+                        <h3 className="text-lg font-semibold overflow-hidden whitespace-nowrap text-ellipsis">
+                          {clinica.title}
+                        </h3>
+                        <p className="text-sm text-muted-foreground overflow-hidden whitespace-nowrap text-ellipsis">
+                          {clinica.description}
+                        </p>
+                      </div>
+
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className=""
+                        onClick={() =>
+                          navigate(`/internalClinica/${clinica.id}/dashboard`)
+                        }
+                      >
+                        Ver Detalhes
+                      </Button>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2 flex flex-col ">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="font-medium">Telefone: </span>
+                        <span>{clinica.phone}</span>
+                      </div>
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="font-medium">Email: {""} </span>
+                        <span>{clinica.email}</span>
+                      </div>
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="font-medium">Endereço: </span>
+                        <span>{clinica.address}</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                  <CardFooter className="flex gap-2 justify-center w-full">
+                    <Button
+                      onClick={() =>
+                        navigate(`/dashboard/editarClinica/${clinica.id}`)
+                      }
+                      className="w-full"
+                    >
+                      Editar
+                    </Button>
+                    <Button
+                      variant="destructive"
+                      className="w-full"
+                      onClick={() => mutation.mutate(clinica.id)}
+                    >
+                      Deletar
+                    </Button>
+                  </CardFooter>
+                </Card>
+              </>
             ))}
       </div>
       <Pagination>
