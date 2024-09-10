@@ -257,7 +257,7 @@ const DashboardClinica = () => {
                                 } pl-4`}
                               >
                                 Paciente: {item.patient.name} -{" "}
-                                {dayjs(item.date).format("DD/MM/YYYY - HH:MM")}
+                                {dayjs(item.date).format("DD/MM/YYYY - HH:mm")}
                                 {dayjs(item.date).diff(dayjs(), "days") ===
                                 0 ? (
                                   dayjs(item.date).diff(dayjs(), "hours") ===
@@ -443,7 +443,7 @@ const DashboardClinica = () => {
                               onClick={() => navigate(`../listagemAgendamento`)}
                               className="cursor-pointer"
                             >
-                              {dayjs(item.date).format("DD/MM/YYYY - HH:MM")}
+                              {dayjs(item.date).format("DD/MM/YYYY - HH:mm")}
                             </TableCell>
                             <TableCell>{item.patient.name}</TableCell>
                             <TableCell>{item.service.title}</TableCell>

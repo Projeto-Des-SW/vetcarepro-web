@@ -94,7 +94,7 @@ const ListagemAgendamento = () => {
               : totalPages[currentPage]?.map((paciente: IAgendamentoGet) => (
                   <TableRow key={paciente.id}>
                     <TableCell className="font-medium">
-                      {dayjs(paciente.date).format("DD/MM/YYYY - HH:MM")}
+                      {dayjs(paciente.date).format("DD/MM/YYYY - HH:mm")}
                     </TableCell>
                     <TableCell>{paciente.patient.name}</TableCell>
                     <TableCell>{paciente.service.title}</TableCell>
