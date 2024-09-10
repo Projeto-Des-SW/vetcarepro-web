@@ -241,47 +241,58 @@ const DashboardClinica = () => {
                     <>
                       <Carousel className="flex flex-col gap-2">
                         <CarouselContent>
-                          {totalPages[0].map((item, index) => (
-                            <motion.div
-                              key={index}
-                              initial={{ opacity: 0 }}
-                              animate={{
-                                opacity: currentIndex === index ? 1 : 0,
-                                y: 0,
-                              }}
-                              exit={{ opacity: 0, y: 20 }}
-                              transition={{ duration: 0.3 }}
-                              className={`${
-                                currentIndex === index ? "block" : "hidden"
-                              } pl-4`}
-                            >
-                              Paciente: {item.patient.name} -{" "}
-                              {dayjs(item.date).format("DD/MM/YYYY - HH:MM")}
-                              {dayjs(item.date).diff(dayjs(), "days") === 0 ? (
-                                dayjs(item.date).diff(dayjs(), "hours") ===
+                          {totalPages[0] !== undefined ? (
+                            totalPages[0].map((item, index) => (
+                              <motion.div
+                                key={index}
+                                initial={{ opacity: 0 }}
+                                animate={{
+                                  opacity: currentIndex === index ? 1 : 0,
+                                  y: 0,
+                                }}
+                                exit={{ opacity: 0, y: 20 }}
+                                transition={{ duration: 0.3 }}
+                                className={`${
+                                  currentIndex === index ? "block" : "hidden"
+                                } pl-4`}
+                              >
+                                Paciente: {item.patient.name} -{" "}
+                                {dayjs(item.date).format("DD/MM/YYYY - HH:MM")}
+                                {dayjs(item.date).diff(dayjs(), "days") ===
                                 0 ? (
-                                  <p className="text-red-500">
-                                    Quando: Em{" "}
-                                    {dayjs(item.date).diff(dayjs(), "minutes")}{" "}
-                                    minutos
-                                  </p>
+                                  dayjs(item.date).diff(dayjs(), "hours") ===
+                                  0 ? (
+                                    <p className="text-red-500">
+                                      Quando: Em{" "}
+                                      {dayjs(item.date).diff(
+                                        dayjs(),
+                                        "minutes"
+                                      )}{" "}
+                                      minutos
+                                    </p>
+                                  ) : (
+                                    <p className="text-orange-500">
+                                      Quando: Em{" "}
+                                      {dayjs(item.date).diff(dayjs(), "hours")}{" "}
+                                      horas
+                                    </p>
+                                  )
                                 ) : (
-                                  <p className="text-orange-500">
+                                  <p className="text-green-500">
                                     Quando: Em{" "}
-                                    {dayjs(item.date).diff(dayjs(), "hours")}{" "}
-                                    horas
+                                    {dayjs(item.date).diff(dayjs(), "days")}{" "}
+                                    dias
                                   </p>
-                                )
-                              ) : (
-                                <p className="text-green-500">
-                                  Quando: Em{" "}
-                                  {dayjs(item.date).diff(dayjs(), "days")} dias
-                                </p>
-                              )}
-                            </motion.div>
-                          ))}
+                                )}
+                                <Progress value={progressBar} />
+                              </motion.div>
+                              
+                            ))
+                          ) : (
+                            <p className="m-4">Sem dados</p>
+                          )}
                         </CarouselContent>
-                        <Progress value={progressBar} />
+                        
                       </Carousel>
                     </>
                   )}

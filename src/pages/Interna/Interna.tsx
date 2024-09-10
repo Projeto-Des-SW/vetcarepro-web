@@ -69,7 +69,7 @@ const Interna = () => {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Meus pacientes</DialogTitle>
-            <DialogDescription className="flex gap-2 justify-center p-4">
+            <DialogDescription className="flex justify-between p-4">
               <NavLink
                 to={`listagemPaciente`}
                 onClick={() => setOpenPacientes((prevState) => !prevState)}
@@ -110,7 +110,7 @@ const Interna = () => {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Meus serviços</DialogTitle>
-            <DialogDescription className="flex gap-2 justify-center p-4">
+            <DialogDescription className="flex justify-between p-4">
               <NavLink
                 to={`listagemServico`}
                 onClick={() => setOpenServices((prevState) => !prevState)}
@@ -151,7 +151,7 @@ const Interna = () => {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Meus funcionarios</DialogTitle>
-            <DialogDescription className="flex gap-2 justify-center p-4">
+            <DialogDescription className="flex justify-between p-4">
               <NavLink
                 to={`listagemFuncionario`}
                 onClick={() => setOpenFuncionarios((prevState) => !prevState)}
@@ -192,7 +192,7 @@ const Interna = () => {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Meus agendamentos</DialogTitle>
-            <DialogDescription className="flex gap-2 justify-center p-4">
+            <DialogDescription className="flex justify-between p-4">
               <NavLink
                 to={`listagemAgendamento`}
                 onClick={() => setOpenAgendamento((prevState) => !prevState)}
