@@ -46,6 +46,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import Joyride, { CallBackProps, STATUS, Step } from "react-joyride";
 
 const DashboardClinica = () => {
   const [searchConsulta, setSearchConsulta] = useState("");
@@ -66,6 +67,51 @@ const DashboardClinica = () => {
   const { idClinica } = useParams();
   const user = useUserSelector((state) => state.user);
   const navigate = useNavigate();
+
+  const [steps] = useState<Step[]>([
+    {
+      target: ".total-pacientes-card",
+      content:
+        "Aqui você pode ver o total de pacientes cadastrados na clínica.",
+    },
+    {
+      target: ".proximas-consultas-card",
+      content:
+        "Veja suas próximas consultas aqui. As suas proximas 5 consultas serão exibidas aqui com um intervalo de 10 segundos entre elas",
+    },
+    {
+      target: ".lucro-card",
+      content:
+        "Confira o lucro da clínica neste card. Atualmente, o valor é incrementado conforme a data das consultas vão chegando. Em breve você terá um painel de financeiro para gerenciar seus custos e lucros!",
+    },
+    {
+      target: ".consultas-tabela",
+      content: "Aqui você pode visualizar e pesquisar suas consultas.",
+    },
+    {
+      target: ".consultas-service",
+      content:
+        "Aqui você pode visualizar e pesquisar os serviços oferecidos por sua clinica, para facilitar o seu dia a dia!",
+    },
+  ]);
+
+  const [tourRunning, setTourRunning] = useState(false);
+
+  useEffect(() => {
+    if (localStorage.getItem("joyride")) {
+      return;
+    } else {
+      localStorage.setItem("joyride", "primeira vez");
+      setTourRunning(true);
+    }
+  }, []);
+
+  const handleJoyrideCallback = (data: CallBackProps) => {
+    const { status } = data;
+    if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status as any)) {
+      setTourRunning(false);
+    }
+  };
 
   useEffect(() => {
     const progressInterval = setInterval(() => {
@@ -131,6 +177,13 @@ const DashboardClinica = () => {
 
   return (
     <section className="flex h-full w-full">
+      <Joyride
+        steps={steps}
+        continuous
+        showSkipButton
+        run={tourRunning}
+        callback={handleJoyrideCallback}
+      />
       <main className="flex-1 bg-background flex flex-col min-w-[80vw]">
         <div className="grid grid-cols-3 gap-8">
           {isPendingPacientes ? (
@@ -146,7 +199,7 @@ const DashboardClinica = () => {
             ))
           ) : (
             <>
-              <Card className="flex flex-col justify-center">
+              <Card className="flex flex-col justify-center total-pacientes-card">
                 <CardHeader>
                   <CardTitle>Total de pacientes</CardTitle>
                 </CardHeader>
@@ -167,7 +220,7 @@ const DashboardClinica = () => {
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <AccessAlarmIcon />
+                          <AccessAlarmIcon className="proximas-consultas-card" />
                         </TooltipTrigger>
                         <TooltipContent
                           side="bottom"
@@ -241,7 +294,7 @@ const DashboardClinica = () => {
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <AttachMoneyIcon />
+                          <AttachMoneyIcon className="lucro-card" />
                         </TooltipTrigger>
                         <TooltipContent
                           side="bottom"
@@ -296,8 +349,8 @@ const DashboardClinica = () => {
             ))
           ) : (
             <>
-              <Card>
-                <CardHeader className=" ">
+              <Card className="consultas-tabela">
+                <CardHeader>
                   <div className="flex justify-between">
                     <div>
                       <CardTitle>Consultas</CardTitle>{" "}
@@ -455,7 +508,7 @@ const DashboardClinica = () => {
               </CardContent>
             </Card>
           ) : (
-            <Card className="mb-12">
+            <Card className="mb-12 consultas-service">
               <CardHeader>
                 <div className="flex justify-between">
                   <div>
