@@ -109,16 +109,13 @@ const ListagemClinica = () => {
                           {clinica.description}
                         </p>
                       </div>
-
                       <Button
-                        variant="ghost"
-                        size="sm"
-                        className=""
+                        variant="outline"
                         onClick={() =>
-                          navigate(`/internalClinica/${clinica.id}/dashboard`)
+                          navigate(`/dashboard/editarClinica/${clinica.id}`)
                         }
                       >
-                        Ver Detalhes
+                        Editar
                       </Button>
                     </div>
                   </CardHeader>
@@ -140,12 +137,13 @@ const ListagemClinica = () => {
                   </CardContent>
                   <CardFooter className="flex gap-2 justify-center w-full">
                     <Button
-                      onClick={() =>
-                        navigate(`/dashboard/editarClinica/${clinica.id}`)
-                      }
+                      size="sm"
                       className="w-full"
+                      onClick={() =>
+                        navigate(`/internalClinica/${clinica.id}/dashboard`)
+                      }
                     >
-                      Editar
+                      Ver Detalhes
                     </Button>
                     <Button
                       variant="destructive"

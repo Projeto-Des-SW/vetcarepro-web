@@ -184,7 +184,7 @@ const DashboardClinica = () => {
         run={tourRunning}
         callback={handleJoyrideCallback}
       />
-      <main className="flex-1 bg-background flex flex-col min-w-[80vw]">
+      <main className="flex-1 bg-background flex flex-col">
         <div className="grid grid-cols-3 gap-8">
           {isPendingPacientes ? (
             Array.from({ length: 3 }).map((_, index) => (

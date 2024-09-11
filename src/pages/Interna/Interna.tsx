@@ -25,7 +25,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Diversity3Icon from "@mui/icons-material/Diversity3";
 import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
@@ -33,6 +33,8 @@ import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useQuery } from "@tanstack/react-query";
 import { fetchUserData } from "@/Services/GetServices";
+import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
+import Joyride, { CallBackProps, STATUS, Step } from "react-joyride";
 
 const Interna = () => {
   const navigate = useNavigate();
@@ -51,17 +53,72 @@ const Interna = () => {
     navigate("/home");
   };
 
-  const {
-    data: userData,
-    isPending,
-  } = useQuery({
+  const { data: userData, isPending } = useQuery({
     queryKey: ["userData"],
     queryFn: () => fetchUserData(user.token),
   });
   if (isPending) return <div>Carregando</div>;
   console.log();
+
+  useEffect(() => {
+    if (localStorage.getItem("joyrideMenu")) {
+      return;
+    } else {
+      localStorage.setItem("joyrideMenu", "primeira vez");
+      setTourRunning(true);
+    }
+  }, []);
+
+  const [steps] = useState<Step[]>([
+    {
+      target: ".minhas-clinicas",
+      content:
+        "Aqui você pode visualizar todas as clínicas cadastradas no sistema e gerenciar suas informações.",
+    },
+    {
+      target: ".dashboard",
+      content:
+        "Aqui você encontra uma visão geral de suas atividades na clínica, incluindo os próximos agendamentos, consultas e o desempenho financeiro.",
+    },
+    {
+      target: ".finanças",
+      content:
+        "Este é o painel financeiro, onde você pode acompanhar o lucro e as despesas da clínica. Futuramente, você poderá gerenciar todos os custos e receitas de maneira detalhada.",
+    },
+    {
+      target: ".pacientes",
+      content:
+        "Aqui você pode visualizar e gerenciar os pacientes cadastrados, além de pesquisar históricos e detalhes das consultas.",
+    },
+    {
+      target: ".funcionarios",
+      content:
+        "Aqui você pode gerenciar os funcionários da clínica, visualizar informações, atribuir funções e acompanhar suas atividades.",
+    },
+    {
+      target: ".agendamentos",
+      content:
+        "Nesta seção, você pode visualizar e gerenciar os agendamentos de consultas e procedimentos realizados na clínica.",
+    },
+  ]);
+
+  const [tourRunning, setTourRunning] = useState(false);
+
+  const handleJoyrideCallback = (data: CallBackProps) => {
+    const { status } = data;
+    if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status as any)) {
+      setTourRunning(false);
+    }
+  };
   return (
     <div className="flex h-screen">
+      <Joyride
+        steps={steps}
+        continuous
+        showSkipButton
+        run={tourRunning}
+        callback={handleJoyrideCallback}
+      />
       <Dialog
         open={openPacientes}
         onOpenChange={() => setOpenPacientes((prevState) => !prevState)}
@@ -251,7 +308,7 @@ const Interna = () => {
           <NavLink
             to="/dashboard/listagemClinica"
             className={({ isActive }) =>
-              `flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
+              `flex items-center gap-3 rounded-lg px-3 py-2 transition-all minhas-clinicas ${
                 isActive
                   ? "bg-accent text-accent-foreground"
                   : "text-muted-foreground hover:bg-muted/50"
@@ -265,7 +322,7 @@ const Interna = () => {
           <NavLink
             to={`/internalClinica/${idClinica}/dashboard`}
             className={({ isActive }) =>
-              `flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
+              `flex items-center gap-3 rounded-lg px-3 py-2 transition-all dashboard ${
                 isActive
                   ? "bg-accent text-accent-foreground"
                   : "text-muted-foreground hover:bg-muted/50"
@@ -276,11 +333,25 @@ const Interna = () => {
             {openMenu && <span>Dashboard</span>}
           </NavLink>
 
+          <NavLink
+            to={`/internalClinica/${idClinica}/dashboardFinanceiro`}
+            className={({ isActive }) =>
+              `flex items-center gap-3 rounded-lg px-3 py-2 transition-all finanças ${
+                isActive
+                  ? "bg-accent text-accent-foreground"
+                  : "text-muted-foreground hover:bg-muted/50"
+              }`
+            }
+          >
+            <AccountBalanceIcon className="h-5 w-5" />
+            {openMenu && <span>Minhas finanças</span>}
+          </NavLink>
+
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  className="flex items-center gap-3 rounded-lg px-3 py-2 transition-all text-muted-foreground hover:bg-muted/50"
+                  className="flex items-center pacientes gap-3 rounded-lg px-3 py-2 transition-all text-muted-foreground hover:bg-muted/50"
                   variant={"ghost"}
                   onClick={() => setOpenPacientes((prevState) => !prevState)}
                 >
@@ -300,7 +371,7 @@ const Interna = () => {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  className="flex items-center gap-3 rounded-lg px-3 py-2 transition-all text-muted-foreground hover:bg-muted/50"
+                  className="flex items-center funcionarios gap-3 rounded-lg px-3 py-2 transition-all text-muted-foreground hover:bg-muted/50"
                   variant={"ghost"}
                   onClick={() => setOpenServices((prevState) => !prevState)}
                 >
@@ -340,7 +411,7 @@ const Interna = () => {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  className="flex items-center gap-3 rounded-lg px-3 py-2 transition-all text-muted-foreground hover:bg-muted/50"
+                  className="flex items-center gap-3 agendamentos rounded-lg px-3 py-2 transition-all text-muted-foreground hover:bg-muted/50"
                   variant={"ghost"}
                   onClick={() => setOpenAgendamento((prevState) => !prevState)}
                 >
