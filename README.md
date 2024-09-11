@@ -4,6 +4,9 @@
 
 [Weverton Cintra](https://github.com/WevertonCintra) | [Pedro Souza](https://github.com/iShouldz) | [Luiz Fellipe](https://github.com/Luizfdarb) | [Lucas Romeiro](https://github.com/lucas-romeiro) | [Romário Abílio](https://github.com/romarioabilio)
 
+## Qualidade do codigo
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/744123118cf94c6c83aac3491a6dc8df)](https://app.codacy.com/gh/iShouldz/toDeploy/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
+
 ## Sobre o Projeto
 
 Front-end do VetCarePro, aplicação Web da disciplina Projeto de Desenvolvimento de Software.
