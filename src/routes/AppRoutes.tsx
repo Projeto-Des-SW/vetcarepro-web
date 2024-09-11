@@ -20,7 +20,7 @@ import Me from "@/pages/Me/Me";
 import CadastroFuncionario from "@/pages/CadastroFuncionario/CadastroFuncionario";
 import ListagemFuncionario from "@/pages/listagemFuncionario/listagemFuncionario";
 import ListagemAgendamento from "@/pages/ListagemAgendamento/ListagemAgendamento";
-
+import DashboardFinanceiro from "@/pages/DashboardFinanceiro/DashboardFinanceiro";
 
 const AppRoutes = () => {
   const user = useUserSelector((state) => state.user);
@@ -43,6 +43,10 @@ const AppRoutes = () => {
             </Route>
 
             <Route path="internalClinica/:idClinica" element={<Interna />}>
+              <Route
+                path="dashboardFinanceiro"
+                element={<DashboardFinanceiro />}
+              />
               <Route path="detailsPaciente/:id" element={<DetailsPaciente />} />
               <Route path="detailsServico/:id" element={<DetailsServico />} />
 
