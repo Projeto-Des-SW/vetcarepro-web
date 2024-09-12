@@ -35,7 +35,7 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchUserData } from "@/Services/GetServices";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import Joyride, { CallBackProps, STATUS, Step } from "react-joyride";
-
+import PetsIcon from '@mui/icons-material/Pets';
 const Interna = () => {
   const navigate = useNavigate();
   const user = useUserSelector((state) => state.user);
@@ -152,7 +152,7 @@ const Interna = () => {
                   }`
                 }
               >
-                <PersonAddIcon sx={{ fontSize: "100px" }} />
+                <PetsIcon sx={{ fontSize: "100px" }} />
                 <span>Cadastrar Pacientes</span>
               </NavLink>
             </DialogDescription>
@@ -355,7 +355,7 @@ const Interna = () => {
                   variant={"ghost"}
                   onClick={() => setOpenPacientes((prevState) => !prevState)}
                 >
-                  <PersonIcon />
+                  <PetsIcon />
                   {openMenu && <span>Meus pacientes</span>}
                 </Button>
               </TooltipTrigger>
