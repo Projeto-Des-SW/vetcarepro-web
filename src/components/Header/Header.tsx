@@ -24,7 +24,7 @@ import { IUser } from "@/interfaces/usuario";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { Avatar, AvatarFallback } from "../ui/avatar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "../ui/input";
 const baseUrl = import.meta.env.VITE_URL as string;
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
@@ -33,12 +33,28 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { Separator } from "../ui/separator";
 import { Skeleton } from "../ui/skeleton";
 import { Toaster } from "../ui/sonner";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { Checkbox } from "../ui/checkbox";
 
 const Header = () => {
   const navigate = useNavigate();
   const user = useUserSelector((state) => state.user);
   const dispatch = useDispatch();
   const [openModal, setOpenModal] = useState(false);
+
+  const [isChecked, setIsChecked] = useState(false);
+
+  const handleCheckboxChange = (checked: boolean) => {
+    setIsChecked(checked);
+    console.log(checked); // Aqui imprime o valor no console
+  };
+  console.log(isChecked);
 
   const handleLogout = () => {
     dispatch(logoutUser());
@@ -63,6 +79,19 @@ const Header = () => {
     queryKey: ["userData"],
     queryFn: fetchClinicasList,
   });
+
+  useEffect(() => {
+    if (isChecked) {
+      localStorage.removeItem("joyrideMenu");
+      localStorage.removeItem("joyride");
+    } 
+  }, [isChecked]);
+
+  useEffect(() => {
+    if(!localStorage.getItem('joyride')){
+      setIsChecked(true)
+    }
+  }, [])
 
   return (
     <>
@@ -89,6 +118,22 @@ const Header = () => {
                   <div className="flex gap-4 ">
                     <Input readOnly value={data?.name} />
                     <Input readOnly value={data?.email} />
+                    <div className=" items-center flex space-x-2">
+                      <Checkbox
+                        id="terms1"
+                        checked={isChecked}
+                        onCheckedChange={handleCheckboxChange}
+                      />
+                      <div className="grid gap-1.5 leading-none">
+                        <label
+                          htmlFor="terms1"
+                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        >
+                          Ver tutorial novamente
+                        </label>
+                        
+                      </div>
+                    </div>
                   </div>
 
                   <Button
