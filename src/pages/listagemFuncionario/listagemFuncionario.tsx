@@ -105,10 +105,10 @@ const ListagemFuncionario = () => {
                     <TableCell className="flex justify-end gap-2 ">
                       <Button
                         onClick={() =>
-                          navigate(`../detailsServico/${service.id}`)
+                          navigate(`../editarFuncionario/${service.id}`)
                         }
                       >
-                        Detalhes
+                        Editar
                       </Button>
                       <Button
                         onClick={() => handleDelete(service.id)}

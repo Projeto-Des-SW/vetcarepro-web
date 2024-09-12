@@ -75,6 +75,10 @@ const AppRoutes = () => {
                 element={<CadastrarPaciente mode="edit" />}
               />
               <Route
+                path="editarFuncionario/:id"
+                element={<CadastroFuncionario mode="edit" />}
+              />
+              <Route
                 path="editarServico/:id"
                 element={<CadastrarServico mode="edit" />}
               />
