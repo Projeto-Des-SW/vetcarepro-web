@@ -28,6 +28,7 @@ const AppRoutes = () => {
   return (
     <Routes>
       <Route path="/" element={<Root />}>
+        <Route index element={<Navigate to="/home" />} />
         <Route path="home" element={<Home />} />
         <Route path="pricing" element={<Pricing />} />
         {user.email ? (
@@ -83,7 +84,7 @@ const AppRoutes = () => {
                 element={<CadastrarServico mode="edit" />}
               />
               <Route
-                path="editarAgendamento"
+                path="editarAgendamento/:id"
                 element={<AgendarConsulta mode="edit" />}
               />
             </Route>
