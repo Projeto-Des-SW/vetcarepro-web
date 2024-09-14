@@ -7,14 +7,15 @@ import axios from "axios";
 import Inputs from "@/components/Inputs/Inputs";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import dogHappy from "../../assets/dogHappy.png";
-import dogPuto from "../../assets/dogPuto.png";
-import dogTriste from "../../assets/dogTriste.png";
 import { useUserSelector } from "@/store/hooks";
 import { Card } from "@/components/ui/card";
 import { useDispatch } from "react-redux";
 import { addNotification } from "@/store/user-slice";
 import { formattedDate, formattedTime } from "@/utils/const.utils";
+import { Hospital, Edit3 } from "lucide-react"; // Icones
+import dogHappy from "../../assets/dogHappy.png";
+import dogPuto from "../../assets/dogPuto.png";
+import dogTriste from "../../assets/dogTriste.png";
 
 interface IFromClinica {
   title: string;
@@ -31,12 +32,21 @@ interface ICrudClinia {
 
 const cadastroSchema = yup
   .object({
-    title: yup.string().required(),
-    description: yup.string().required(),
-    email: yup.string().required(),
-    phone: yup.string().required(),
-    address: yup.string().required(),
-    cnpj: yup.string().required(),
+    title: yup.string().required("Nome da clínica é obrigatório"),
+    description: yup.string().required("Descrição da clínica é obrigatória"),
+    email: yup
+      .string()
+      .email("Formato de e-mail inválido")
+      .required("E-mail é obrigatório"),
+    phone: yup
+      .string()
+      .matches(/^\d{10,11}$/, "Número de telefone inválido")
+      .required("Telefone é obrigatório"),
+    address: yup.string().required("Endereço é obrigatório"),
+    cnpj: yup
+      .string()
+      .matches(/^\d{14}$/, "CNPJ inválido")
+      .required("CNPJ é obrigatório"),
   })
   .required();
 
@@ -100,7 +110,7 @@ const CadastroClinica = ({ mode = "create" }: ICrudClinia) => {
       data,
     })
       .then((response) => {
-        const successMessage = `Clinica - ${response.statusText}`;
+        const successMessage = `Clínica - ${response.statusText}`;
         const successDescription = `Data: ${formattedDate}, Hora: ${formattedTime}`;
 
         toast(`${mode} realizado com sucesso`, {
@@ -127,87 +137,112 @@ const CadastroClinica = ({ mode = "create" }: ICrudClinia) => {
   };
 
   return (
-    <Card className="flex p-8 w-fit items-center gap-4">
-      <form
-        onSubmit={handleSubmit(handleSubmitClinica)}
-        className="flex flex-col w-[500px] gap-4"
-      >
-        <h1>{mode === "create" ? "Cadastre" : "Edite"} sua clínica</h1>
+    <div className="h-fit">
+      <Card className="flex p-8 w-fit bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl h-fit items-center gap-4">
+        <form
+          onSubmit={handleSubmit(handleSubmitClinica)}
+          className="flex flex-col w-[500px] gap-4"
+        >
+          <header className="text-center m-4">
+            <div className="inline-block bg-primary rounded-full p-4 mb-6 shadow-lg">
+              <Hospital className="w-12 h-12 text-primary-foreground" />
+            </div>
+            <h1 className="text-4xl font-bold text-primary mb-2">
+              {mode === "create" ? "Cadastro" : "Edição"} de Clínica
+            </h1>
+            <p className="text-gray-600">
+              Gerencie as informações da sua clínica
+            </p>
+          </header>
+          {/* <h2 className="text-3xl font-semibold text-primary mb-6 flex items-center">
+            {mode === "create" ? (
+              <Hospital className="w-6 h-6 mr-2 text-red-500" />
+            ) : (
+              <Edit3 className="w-6 h-6 mr-2 text-red-500" />
+            )}
+            {mode === "create" ? "Cadastre" : "Edite"} sua clínica
+          </h2> */}
 
-        <div className="flex gap-4">
-          <Inputs
-            label="Nome da clínica"
-            name="title"
-            placeholder="Digite o nome da clínica"
-            register={register}
-            error={errors}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Inputs
+              label="Nome da clínica"
+              name="title"
+              placeholder="Digite o nome da clínica"
+              register={register}
+              error={errors}
+              className="w-full"
+            />
+            <Inputs
+              label="Descrição da clínica"
+              name="description"
+              placeholder="Digite a descrição"
+              register={register}
+              error={errors}
+              className="w-full"
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Inputs
+              label="E-mail"
+              name="email"
+              type="email"
+              placeholder="Digite o e-mail da clínica"
+              register={register}
+              error={errors}
+            />
+            <Inputs
+              label="Telefone"
+              name="phone"
+              placeholder="Digite o telefone"
+              register={register}
+              error={errors}
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Inputs
+              label="CNPJ"
+              name="cnpj"
+              placeholder="Digite o CNPJ da clínica"
+              register={register}
+              error={errors}
+              type="text"
+            />
+            <Inputs
+              label="Endereço"
+              name="address"
+              placeholder="Digite o endereço da clínica"
+              register={register}
+              error={errors}
+              type="text"
+            />
+          </div>
+
+          <Button type="submit" className="w-full">
+            {mode === "create" ? "Criar" : "Salvar alterações"}
+          </Button>
+
+          {errorForm && <div className="text-red-500 mt-2">{errorForm}</div>}
+        </form>
+        <div className="flex flex-col items-center justify-center">
+          <img
+            src={
+              errorCount == 1 ? dogTriste : errorCount > 0 ? dogPuto : dogHappy
+            }
+            alt="Status do formulário"
+            className="w-full max-w-[400px] h-auto"
           />
-          <Inputs
-            label="Descrição da clínica"
-            name="description"
-            placeholder="Digite a descrição da clínica"
-            register={register}
-            error={errors}
-          />
+          <p className="text-center mt-4 font-semibold">
+            {errorCount == 1
+              ? "Corrige esse erro ..."
+              : errorCount > 0
+              ? "Quantos erros, me ajuda ai!"
+              : "Tudo certo, como deve ser!"}
+          </p>
         </div>
-
-        <div className="flex gap-4">
-          <Inputs
-            label="Email da clínica"
-            name="email"
-            placeholder="Digite o email da clínica"
-            register={register}
-            error={errors}
-          />
-          <Inputs
-            label="Telefone da clínica"
-            name="phone"
-            placeholder="Digite o telefone da clínica"
-            register={register}
-            error={errors}
-          />
-        </div>
-
-        <div className="flex gap-4">
-          <Inputs
-            label="CNPJ"
-            name="cnpj"
-            placeholder="Digite o CNPJ da clínica"
-            register={register}
-            error={errors}
-          />
-          <Inputs
-            label="Endereço"
-            name="address"
-            placeholder="Digite o endereço da clínica"
-            register={register}
-            error={errors}
-          />
-        </div>
-
-        <Button type="submit">
-          {mode === "create" ? "Criar" : "Salvar alterações"}
-        </Button>
-
-        {errorForm && <div className="text-red-500">{errorForm}</div>}
-      </form>
-      <picture className="flex h-auto items-center flex-col ">
-        <img
-          src={
-            errorCount == 1 ? dogTriste : errorCount > 0 ? dogPuto : dogHappy
-          }
-          alt="Imagem de boas-vindas"
-        />
-
-        <h1>
-          {errorCount == 1
-            ? "Corrige esse erro ..."
-            : errorCount > 0
-            ? "Quantos erros, me ajuda ai!"
-            : "Tudo certo, como deve ser!"}
-        </h1>
-      </picture>
-    </Card>
+      </Card>
+    </div>
   );
 };
 

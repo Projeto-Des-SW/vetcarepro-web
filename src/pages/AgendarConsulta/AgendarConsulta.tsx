@@ -29,6 +29,10 @@ import { useDispatch } from "react-redux";
 import { addNotification } from "@/store/user-slice";
 import { formattedDate, formattedTime } from "@/utils/const.utils";
 import { useState } from "react";
+import { Newspaper, PawPrint, SquareScissors } from "lucide-react";
+import dogHappy from "../../assets/dogHappy.png";
+import dogPuto from "../../assets/dogPuto.png";
+import dogTriste from "../../assets/dogTriste.png";
 
 const AgendamentoSchema = yup
   .object({
@@ -44,8 +48,9 @@ const AgendarConsulta = ({ mode = "create" }: { mode?: "create" | "edit" }) => {
   const { idClinica, id } = useParams();
   const user = useUserSelector((state) => state.user);
   const baseUrl = import.meta.env.VITE_URL as string;
-  const [errorForm, setErrorForm] = useState('')
-  const dispatch = useDispatch()
+  const [errorForm, setErrorForm] = useState("");
+
+  const dispatch = useDispatch();
 
   const {
     handleSubmit,
@@ -54,7 +59,7 @@ const AgendarConsulta = ({ mode = "create" }: { mode?: "create" | "edit" }) => {
   } = useForm({
     resolver: yupResolver(AgendamentoSchema),
   });
-
+  const errorCount = Object.keys(errors).length;
   console.log(errors);
 
   const fetchPacientsList = async (): Promise<IPet[]> => {
@@ -174,146 +179,181 @@ const AgendarConsulta = ({ mode = "create" }: { mode?: "create" | "edit" }) => {
   }
 
   return (
-    <Card className="flex p-8 w-fit h-fit items-center gap-4">
-      <form
-        onSubmit={handleSubmit(handleSubmitAgendamento)}
-        className="flex flex-col items w-[500px] gap-4 justify-center"
-      >
-        <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0">
-          {mode === "create" ? "Novo" : "Edite seu"} agendamento
-        </h2>
+    <div className="h-fit">
+      <Card className="flex p-8 w-fit bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl h-fit items-center gap-4">
+        <form
+          onSubmit={handleSubmit(handleSubmitAgendamento)}
+          className="flex flex-col w-[500px] gap-4"
+        >
+          <header className="text-center m-4">
+            <div className="inline-block bg-primary rounded-full p-4 mb-6 shadow-lg">
+              <Newspaper className="w-12 h-12 text-primary-foreground" />
+            </div>
+            <h1 className="text-4xl font-bold text-primary mb-2">
+              {mode === "create" ? "Agendamento" : "Edição"} de consulta
+            </h1>
+            <p className="text-gray-600">
+              Gerencie as informações da sua clínica
+            </p>
+          </header>
+          {/* <h2 className="text-3xl font-semibold text-primary mb-6 flex items-center">
+            {mode === "create" ? (
+              <PawPrint className="w-6 h-6 mr-2 text-red-500" />
+            ) : (
+              <SquareScissors className="w-6 h-6 mr-2 text-red-500" />
+            )}
+            {mode === "create" ? "Novo" : "Edite seu"} agendamento
+          </h2> */}
 
-        <Controller
-          name="patient_id"
-          control={control}
-          render={({ field }) => (
-            <Select onValueChange={field.onChange} value={field.value}>
-              <SelectTrigger>
-                <SelectValue placeholder="Selecione um paciente" />
-              </SelectTrigger>
-              <SelectContent>
-                {pacientes?.map((paciente) => (
-                  <SelectItem key={paciente.id} value={paciente.id || ""}>
-                    {paciente.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          )}
-        />
-        {errors.patient_id && <p>{errors.patient_id.message}</p>}
-
-        <Controller
-          name="service_id"
-          control={control}
-          render={({ field }) => (
-            <Select onValueChange={field.onChange} value={field.value}>
-              <SelectTrigger>
-                <SelectValue placeholder="Selecione o serviço a ser prestado" />
-              </SelectTrigger>
-              <SelectContent>
-                {services?.map((service) => (
-                  <SelectItem key={service.id} value={service.id || ""}>
-                    {service.title}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          )}
-        />
-        {errors.service_id && <p>{errors.service_id.message}</p>}
-
-        <Controller
-          name="date"
-          control={control}
-          render={({ field: { onChange, value } }) => (
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant={"outline"}
-                  className={
-                    "justify-start text-left font-normal" +
-                    (!value && " text-muted-foreground")
-                  }
-                >
-                  {value ? (
-                    format(new Date(value), "PPP")
-                  ) : (
-                    <span>Selecione a data da consulta</span>
-                  )}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0">
-                <Calendar
-                  mode="single"
-                  selected={value ? new Date(value) : undefined}
-                  onSelect={(selectedDate) => {
-                    if (selectedDate) {
-                      onChange(selectedDate);
-                    }
-                  }}
-                  initialFocus
-                />
-              </PopoverContent>
-            </Popover>
-          )}
-        />
-
-        <Controller
-          name="horario"
-          control={control}
-          render={({ field }) => (
-            <RadioGroup
-              value={field.value}
-              onValueChange={(value) => field.onChange(value)}
-              className="flex items-center justify-center flex-col"
-            >
-              <h1>Selecione um horário</h1>
-              <div className="flex gap-4">
-                <div className="flex flex-wrap gap-4">
-                  {[
-                    "08:00",
-                    "09:00",
-                    "10:00",
-                    "11:00",
-                    "12:00",
-                    "13:00",
-                    "14:00",
-                    "15:00",
-                    "16:00",
-                    "17:00",
-                  ].map((time) => (
-                    <div key={time}>
-                      <label
-                        htmlFor={time}
-                        className={`px-4 py-2 border flex justify-center w-[100px] items-center rounded-lg cursor-pointer transition-all ${
-                          field.value === time
-                            ? "bg-black text-white"
-                            : "bg-white text-black hover:bg-gray-200"
-                        }`}
-                      >
-                        <RadioGroupItem
-                          value={time}
-                          id={time}
-                          className="hidden"
-                        />
-                        {time}
-                      </label>
-                    </div>
+          <Controller
+            name="patient_id"
+            control={control}
+            render={({ field }) => (
+              <Select onValueChange={field.onChange} value={field.value}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione um paciente" />
+                </SelectTrigger>
+                <SelectContent>
+                  {pacientes?.map((paciente) => (
+                    <SelectItem key={paciente.id} value={paciente.id || ""}>
+                      {paciente.name}
+                    </SelectItem>
                   ))}
+                </SelectContent>
+              </Select>
+            )}
+          />
+          {errors.patient_id && <p>{errors.patient_id.message}</p>}
+
+          <Controller
+            name="service_id"
+            control={control}
+            render={({ field }) => (
+              <Select onValueChange={field.onChange} value={field.value}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione o serviço a ser prestado" />
+                </SelectTrigger>
+                <SelectContent>
+                  {services?.map((service) => (
+                    <SelectItem key={service.id} value={service.id || ""}>
+                      {service.title}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          />
+          {errors.service_id && <p>{errors.service_id.message}</p>}
+
+          <Controller
+            name="date"
+            control={control}
+            render={({ field: { onChange, value } }) => (
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant={"outline"}
+                    className={
+                      "justify-start text-left font-normal" +
+                      (!value && " text-muted-foreground")
+                    }
+                  >
+                    {value ? (
+                      format(new Date(value), "PPP")
+                    ) : (
+                      <span>Selecione a data da consulta</span>
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  <Calendar
+                    mode="single"
+                    selected={value ? new Date(value) : undefined}
+                    onSelect={(selectedDate) => {
+                      if (selectedDate) {
+                        onChange(selectedDate);
+                      }
+                    }}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+            )}
+          />
+
+          <Controller
+            name="horario"
+            control={control}
+            render={({ field }) => (
+              <RadioGroup
+                value={field.value}
+                onValueChange={(value) => field.onChange(value)}
+                className="flex items-center justify-center flex-col"
+              >
+                <h1>Selecione um horário</h1>
+                <div className="flex gap-4">
+                  <div className="flex flex-wrap gap-4">
+                    {[
+                      "08:00",
+                      "09:00",
+                      "10:00",
+                      "11:00",
+                      "12:00",
+                      "13:00",
+                      "14:00",
+                      "15:00",
+                      "16:00",
+                      "17:00",
+                    ].map((time) => (
+                      <div key={time}>
+                        <label
+                          htmlFor={time}
+                          className={`px-4 py-2 border flex justify-center w-[100px] items-center rounded-lg cursor-pointer transition-all ${
+                            field.value === time
+                              ? "bg-black text-white"
+                              : "bg-white text-black hover:bg-gray-200"
+                          }`}
+                        >
+                          <RadioGroupItem
+                            value={time}
+                            id={time}
+                            className="hidden"
+                          />
+                          {time}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            </RadioGroup>
-          )}
-        />
+              </RadioGroup>
+            )}
+          />
 
-        {errors.date && <p>{errors.date.message}</p>}
+          {errors.date && <p>{errors.date.message}</p>}
 
-        <Button type="submit">
-          {mode === "create" ? "Criar" : "Salvar alterações"}
-        </Button>
-      </form>
-    </Card>
+          <Button type="submit">
+            {mode === "create" ? "Criar" : "Salvar alterações"}
+          </Button>
+        </form>
+        <p>{errorForm}</p>
+        <div className="flex flex-col items-center justify-center">
+          <img
+            src={
+              errorCount == 1 ? dogTriste : errorCount > 0 ? dogPuto : dogHappy
+            }
+            alt="Status do formulário"
+            className="w-full max-w-[400px] h-auto"
+          />
+          <p className="text-center mt-4 font-semibold">
+            {errorCount == 1
+              ? "Corrige esse erro ..."
+              : errorCount > 0
+              ? "Quantos erros, me ajuda ai!"
+              : "Tudo certo, como deve ser!"}
+          </p>
+        </div>
+      </Card>
+    </div>
   );
 };
 
