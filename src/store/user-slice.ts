@@ -27,6 +27,7 @@ const userSlice = createSlice({
     setCurrentUser(state, action: PayloadAction<UserDataProps>) {
       state.email = action.payload.email;
       state.token = action.payload.token;
+      state.notifications = [{ title: "", description: "" }];
       state.isDarkMode = false;
     },
     logoutUser(state) {
@@ -51,5 +52,5 @@ export const {
   logoutUser,
   addNotification,
   clearNotifications,
-  setDarkMode
+  setDarkMode,
 } = userSlice.actions;

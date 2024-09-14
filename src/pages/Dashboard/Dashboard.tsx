@@ -17,7 +17,7 @@ const Dashboard = () => {
   console.log(user);
 
   return (
-    <section className="flex gap-4 h-full">
+    <section className={`flex gap-4 h-full ${user.isDarkMode && "dark"}`}>
       <aside className="inset-y-0 left-0 z-10 flex w-64 flex-col border-r bg-background sm:flex h-full">
         <div className="flex flex-col items-start gap-4 px-4 py-5">
           <NavLink

@@ -18,11 +18,15 @@ import {
   fetchAgendamentosList,
   fetchPacientsList,
   fetchServiceList,
-} from "@/Services/GetServices";
+} from "@/services/GetServices";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { useEffect, useState } from "react";
-import { splitIntoGroups } from "@/utils/const.utils";
+import {
+  INTERVAL_TIME,
+  PROGRESS_INCREMENT,
+  splitIntoGroups,
+} from "@/utils/const.utils";
 import {
   Pagination,
   PaginationLink,
@@ -51,18 +55,14 @@ import Joyride, { CallBackProps, STATUS, Step } from "react-joyride";
 const DashboardClinica = () => {
   const [searchConsulta, setSearchConsulta] = useState("");
   const [searchServices, setSearchServices] = useState("");
-
   const [isExibirLucro, setIsExibirLucro] = useState(false);
-
   const [progressBar, setProgressBar] = useState(0);
   const [currentPageServices, setCurrentPageServices] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(5);
   const [itemsPerPageServices, setItemsPerPageServices] = useState(5);
-
-  const INTERVAL_TIME = 10000;
-  const PROGRESS_INCREMENT = 100 / (INTERVAL_TIME / 100);
+  const [tourRunning, setTourRunning] = useState(false);
 
   const { idClinica } = useParams();
   const user = useUserSelector((state) => state.user);
@@ -94,8 +94,6 @@ const DashboardClinica = () => {
         "Aqui você pode visualizar e pesquisar os serviços oferecidos por sua clinica, para facilitar o seu dia a dia!",
     },
   ]);
-
-  const [tourRunning, setTourRunning] = useState(false);
 
   useEffect(() => {
     if (localStorage.getItem("joyride")) {
@@ -149,12 +147,24 @@ const DashboardClinica = () => {
     queryFn: () => fetchServiceList(idClinica, user.token),
   });
 
-  const totalPages = splitIntoGroups(
-    (dataAgendamentos ?? [])
-      .sort((a, b) => dayjs(a.date).diff(dayjs()) - dayjs(b.date).diff(dayjs()))
-      .filter((value) => !dayjs(value.date).isBefore(dayjs())),
-    itemsPerPage
-  );
+  if (isPendingAgendamentos || isPendingPacientes || isPendingServices)
+    return <div>loading</div>;
+
+  const totalPages =
+    Array.isArray(dataAgendamentos) && dataAgendamentos.length > 5
+      ? splitIntoGroups(
+          (dataAgendamentos ?? [])
+            .sort(
+              (a, b) =>
+                dayjs(a.date).diff(dayjs()) - dayjs(b.date).diff(dayjs())
+            )
+            .filter((value) => !dayjs(value.date).isBefore(dayjs())),
+          itemsPerPage
+        )
+      : dataAgendamentos
+      ? [dataAgendamentos]
+      : [];
+
   if (isPendingServices)
     return (
       <div>
@@ -176,7 +186,11 @@ const DashboardClinica = () => {
   }, 0);
 
   return (
-    <section className="flex h-full w-full">
+    <section
+      className={`flex h-full w-full overflow-y-auto ${
+        user.isDarkMode && "dark"
+      }`}
+    >
       <Joyride
         steps={steps}
         continuous
@@ -199,7 +213,7 @@ const DashboardClinica = () => {
             ))
           ) : (
             <>
-              <Card className="flex flex-col justify-center total-pacientes-card">
+              <Card className="flex flex-col justify-center total-pacientes-card ">
                 <CardHeader>
                   <CardTitle>Total de pacientes</CardTitle>
                 </CardHeader>
@@ -253,7 +267,11 @@ const DashboardClinica = () => {
                                 exit={{ opacity: 0, y: 20 }}
                                 transition={{ duration: 0.3 }}
                                 className={`${
-                                  currentIndex === index ? "block" : "hidden"
+                                  currentIndex === index
+                                    ? "block"
+                                    : currentIndex !== index
+                                    ? "hidden"
+                                    : "block"
                                 } pl-4`}
                               >
                                 Paciente: {item.patient.name} -{" "}
@@ -286,13 +304,11 @@ const DashboardClinica = () => {
                                 )}
                                 <Progress value={progressBar} />
                               </motion.div>
-                              
                             ))
                           ) : (
                             <p className="m-4">Sem dados</p>
                           )}
                         </CarouselContent>
-                        
                       </Carousel>
                     </>
                   )}
@@ -367,6 +383,7 @@ const DashboardClinica = () => {
                       <CardTitle>Consultas</CardTitle>{" "}
                       <input
                         type="text"
+                        className={`bg-dark ${user.isDarkMode && "bg-dark"}`}
                         placeholder="Pesquisar consultas"
                         onChange={(e) => setSearchConsulta(e.target.value)}
                       />
@@ -385,28 +402,48 @@ const DashboardClinica = () => {
                           <SelectItem
                             key={5}
                             value="5"
-                            disabled={dataAgendamentos?.length < 5}
+                            disabled={
+                              !(
+                                Array.isArray(dataAgendamentos) &&
+                                dataAgendamentos.length >= 5
+                              )
+                            }
                           >
                             5
                           </SelectItem>
                           <SelectItem
                             key={7}
                             value="7"
-                            disabled={dataAgendamentos?.length < 5}
+                            disabled={
+                              !(
+                                Array.isArray(dataAgendamentos) &&
+                                dataAgendamentos.length >= 7
+                              )
+                            }
                           >
                             7
                           </SelectItem>
                           <SelectItem
                             key={10}
                             value="10"
-                            disabled={dataAgendamentos?.length < 5}
+                            disabled={
+                              !(
+                                Array.isArray(dataAgendamentos) &&
+                                dataAgendamentos.length >= 10
+                              )
+                            }
                           >
                             10
                           </SelectItem>
                           <SelectItem
                             key={20}
                             value="20"
-                            disabled={dataAgendamentos?.length < 5}
+                            disabled={
+                              !(
+                                Array.isArray(dataAgendamentos) &&
+                                dataAgendamentos.length >= 20
+                              )
+                            }
                           >
                             20
                           </SelectItem>
@@ -484,7 +521,7 @@ const DashboardClinica = () => {
                       }
                     />
 
-                    {totalPages.map((_item, index) => (
+                    {totalPages[0].map((_item, index) => (
                       <PaginationLink
                         key={index}
                         onClick={() => setCurrentPage(index)}
@@ -496,7 +533,7 @@ const DashboardClinica = () => {
 
                     <PaginationNext
                       onClick={() =>
-                        currentPage !== totalPages.length - 1 &&
+                        currentPage !== totalPages[0].length - 1 &&
                         setCurrentPage((prevState) => prevState + 1)
                       }
                     />
@@ -544,28 +581,36 @@ const DashboardClinica = () => {
                         <SelectItem
                           key={5}
                           value="5"
-                          disabled={services?.length < 5}
+                          disabled={
+                            !Array.isArray(services) || services.length < 5
+                          }
                         >
                           5
                         </SelectItem>
                         <SelectItem
                           key={7}
                           value="7"
-                          disabled={services?.length < 7}
+                          disabled={
+                            !Array.isArray(services) || services.length < 7
+                          }
                         >
                           7
                         </SelectItem>
                         <SelectItem
                           key={10}
                           value="10"
-                          disabled={services?.length < 10}
+                          disabled={
+                            !Array.isArray(services) || services.length < 10
+                          }
                         >
                           10
                         </SelectItem>
                         <SelectItem
                           key={20}
                           value="20"
-                          disabled={services?.length < 20}
+                          disabled={
+                            !Array.isArray(services) || services.length < 20
+                          }
                         >
                           20
                         </SelectItem>

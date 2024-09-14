@@ -11,7 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useNavigate, useParams } from "react-router-dom";
 import { useUserSelector } from "@/store/hooks";
 import { IService } from "@/interfaces/servico";
-import { fetchServiceItemList } from "@/Services/GetServices";
+import { fetchServiceItemList } from "@/services/GetServices";
 import { Separator } from "@/components/ui/separator";
 import dayjs from "dayjs";
 

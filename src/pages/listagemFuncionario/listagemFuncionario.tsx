@@ -22,7 +22,7 @@ import { Separator } from "@/components/ui/separator";
 import { splitIntoGroups } from "@/utils/const.utils";
 import { useQuery } from "@tanstack/react-query";
 import { IFuncionario } from "@/interfaces/funcionario";
-import { fetchFuncionariosList } from "@/Services/GetServices";
+import { fetchFuncionariosList } from "@/services/GetServices";
 
 const ListagemFuncionario = () => {
   const navigate = useNavigate();

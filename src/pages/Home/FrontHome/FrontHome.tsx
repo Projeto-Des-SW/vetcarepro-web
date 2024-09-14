@@ -3,7 +3,7 @@ import boasVindas from "../../../assets/boasVindas.png";
 
 const FrontHome = () => {
   return (
-    <div className="flex justify-center items-center w-full h-[70vh] box-border gap-[70px]">
+    <div className="flex justify-center items-center w-full h-[70vh] box-border gap-[70px] bg-white">
       <div className="w-[33%] p-8 flex flex-col gap-4">
         <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
           Gerencie sua clínica veterinária com o VetCare

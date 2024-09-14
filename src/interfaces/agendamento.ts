@@ -9,6 +9,15 @@ export interface IAgendamento {
   date: Date;
 }
 
+export interface IFromClinica {
+  title: string;
+  description: string;
+  email: string;
+  phone: string;
+  address: string;
+  cnpj: string;
+}
+
 export interface IAgendamentoGet {
   clinic: IClinicaList;
   clinic_id: string;
@@ -20,4 +29,8 @@ export interface IAgendamentoGet {
   service: IService;
   service_id: string;
   updated_at: string;
+}
+
+export interface ICrudClinia {
+  mode?: "create" | "edit";
 }

@@ -19,42 +19,46 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useDispatch } from "react-redux";
-import { clearNotifications, logoutUser } from "@/store/user-slice";
-import { IUser } from "@/interfaces/usuario";
-import axios from "axios";
+import {
+  clearNotifications,
+  logoutUser,
+  setDarkMode,
+} from "@/store/user-slice";
+
 import { useQuery } from "@tanstack/react-query";
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import { useEffect, useState } from "react";
 import { Input } from "../ui/input";
-const baseUrl = import.meta.env.VITE_URL as string;
+
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Separator } from "../ui/separator";
 import { Skeleton } from "../ui/skeleton";
 import { Toaster } from "../ui/sonner";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
+
 import { Checkbox } from "../ui/checkbox";
+import { Switch } from "../ui/switch";
+import { Label } from "../ui/label";
+import { fetchDataUser } from "@/services/GetServices";
 
 const Header = () => {
   const navigate = useNavigate();
   const user = useUserSelector((state) => state.user);
   const dispatch = useDispatch();
   const [openModal, setOpenModal] = useState(false);
-
   const [isChecked, setIsChecked] = useState(false);
 
   const handleCheckboxChange = (checked: boolean) => {
     setIsChecked(checked);
-    console.log(checked); // Aqui imprime o valor no console
+    console.log(checked);
   };
-  console.log(isChecked);
+
+  const handleSetDarkMode = () => {
+    dispatch(setDarkMode());
+  };
+
+  console.log(user.isDarkMode);
 
   const handleLogout = () => {
     dispatch(logoutUser());
@@ -66,32 +70,23 @@ const Header = () => {
     dispatch(clearNotifications());
   };
 
-  const fetchClinicasList = async (): Promise<IUser> => {
-    const response = await axios.get(`${baseUrl}/me`, {
-      headers: {
-        Authorization: `Bearer ${user.token}`,
-      },
-    });
-    return response.data;
-  };
-
   const { data, isPending } = useQuery({
     queryKey: ["userData"],
-    queryFn: fetchClinicasList,
+    queryFn: () => fetchDataUser(user.token),
   });
 
   useEffect(() => {
     if (isChecked) {
       localStorage.removeItem("joyrideMenu");
       localStorage.removeItem("joyride");
-    } 
+    }
   }, [isChecked]);
 
   useEffect(() => {
-    if(!localStorage.getItem('joyride')){
-      setIsChecked(true)
+    if (!localStorage.getItem("joyride")) {
+      setIsChecked(true);
     }
-  }, [])
+  }, []);
 
   return (
     <>
@@ -100,9 +95,11 @@ const Header = () => {
           open={openModal}
           onOpenChange={() => setOpenModal((prevState) => !prevState)}
         >
-          <DialogContent>
+          <DialogContent className={`${user.isDarkMode && "dark"}`}>
             <DialogHeader>
-              <DialogTitle>Minhas informações</DialogTitle>
+              <DialogTitle className={`${user.isDarkMode && "text-white"}`}>
+                Minhas informações
+              </DialogTitle>
               <DialogDescription>
                 <div className="  rounded-lg flex flex-col items-center p-4 gap-6">
                   <picture>
@@ -131,7 +128,6 @@ const Header = () => {
                         >
                           Ver tutorial novamente
                         </label>
-                        
                       </div>
                     </div>
                   </div>
@@ -196,7 +192,7 @@ const Header = () => {
                 <>
                   <NavigationMenu>
                     <NavigationMenuList>
-                      <NavigationMenuItem className="">
+                      <NavigationMenuItem>
                         <NavigationMenuTrigger className="flex items-center gap-4 p-2 text-white bg-transparent">
                           {user.notifications.length <= 1 ? (
                             <NotificationsNoneIcon />
@@ -206,7 +202,11 @@ const Header = () => {
                         </NavigationMenuTrigger>
 
                         <NavigationMenuContent className="flex flex-col w-full">
-                          <ul className="flex flex-col w-[250px] gap-3 p-4">
+                          <ul
+                            className={`flex flex-col w-[200px] gap-3 p-4 ${
+                              user.isDarkMode && "dark bg-black text-white"
+                            }`}
+                          >
                             {user.notifications.map((notification, index) => (
                               <li key={index}>
                                 <p>{notification.title}</p>
@@ -239,7 +239,11 @@ const Header = () => {
                           Olá, {data?.name}
                         </NavigationMenuTrigger>
                         <NavigationMenuContent className="flex flex-col w-full">
-                          <ul className="flex flex-col w-[200px] gap-3 p-4">
+                          <ul
+                            className={`flex flex-col w-[200px] gap-3 p-4 ${
+                              user.isDarkMode && "dark bg-black text-white"
+                            }`}
+                          >
                             <NavigationMenuLink
                               onClick={() =>
                                 navigate("dashboard/listagemClinica")
@@ -256,6 +260,18 @@ const Header = () => {
                             >
                               Profile
                             </NavigationMenuLink>
+                            <Label
+                              htmlFor="airplane-mode"
+                              className="flex items-center gap-2"
+                            >
+                              Dark mode
+                              <Switch
+                                id="airplane-mode"
+                                checked={user.isDarkMode}
+                                onCheckedChange={handleSetDarkMode}
+                              />
+                            </Label>
+
                             <Separator />
                             <NavigationMenuLink
                               onClick={handleLogout}

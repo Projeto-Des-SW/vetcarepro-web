@@ -5,6 +5,7 @@ import { IClinicaList } from "@/interfaces/clinicas";
 import { IFuncionario } from "@/interfaces/funcionario";
 import { IAgendamentoGet } from "@/interfaces/agendamento";
 import { Iuser } from "@/interfaces/user";
+import { IUser } from "@/interfaces/usuario";
 const baseUrl = import.meta.env.VITE_URL as string;
 
 //Obter a lista de serviços
@@ -78,17 +79,12 @@ export const fetchAgendamentosList = async (
 };
 
 //Obter detalhes do usuario
-export const fetchUserData = async (
-  token?: string
-): Promise<Iuser> => {
-  const response = await axios.get(
-    `${baseUrl}/me`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+export const fetchUserData = async (token?: string): Promise<Iuser> => {
+  const response = await axios.get(`${baseUrl}/me`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
   return response.data;
 };
 
@@ -106,5 +102,15 @@ export const fetchServiceItemList = async (
       },
     }
   );
+  return response.data;
+};
+
+//Obter detalhes do usuario
+export const fetchDataUser = async (token?: string): Promise<IUser> => {
+  const response = await axios.get(`${baseUrl}/me`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
   return response.data;
 };

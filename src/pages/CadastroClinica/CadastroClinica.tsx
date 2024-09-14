@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import Inputs from "@/components/Inputs/Inputs";
@@ -12,43 +11,12 @@ import { Card } from "@/components/ui/card";
 import { useDispatch } from "react-redux";
 import { addNotification } from "@/store/user-slice";
 import { formattedDate, formattedTime } from "@/utils/const.utils";
-import { Hospital, Edit3 } from "lucide-react"; // Icones
+import { Hospital } from "lucide-react"; 
 import dogHappy from "../../assets/dogHappy.png";
 import dogPuto from "../../assets/dogPuto.png";
 import dogTriste from "../../assets/dogTriste.png";
-
-interface IFromClinica {
-  title: string;
-  description: string;
-  email: string;
-  phone: string;
-  address: string;
-  cnpj: string;
-}
-
-interface ICrudClinia {
-  mode?: "create" | "edit";
-}
-
-const cadastroSchema = yup
-  .object({
-    title: yup.string().required("Nome da clínica é obrigatório"),
-    description: yup.string().required("Descrição da clínica é obrigatória"),
-    email: yup
-      .string()
-      .email("Formato de e-mail inválido")
-      .required("E-mail é obrigatório"),
-    phone: yup
-      .string()
-      .matches(/^\d{10,11}$/, "Número de telefone inválido")
-      .required("Telefone é obrigatório"),
-    address: yup.string().required("Endereço é obrigatório"),
-    cnpj: yup
-      .string()
-      .matches(/^\d{14}$/, "CNPJ inválido")
-      .required("CNPJ é obrigatório"),
-  })
-  .required();
+import { cadastroClinicaSchema } from "@/utils/schemas.utils";
+import { ICrudClinia, IFromClinica } from "@/interfaces/agendamento";
 
 const CadastroClinica = ({ mode = "create" }: ICrudClinia) => {
   const { id } = useParams();
@@ -63,7 +31,7 @@ const CadastroClinica = ({ mode = "create" }: ICrudClinia) => {
     formState: { errors },
     reset,
   } = useForm<IFromClinica>({
-    resolver: yupResolver(cadastroSchema),
+    resolver: yupResolver(cadastroClinicaSchema),
   });
 
   const errorCount = Object.keys(errors).length;
@@ -78,7 +46,7 @@ const CadastroClinica = ({ mode = "create" }: ICrudClinia) => {
         })
         .then((response) => {
           const clinicaData = response.data;
-          reset(clinicaData); // Preenche o formulário com os dados da clínica
+          reset(clinicaData);
         })
         .catch((error) => {
           console.error("Erro ao buscar dados da clínica:", error);

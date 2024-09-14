@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import Inputs from "@/components/Inputs/Inputs";
@@ -16,19 +15,9 @@ import { useDispatch } from "react-redux";
 import { addNotification } from "@/store/user-slice";
 import { formattedDate, formattedTime } from "@/utils/const.utils";
 import { IFuncionario } from "@/interfaces/funcionario";
-import { UserRoundPen, UserRoundPlus } from "lucide-react";
-
-interface ICrudClinia {
-  mode?: "create" | "edit";
-}
-
-const cadastroSchema = yup
-  .object({
-    name: yup.string().required(),
-    email: yup.string().required(),
-    password: yup.string().required(),
-  })
-  .required();
+import { UserRoundPlus } from "lucide-react";
+import { cadastroSchema } from "@/utils/schemas.utils";
+import { ICrudClinia } from "@/interfaces/agendamento";
 
 const CadastroFuncionario = ({ mode = "create" }: ICrudClinia) => {
   const { idClinica, id } = useParams();

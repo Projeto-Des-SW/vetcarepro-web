@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useParams } from "react-router-dom";
@@ -24,22 +23,11 @@ import {
 } from "@/components/ui/select";
 import Inputs from "@/components/Inputs/Inputs";
 import { Label } from "@/components/ui/label";
-import { HandPlatter, Hospital } from "lucide-react";
+import { Hospital } from "lucide-react";
+import { serviceSchema } from "@/utils/schemas.utils";
+import { ICrudClinia } from "@/interfaces/agendamento";
 
-const petSchema = yup
-  .object({
-    clinic_id: yup.string(),
-    title: yup.string().required("Pet name is required"),
-    type: yup.string().required("Service type is required"),
-    amount: yup.string().required("Amount is required"),
-  })
-  .required();
-
-const CadastrarServico = ({
-  mode = "create",
-}: {
-  mode?: "create" | "edit";
-}) => {
+const CadastrarServico = ({ mode = "create" }: ICrudClinia) => {
   const { idClinica, id } = useParams();
   const user = useUserSelector((state) => state.user);
   const baseUrl = import.meta.env.VITE_URL as string;
@@ -53,7 +41,7 @@ const CadastrarServico = ({
     reset,
     setValue,
   } = useForm<IService>({
-    resolver: yupResolver(petSchema),
+    resolver: yupResolver(serviceSchema),
   });
 
   useEffect(() => {

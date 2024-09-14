@@ -2,7 +2,7 @@ import depoimentos from "../../../assets/depoimentos.png";
 
 const Depoimentos = () => {
   return (
-    <section className="w-full  md:py-24 py-24">
+    <section className="w-full  md:py-24 py-24 bg-white">
       <div className="container px-4 md:px-6">
         <div className="flex flex-col items-center justify-center space-y-4 text-center">
           <div className="space-y-2">

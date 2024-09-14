@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
 import Inputs from "@/components/Inputs/Inputs";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -14,28 +13,11 @@ import { useDispatch } from "react-redux";
 import { addNotification } from "@/store/user-slice";
 import { Card } from "@/components/ui/card";
 import { PawPrint } from "lucide-react";
-
 import dogHappy from "../../assets/dogHappy.png";
 import dogPuto from "../../assets/dogPuto.png";
 import dogTriste from "../../assets/dogTriste.png";
-const petSchema = yup
-  .object({
-    clinic_id: yup.string(),
-    name: yup.string().required("Pet name is required"),
-    species: yup.string().required("Species is required"),
-    age: yup.string().required("Age is required"),
-    breed: yup.string().required("Breed is required"),
-    guardian_name: yup.string().required("Guardian name is required"),
-    guardian_cpf: yup
-      .string()
-      .required("Guardian CPF is required")
-      .matches(/^\d{11}$/, "Invalid CPF format"),
-    guardian_contact: yup
-      .string()
-      .required("Guardian contact is required")
-      .matches(/^\d{10,11}$/, "Invalid contact number"),
-  })
-  .required();
+import { petSchema } from "@/utils/schemas.utils";
+import { formattedDate, formattedTime } from "@/utils/const.utils";
 
 const CadastrarPaciente = ({ mode = "create" }: ICrud) => {
   const { id, idClinica } = useParams();
@@ -53,6 +35,7 @@ const CadastrarPaciente = ({ mode = "create" }: ICrud) => {
     resolver: yupResolver(petSchema),
   });
   const errorCount = Object.keys(errors).length;
+
   useEffect(() => {
     if (mode === "edit" && id && idClinica) {
       axios
@@ -70,15 +53,6 @@ const CadastrarPaciente = ({ mode = "create" }: ICrud) => {
         });
     }
   }, [mode, id, idClinica, reset, user.token, baseUrl]);
-
-  const now = new Date();
-  const day = now.getDate();
-  const month = now.getMonth() + 1;
-  const year = now.getFullYear();
-  const hours = now.getHours();
-  const minutes = now.getMinutes();
-  const formattedDate = `${day}/${month}/${year}`;
-  const formattedTime = `${hours}:${minutes.toString().padStart(2, "0")}`;
 
   const handleSubmitPaciente: SubmitHandler<IPet> = (data) => {
     const url =

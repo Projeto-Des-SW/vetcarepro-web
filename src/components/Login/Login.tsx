@@ -93,6 +93,7 @@ const Login = () => {
               email: myEmail,
               token: data.token,
               notifications: [],
+              isDarkMode: false,
             })
           );
 
@@ -176,7 +177,6 @@ const Login = () => {
               <Button className="bg-[#4EBA9D]" type="submit">
                 Login
               </Button>
-
             </form>
           </motion.main>
         </CardContent>

@@ -1,9 +1,7 @@
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
 import { Button } from "@/components/ui/button";
 import { useParams } from "react-router-dom";
-import { IPet } from "@/interfaces/paciente";
 import { useUserSelector } from "@/store/hooks";
 import axios from "axios";
 import {
@@ -14,7 +12,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useQuery } from "@tanstack/react-query";
-import { IService } from "@/interfaces/servico";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import {
@@ -33,17 +30,8 @@ import { Newspaper } from "lucide-react";
 import dogHappy from "../../assets/dogHappy.png";
 import dogPuto from "../../assets/dogPuto.png";
 import dogTriste from "../../assets/dogTriste.png";
-import { fetchPacientsList, fetchServiceList } from "@/Services/GetServices";
-
-const AgendamentoSchema = yup
-  .object({
-    clinic_id: yup.string(),
-    patient_id: yup.string().required("Patient ID is required"),
-    service_id: yup.string().required("Service ID is required"),
-    date: yup.date().required("Date is required"),
-    horario: yup.string().required(),
-  })
-  .required();
+import { fetchPacientsList, fetchServiceList } from "@/services/GetServices";
+import { AgendamentoSchema } from "@/utils/schemas.utils";
 
 const AgendarConsulta = ({ mode = "create" }: { mode?: "create" | "edit" }) => {
   const { idClinica, id } = useParams();
@@ -77,7 +65,6 @@ const AgendarConsulta = ({ mode = "create" }: { mode?: "create" | "edit" }) => {
   const handleSubmitAgendamento: SubmitHandler<any> = (data) => {
     console.log(data);
 
-    // Formatar a data e hora
     const selectedDate = new Date(data.date);
     const [hours, minutes] = data.horario.split(":");
 
@@ -89,7 +76,6 @@ const AgendarConsulta = ({ mode = "create" }: { mode?: "create" | "edit" }) => {
       date: format(selectedDate, "yyyy-MM-dd HH:mm:ss"),
     };
 
-    // Definir URL e método baseado no modo
     const url =
       mode === "create"
         ? `${baseUrl}/clinics/${idClinica}/schedules`
@@ -104,7 +90,7 @@ const AgendarConsulta = ({ mode = "create" }: { mode?: "create" | "edit" }) => {
       },
       data: formattedData,
     })
-      .then((response) => {
+      .then((_response) => {
         const successMessage = `Agendamento ${
           mode === "create" ? "criado" : "atualizado"
         } com sucesso`;
@@ -176,7 +162,12 @@ const AgendarConsulta = ({ mode = "create" }: { mode?: "create" | "edit" }) => {
 
   return (
     <div className="h-fit">
-      <Card className="flex p-8 w-fit bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl h-fit items-center gap-4">
+      <Card
+        className={`${
+          user.isDarkMode ? "dark" : "bg-white/90"
+        } flex p-8 w-fit  backdrop-blur-sm rounded-2xl shadow-2xl h-fit items-center gap-4`}
+      >
+        {" "}
         <form
           onSubmit={handleSubmit(handleSubmitAgendamento)}
           className="flex flex-col w-[500px] gap-4"
@@ -288,7 +279,7 @@ const AgendarConsulta = ({ mode = "create" }: { mode?: "create" | "edit" }) => {
               >
                 <h1>Selecione um horário</h1>
                 <div className="flex gap-4">
-                  <div className="flex flex-wrap gap-4">
+                  <div className="flex flex-wrap gap-4 ">
                     {[
                       "08:00",
                       "09:00",
