@@ -33,6 +33,7 @@ import { Newspaper } from "lucide-react";
 import dogHappy from "../../assets/dogHappy.png";
 import dogPuto from "../../assets/dogPuto.png";
 import dogTriste from "../../assets/dogTriste.png";
+import { fetchPacientsList, fetchServiceList } from "@/Services/GetServices";
 
 const AgendamentoSchema = yup
   .object({
@@ -63,38 +64,14 @@ const AgendarConsulta = ({ mode = "create" }: { mode?: "create" | "edit" }) => {
   const errorCount = Object.keys(errors).length;
   console.log(errors);
 
-  const fetchPacientsList = async (): Promise<IPet[]> => {
-    const response = await axios.get(
-      `${baseUrl}/clinics/${idClinica}/patients`,
-      {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      }
-    );
-    return response.data;
-  };
-
   const { data: pacientes, isLoading: loadingPacientes } = useQuery({
     queryKey: ["PacienteList"],
-    queryFn: fetchPacientsList,
+    queryFn: () => fetchPacientsList(),
   });
-
-  const fetchServiceList = async (): Promise<IService[]> => {
-    const response = await axios.get(
-      `${baseUrl}/clinics/${idClinica}/services`,
-      {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      }
-    );
-    return response.data;
-  };
 
   const { data: services, isLoading: loadingServices } = useQuery({
     queryKey: ["ServicoList"],
-    queryFn: fetchServiceList,
+    queryFn: () => fetchServiceList(),
   });
 
   const handleSubmitAgendamento: SubmitHandler<any> = (data) => {
