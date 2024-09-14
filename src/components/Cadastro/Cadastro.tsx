@@ -1,7 +1,6 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "../ui/button";
@@ -27,8 +26,7 @@ import {
 } from "@/components/ui/dialog";
 import dog from "../../assets/okDog.png";
 import { formattedDate, formattedTime } from "@/utils/const.utils";
-import { useDispatch } from "react-redux";
-import { addNotification } from "@/store/user-slice";
+
 interface IFormCadastro {
   // repassword: string;
   // username: string;
@@ -53,8 +51,6 @@ const cadastroSchema = yup
 const Cadastro = () => {
   const [visibilityState, setVisibilityState] = useState(false);
   const [openSucessCadastro, setOpenSucessCadastro] = useState(false);
-  const dispatch = useDispatch();
-  const [errorForm, setErrorForm] = useState("");
 
   const onSubmit: SubmitHandler<IFormCadastro> = (data) => {
   
