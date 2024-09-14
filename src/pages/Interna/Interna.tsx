@@ -35,7 +35,7 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchUserData } from "@/Services/GetServices";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import Joyride, { CallBackProps, STATUS, Step } from "react-joyride";
-import PetsIcon from '@mui/icons-material/Pets';
+import PetsIcon from "@mui/icons-material/Pets";
 const Interna = () => {
   const navigate = useNavigate();
   const user = useUserSelector((state) => state.user);
@@ -111,7 +111,7 @@ const Interna = () => {
     }
   };
   return (
-    <div className="flex h-screen">
+    <div className={`flex h-screen ${user.isDarkMode && "dark"}`}>
       <Joyride
         steps={steps}
         continuous
@@ -119,6 +119,7 @@ const Interna = () => {
         run={tourRunning}
         callback={handleJoyrideCallback}
       />
+
       <Dialog
         open={openPacientes}
         onOpenChange={() => setOpenPacientes((prevState) => !prevState)}
@@ -283,7 +284,11 @@ const Interna = () => {
         </DialogContent>
       </Dialog>
 
-      <aside className="flex-shrink-0 w-fit border-r-2 bg-background">
+      <aside
+        className={`flex-shrink-0 w-fit border-r-2 bg-background ${
+          user.isDarkMode && "dark"
+        }`}
+      >
         <div className="flex flex-col items-start gap-4 px-4 py-5">
           <div
             className={`absolute ${
@@ -463,7 +468,11 @@ const Interna = () => {
         </div>
       </aside>
 
-      <main className="flex-1 flex m-10 box-border w-full overflow-y-auto">
+      <main
+        className={`flex-1 flex m-10 box-border w-full justify-center overflow-y-auto ${
+          user.isDarkMode && "dark"
+        }`}
+      >
         <Outlet />
       </main>
     </div>

@@ -13,8 +13,7 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import { addNotification } from "@/store/user-slice";
 import { Card } from "@/components/ui/card";
-import { Heart, PawPrint } from "lucide-react";
-import { PencilOff } from "lucide-react";
+import { PawPrint } from "lucide-react";
 
 import dogHappy from "../../assets/dogHappy.png";
 import dogPuto from "../../assets/dogPuto.png";
@@ -144,7 +143,11 @@ const CadastrarPaciente = ({ mode = "create" }: ICrud) => {
 
   return (
     <div className="h-fit">
-      <Card className="flex p-8 w-fit bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl h-fit items-center gap-4">
+      <Card
+        className={`${
+          user.isDarkMode ? "dark" : "bg-white/90"
+        } flex p-8 w-fit  backdrop-blur-sm rounded-2xl shadow-2xl h-fit items-center gap-4`}
+      >
         <form
           onSubmit={handleSubmit(handleSubmitPaciente)}
           className="flex flex-col w-[500px] gap-4"

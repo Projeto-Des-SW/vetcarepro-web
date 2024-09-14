@@ -138,7 +138,12 @@ const CadastroClinica = ({ mode = "create" }: ICrudClinia) => {
 
   return (
     <div className="h-fit">
-      <Card className="flex p-8 w-fit bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl h-fit items-center gap-4">
+      <Card
+        className={`${
+          user.isDarkMode ? "dark" : "bg-white/90"
+        } flex p-8 w-fit  backdrop-blur-sm rounded-2xl shadow-2xl h-fit items-center gap-4`}
+      >
+        {" "}
         <form
           onSubmit={handleSubmit(handleSubmitClinica)}
           className="flex flex-col w-[500px] gap-4"

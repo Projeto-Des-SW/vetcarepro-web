@@ -4,6 +4,7 @@ export interface UserDataProps {
   email: string;
   token?: string;
   name?: string;
+  isDarkMode: boolean;
   notifications: INotifications[];
 }
 
@@ -16,6 +17,7 @@ const userInicialState: UserDataProps = {
   email: "",
   token: "",
   notifications: [{ title: "", description: "" }],
+  isDarkMode: false,
 };
 
 const userSlice = createSlice({
@@ -25,6 +27,7 @@ const userSlice = createSlice({
     setCurrentUser(state, action: PayloadAction<UserDataProps>) {
       state.email = action.payload.email;
       state.token = action.payload.token;
+      state.isDarkMode = false;
     },
     logoutUser(state) {
       state.email = "";
@@ -36,6 +39,9 @@ const userSlice = createSlice({
     clearNotifications(state) {
       state.notifications = [];
     },
+    setDarkMode(state) {
+      state.isDarkMode = !state.isDarkMode;
+    },
   },
 });
 
@@ -45,4 +51,5 @@ export const {
   logoutUser,
   addNotification,
   clearNotifications,
+  setDarkMode
 } = userSlice.actions;

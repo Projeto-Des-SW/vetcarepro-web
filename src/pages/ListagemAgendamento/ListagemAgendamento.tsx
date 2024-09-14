@@ -1,11 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useUserSelector } from "@/store/hooks";
-import {
-  fetchAgendamentosList,
-} from "@/Services/GetServices";
+import { fetchAgendamentosList } from "@/Services/GetServices";
 import {
   Pagination,
   PaginationLink,
@@ -22,17 +20,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  handleDeleteAgendamento
-} from "@/Services/DeleteServices";
+import { handleDeleteAgendamento } from "@/Services/DeleteServices";
 import { Separator } from "@/components/ui/separator";
 import dayjs from "dayjs";
 import { IAgendamentoGet } from "@/interfaces/agendamento";
 
-
 const ListagemAgendamento = () => {
   const { idClinica } = useParams();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const user = useUserSelector((state) => state.user);
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 7;
@@ -59,10 +55,16 @@ const ListagemAgendamento = () => {
 
   return (
     <section className="flex-wrap gap-2 flex-col w-full">
-      <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0">
+      <h2
+        className={`scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 ${
+          user.isDarkMode && "text-white"
+        }`}
+      >
         Seus agendamentos
       </h2>
-      <div className="flex flex-wrap gap-2">
+      <div
+        className={`flex flex-wrap gap-2 ${user.isDarkMode && "text-white"} `}
+      >
         <Table>
           <TableHeader>
             <TableRow>
@@ -107,6 +109,13 @@ const ListagemAgendamento = () => {
 
                     <TableCell className="flex justify-end gap-2 ">
                       <Button
+                        onClick={() =>
+                          navigate(`../editarAgendamento/${paciente.id}`)
+                        }
+                      >
+                        Editar
+                      </Button>
+                      <Button
                         onClick={() => mutation.mutate(paciente.id)}
                         variant={"destructive"}
                       >
@@ -117,7 +126,6 @@ const ListagemAgendamento = () => {
                 ))}
           </TableBody>
         </Table>
-
         <Separator />
       </div>
       <div className="flex justify-center mt-4">

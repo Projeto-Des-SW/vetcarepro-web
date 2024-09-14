@@ -51,10 +51,16 @@ const ListagemPaciente = () => {
 
   return (
     <section className="flex-wrap gap-2 flex-col w-full">
-      <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0">
+      <h2
+        className={`scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 ${
+          user.isDarkMode && "text-white"
+        }`}
+      >
         Seus pacientes
       </h2>
-      <div className="flex flex-wrap gap-2">
+      <div
+        className={`flex flex-wrap gap-2 ${user.isDarkMode && "text-white"} `}
+      >
         <Table>
           <TableHeader>
             <TableRow>

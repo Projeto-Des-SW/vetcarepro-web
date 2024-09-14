@@ -3,10 +3,8 @@ import { useState } from "react";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -55,7 +53,12 @@ const ListagemClinica = () => {
   return (
     <div className="flex-wrap gap-2 flex-col p-4">
       <div className="flex justify-between w-full">
-        <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0">
+        <h2
+          className={`scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 ${
+            user.isDarkMode && "text-white"
+          }`}
+        >
+          {" "}
           Suas clínicas veterinárias
         </h2>
         <Button onClick={() => navigate("/dashboard/cadastrarClinica")}>
