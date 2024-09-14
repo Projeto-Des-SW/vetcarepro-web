@@ -28,8 +28,8 @@ import { toast } from "sonner";
 import { useDispatch } from "react-redux";
 import { addNotification } from "@/store/user-slice";
 import { formattedDate, formattedTime } from "@/utils/const.utils";
-import { useState } from "react";
-import { Newspaper, PawPrint, SquareScissors } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Newspaper } from "lucide-react";
 import dogHappy from "../../assets/dogHappy.png";
 import dogPuto from "../../assets/dogPuto.png";
 import dogTriste from "../../assets/dogTriste.png";
@@ -56,6 +56,7 @@ const AgendarConsulta = ({ mode = "create" }: { mode?: "create" | "edit" }) => {
     handleSubmit,
     control,
     formState: { errors },
+    reset,
   } = useForm({
     resolver: yupResolver(AgendamentoSchema),
   });
@@ -173,6 +174,24 @@ const AgendarConsulta = ({ mode = "create" }: { mode?: "create" | "edit" }) => {
         }
       });
   };
+
+  useEffect(() => {
+    if (mode === "edit" && id) {
+      axios
+        .get(`${baseUrl}/clinics/${idClinica}/schedules/${id}`, {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        })
+        .then((response) => {
+          const employeesData = response.data;
+          reset(employeesData);
+        })
+        .catch((error) => {
+          console.error("Erro ao buscar dados da clínica:", error);
+        });
+    }
+  }, [mode, id, reset, user.token, baseUrl]);
 
   if (loadingPacientes && loadingServices) {
     return <p>Carregando...</p>;
