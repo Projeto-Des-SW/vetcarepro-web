@@ -42,6 +42,7 @@ import { Checkbox } from "../ui/checkbox";
 import { Switch } from "../ui/switch";
 import { Label } from "../ui/label";
 import { fetchDataUser } from "@/services/getServices";
+import { Badge } from "../ui/badge";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -105,15 +106,18 @@ const Header = () => {
               </DialogTitle>
               <DialogDescription>
                 <div className="  rounded-lg flex flex-col items-center p-4 gap-6">
-                  <picture>
+                  <picture className="flex items-center flex-col gap-2">
                     <Avatar className="w-[100px] h-[100px] ">
                       <AvatarFallback className="bg-[#4EBA9D] text-2xl text-white">
                         {data?.name.charAt(0)}
                       </AvatarFallback>
                     </Avatar>
+                    <div className="flex flex-col items-end">
+                      <Badge variant="secondary" className="">
+                        Enterprise
+                      </Badge>
+                    </div>
                   </picture>
-
-                  <p>Nivel da conta: Enterprise</p>
 
                   <div className="flex gap-4 ">
                     <Input readOnly value={data?.name} />
@@ -147,12 +151,20 @@ const Header = () => {
             </DialogHeader>
           </DialogContent>
         </Dialog>
-        <Link
-          to="/home"
-          className="flex items-center justify-center font-bold text-3xl"
-        >
-          VetCare
-        </Link>
+        <div className="flex gap-1 items-end ">
+          <Link
+            to="/home"
+            className="flex items-end flex-col justify-center font-bold text-3xl gap-1"
+          >
+            VetCare
+            {user.email && (
+              <Badge variant="secondary" className="mt-[-8px] text-xs">
+                Enterprise
+              </Badge>
+            )}
+          </Link>
+        </div>
+
         <nav className="ml-auto flex gap-2 items-center">
           <Toaster />
           {user.email === "" ? (
@@ -193,6 +205,18 @@ const Header = () => {
                 </>
               ) : (
                 <>
+                  {" "}
+                  <Label
+                    htmlFor="airplane-mode"
+                    className="flex items-center gap-2"
+                  >
+                    Modo escuro
+                    <Switch
+                      id="airplane-mode"
+                      checked={user.isDarkMode}
+                      onCheckedChange={handleSetDarkMode}
+                    />
+                  </Label>
                   <NavigationMenu>
                     <NavigationMenuList>
                       <NavigationMenuItem>
@@ -237,13 +261,16 @@ const Header = () => {
                       </NavigationMenuItem>
                     </NavigationMenuList>
                   </NavigationMenu>
-
                   <NavigationMenu>
                     <NavigationMenuList>
                       <NavigationMenuItem>
                         <NavigationMenuTrigger className="flex items-center gap-2 p-2 text-white bg-transparent">
                           <Avatar className="w-9 h-9">
-                            <AvatarFallback className={`text-black ${user.isDarkMode && 'text-white'}`}>
+                            <AvatarFallback
+                              className={`text-black ${
+                                user.isDarkMode && "text-white"
+                              }`}
+                            >
                               {data?.name.charAt(0)}
                             </AvatarFallback>
                           </Avatar>
@@ -271,17 +298,6 @@ const Header = () => {
                             >
                               Profile
                             </NavigationMenuLink>
-                            <Label
-                              htmlFor="airplane-mode"
-                              className="flex items-center gap-2"
-                            >
-                              Dark mode
-                              <Switch
-                                id="airplane-mode"
-                                checked={user.isDarkMode}
-                                onCheckedChange={handleSetDarkMode}
-                              />
-                            </Label>
 
                             <Separator />
                             <NavigationMenuLink

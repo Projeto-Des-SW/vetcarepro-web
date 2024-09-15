@@ -90,17 +90,26 @@ const DetailsPaciente = () => {
                 <div className="">
                   <div className="grid gap-8 ">
                     <div className="flex items-center justify-between">
-                      <h1 className="text-3xl font-bold">
+                      <h1
+                        className={`text-3xl font-bold  ${
+                          user.isDarkMode && "text-white"
+                        }`}
+                      >
                         Detalhes do Paciente
                       </h1>{" "}
                       <div className="flex gap-5">
                         <Button
                           variant="outline"
+                          className={`${user.isDarkMode && "text-white"}`}
                           onClick={() => navigate(`../editarPaciente/${id} `)}
                         >
                           Editar
                         </Button>
-                        <Button onClick={handleDelete} variant={"destructive"}>
+                        <Button
+                          onClick={handleDelete}
+                          variant={"destructive"}
+                          className={`${user.isDarkMode && "text-white"}`}
+                        >
                           Apagar
                         </Button>
                       </div>
@@ -108,15 +117,31 @@ const DetailsPaciente = () => {
 
                     <Separator />
                     <div className="grid md:grid-cols-2 gap-8 ">
-                      <div className=" p-6 rounded-lg shadow-md ">
+                      <div
+                        className={`p-6 rounded-lg shadow-2xl ${
+                          user.isDarkMode && "text-white  shadow-gray-600 "
+                        } `}
+                      >
                         <div className="space-y-4">
                           <div className="space-y-2">
-                            <h3 className="text-2xl font-bold">
+                            <h3
+                              className={`text-2xl font-bold  ${
+                                user.isDarkMode && "text-white "
+                              }`}
+                            >
                               Informações Gerais
                             </h3>
                           </div>
-                          <div className="space-y-1">
-                            <div className="flex items-center justify-between">
+                          <div
+                            className={`space-y-1 ${
+                              user.isDarkMode && "text-white"
+                            }`}
+                          >
+                            <div
+                              className={`flex items-center justify-between ${
+                                user.isDarkMode && "text-white  shadow-gray-600"
+                              }`}
+                            >
                               <span className="font-medium">Nome:</span>
                               <span>{data?.name}</span>
                             </div>
@@ -138,7 +163,11 @@ const DetailsPaciente = () => {
                           </div>
                         </div>
                       </div>
-                      <div className="p-6 rounded-lg shadow-md">
+                      <div
+                        className={`p-6 rounded-lg shadow-2xl ${
+                          user.isDarkMode && "text-white  shadow-gray-600 "
+                        } `}
+                      >
                         <div className="space-y-4">
                           <div className="space-y-2">
                             <h3 className="text-2xl font-bold">
@@ -162,7 +191,11 @@ const DetailsPaciente = () => {
                         </div>
                       </div>
                     </div>
-                    <div className=" p-6 rounded-lg shadow-md">
+                    <div
+                      className={`p-6 rounded-lg shadow-2xl  ${
+                        user.isDarkMode && "text-white shadow-gray-600"
+                      } `}
+                    >
                       <div className="space-y-4">
                         <div className="space-y-2">
                           <h3 className="text-2xl font-bold">

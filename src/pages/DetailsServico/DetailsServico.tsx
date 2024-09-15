@@ -13,7 +13,7 @@ import { useUserSelector } from "@/store/hooks";
 import { IService } from "@/interfaces/servico";
 import { fetchServiceItemList } from "@/services/getServices";
 import { Separator } from "@/components/ui/separator";
-import * as dayjs from "dayjs";
+import dayjs from "dayjs";
 
 const DetailsServico = () => {
   const baseUrl = import.meta.env.VITE_URL as string;
@@ -68,15 +68,26 @@ const DetailsServico = () => {
               <section className="w-full">
                 <div className="flex w-full flex-col gap-8">
                   <div className="flex items-center justify-between">
-                    <h1 className="text-3xl font-bold">Detalhes do Serviço</h1>
+                    <h1
+                      className={`text-3xl font-bold ${
+                        user.isDarkMode && "text-white"
+                      }`}
+                    >
+                      Detalhes do Serviço
+                    </h1>
                     <div className="flex gap-5">
                       <Button
                         variant="outline"
+                        className={`${user.isDarkMode && "text-white"}`}
                         onClick={() => navigate(`../editarServico/${id}`)}
                       >
                         Editar
                       </Button>
-                      <Button onClick={handleDelete} variant="destructive">
+                      <Button
+                        onClick={handleDelete}
+                        variant="destructive"
+                        className={`${user.isDarkMode && "text-white"}`}
+                      >
                         Apagar
                       </Button>
                     </div>
@@ -85,7 +96,11 @@ const DetailsServico = () => {
                   <Separator />
 
                   <div className="grid md:grid-cols-1 gap-8 min-w-[1000px] w-full">
-                    <div className="p-6 rounded-lg shadow-md">
+                    <div
+                      className={`p-6 rounded-lg shadow-2xl  ${
+                        user.isDarkMode && "text-white shadow-gray-600"
+                      } `}
+                    >
                       <div className="space-y-4">
                         <div className="space-y-2">
                           <h3 className="text-2xl font-bold">
