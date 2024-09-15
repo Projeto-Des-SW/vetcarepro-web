@@ -30,9 +30,9 @@ import { formattedDate, formattedTime } from "@/utils/const.utils";
 interface IFormCadastro {
   // repassword: string;
   // username: string;
-  name: string;
-  email: string;
-  password: string;
+  name?: string;
+  email?: string;
+  password?: string;
 }
 const baseUrl = import.meta.env.VITE_URL as string;
 const cadastroSchema = yup

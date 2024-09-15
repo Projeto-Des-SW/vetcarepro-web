@@ -10,12 +10,12 @@ export interface IAgendamento {
 }
 
 export interface IFromClinica {
-  title: string;
-  description: string;
-  email: string;
-  phone: string;
-  address: string;
-  cnpj: string;
+  title?: string;
+  description?: string;
+  email?: string;
+  phone?: string;
+  address?: string;
+  cnpj?: string;
 }
 
 export interface IAgendamentoGet {

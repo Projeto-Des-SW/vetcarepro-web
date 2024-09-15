@@ -25,8 +25,8 @@ import { toast } from "sonner";
 import { formattedDate, formattedTime } from "@/utils/const.utils";
 
 interface IFormInput {
-  email: string;
-  password: string;
+  email?: string;
+  password?: string;
 }
 
 const baseUrl = import.meta.env.VITE_URL as string;
