@@ -25,7 +25,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Diversity3Icon from "@mui/icons-material/Diversity3";
 import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
@@ -36,6 +36,7 @@ import { fetchUserData } from "@/services/GetServices";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import Joyride, { CallBackProps, STATUS, Step } from "react-joyride";
 import PetsIcon from "@mui/icons-material/Pets";
+
 const Interna = () => {
   const navigate = useNavigate();
   const user = useUserSelector((state) => state.user);
@@ -58,16 +59,6 @@ const Interna = () => {
     queryFn: () => fetchUserData(user.token),
   });
   if (isPending) return <div>Carregando</div>;
-  console.log();
-
-  useEffect(() => {
-    if (localStorage.getItem("joyrideMenu")) {
-      return;
-    } else {
-      localStorage.setItem("joyrideMenu", "primeira vez");
-      setTourRunning(true);
-    }
-  }, []);
 
   const [steps] = useState<Step[]>([
     {

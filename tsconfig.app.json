@@ -27,6 +27,7 @@
     /* Linting */
     "noUnusedLocals": true,
     "noUnusedParameters": true,
+    "allowSyntheticDefaultImports": true,
     "noFallthroughCasesInSwitch": true
   },
   "include": ["src", "src/**/*.ts"]

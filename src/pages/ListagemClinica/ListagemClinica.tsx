@@ -82,9 +82,9 @@ const ListagemClinica = () => {
                 </CardFooter>
               </Card>
             ))
-          : currentItems?.map((clinica) => (
+          : currentItems?.map((clinica, index) => (
               <>
-                <Card className="h-fit max-h-[300px] max-w-[600px]">
+                <Card className="h-fit max-h-[300px] max-w-[600px]" key={index * 2}>
                   <CardHeader className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
                       <svg

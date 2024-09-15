@@ -14,8 +14,9 @@ interface INotifications {
 }
 
 const userInicialState: UserDataProps = {
-  email: "",
-  token: "",
+  email: "vetCarePro@gmail.com",
+  token:
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmNjUwYWUyMy1kZjVkLTRhYTQtYThmNC1iMjhjNGE3MDQ4MWYiLCJpYXQiOjE3MjY0MTAyMjd9.-MYoS4XGHc6zva2T4-6Tcbx5ritfPBb3Sx1zhdWioxA",
   notifications: [{ title: "", description: "" }],
   isDarkMode: false,
 };

@@ -11,11 +11,12 @@
   "compilerOptions": {
     "baseUrl": ".",
     "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true,
     "strict": false,
     "moduleResolution": "node",
     "noImplicitAny": false,
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["./src/*"]
     }
   }
 }

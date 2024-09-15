@@ -59,8 +59,6 @@ const Header = () => {
     dispatch(setDarkMode());
   };
 
-  console.log(user.isDarkMode);
-
   const handleLogout = () => {
     dispatch(logoutUser());
     navigate("/home");
@@ -91,7 +89,11 @@ const Header = () => {
 
   return (
     <>
-      <header className="bg-[#4EBA9D] h-[70px] text-primary-foreground px-10 flex items-center">
+      <header
+        className={`bg-[#45BCAD] h-[70px] text-primary-foreground px-10 flex items-center ${
+          user.isDarkMode && "dark bg-[#45BCAD]"
+        }`}
+      >
         <Dialog
           open={openModal}
           onOpenChange={() => setOpenModal((prevState) => !prevState)}

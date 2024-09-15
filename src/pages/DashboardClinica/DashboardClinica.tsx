@@ -13,7 +13,7 @@ import { useQuery } from "@tanstack/react-query";
 import "dayjs/locale/es";
 import { useNavigate, useParams } from "react-router-dom";
 import { useUserSelector } from "@/store/hooks";
-import * as dayjs from "dayjs";
+import dayjs from "dayjs";
 import {
   fetchAgendamentosList,
   fetchPacientsList,
@@ -96,10 +96,14 @@ const DashboardClinica = () => {
   ]);
 
   useEffect(() => {
-    if (localStorage.getItem("joyride")) {
+    if (
+      localStorage.getItem("joyride") ||
+      localStorage.getItem("joyrideMenu")
+    ) {
       return;
     } else {
       localStorage.setItem("joyride", "primeira vez");
+      localStorage.setItem("joyrideMenu", "primeira vez");
       setTourRunning(true);
     }
   }, []);
