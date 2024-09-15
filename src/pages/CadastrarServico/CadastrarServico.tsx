@@ -24,8 +24,8 @@ import {
 import Inputs from "@/components/Inputs/Inputs";
 import { Label } from "@/components/ui/label";
 import { Hospital } from "lucide-react";
-import { serviceSchema } from "@/utils/schemas.utils";
-import { ICrudClinia } from "@/interfaces/agendamento";
+import { serviceSchema } from "../../utils/schemas.utils";
+import { ICrudClinia } from "../../interfaces/agendamento";
 
 const CadastrarServico = ({ mode = "create" }: ICrudClinia) => {
   const { idClinica, id } = useParams();
