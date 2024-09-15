@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useNavigate, useParams } from "react-router-dom";
 import { useUserSelector } from "@/store/hooks";
-import { fetchAgendamentosList } from "@/services/GetServices";
+import { fetchAgendamentosList } from "@/services/getServices";
 import {
   Pagination,
   PaginationLink,
@@ -20,7 +20,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { handleDeleteAgendamento } from "@/services/DeleteServices";
+import { handleDeleteAgendamento } from "@/services/deleteServices";
 import { Separator } from "@/components/ui/separator";
 import dayjs from "dayjs";
 import { IAgendamentoGet } from "@/interfaces/agendamento";

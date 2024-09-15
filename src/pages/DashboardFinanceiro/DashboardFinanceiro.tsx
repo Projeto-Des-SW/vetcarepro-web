@@ -10,7 +10,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { IFuncionario } from "@/interfaces/funcionario";
-import { fetchFuncionariosList } from "@/services/GetServices";
+import { fetchFuncionariosList } from "@/services/getServices";
 import { useUserSelector } from "@/store/hooks";
 import { useQuery } from "@tanstack/react-query";
 import { BarChart, LineChart, PieChart } from "lucide-react";

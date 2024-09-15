@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useNavigate, useParams } from "react-router-dom";
 import { useUserSelector } from "@/store/hooks";
-import { fetchPacientsList } from "@/services/GetServices";
+import { fetchPacientsList } from "@/services/getServices";
 import {
   Pagination,
   PaginationLink,
@@ -21,7 +21,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { handleDeletePacient } from "@/services/DeleteServices";
+import { handleDeletePacient } from "@/services/deleteServices";
 import { Separator } from "@/components/ui/separator";
 
 const ListagemPaciente = () => {

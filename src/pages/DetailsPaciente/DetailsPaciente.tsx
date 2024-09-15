@@ -12,7 +12,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useNavigate, useParams } from "react-router-dom";
 import { useUserSelector } from "@/store/hooks";
 import { Separator } from "@/components/ui/separator";
-import { fetchAgendamentosList } from "@/services/GetServices";
+import { fetchAgendamentosList } from "@/services/getServices";
 import * as dayjs from "dayjs";
 
 const DetailsPaciente = () => {

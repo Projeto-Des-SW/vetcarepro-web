@@ -30,7 +30,7 @@ import { Newspaper } from "lucide-react";
 import dogHappy from "../../assets/dogHappy.png";
 import dogPuto from "../../assets/dogPuto.png";
 import dogTriste from "../../assets/dogTriste.png";
-import { fetchPacientsList, fetchServiceList } from "@/services/GetServices";
+import { fetchPacientsList, fetchServiceList } from "@/services/getServices";
 import { AgendamentoSchema } from "@/utils/schemas.utils";
 
 const AgendarConsulta = ({ mode = "create" }: { mode?: "create" | "edit" }) => {

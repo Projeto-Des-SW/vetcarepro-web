@@ -20,7 +20,7 @@ import {
   PaginationLink,
 } from "@/components/ui/pagination";
 import { Separator } from "@/components/ui/separator";
-import { fetchServiceList } from "@/services/GetServices";
+import { fetchServiceList } from "@/services/getServices";
 import { splitIntoGroups } from "@/utils/const.utils";
 import { useQuery } from "@tanstack/react-query";
 

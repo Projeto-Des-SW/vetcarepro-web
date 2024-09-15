@@ -18,7 +18,7 @@ import {
   fetchAgendamentosList,
   fetchPacientsList,
   fetchServiceList,
-} from "@/services/GetServices";
+} from "@/services/getServices";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { useEffect, useState } from "react";

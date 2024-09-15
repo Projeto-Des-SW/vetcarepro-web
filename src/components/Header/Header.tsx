@@ -41,7 +41,7 @@ import { Toaster } from "../ui/sonner";
 import { Checkbox } from "../ui/checkbox";
 import { Switch } from "../ui/switch";
 import { Label } from "../ui/label";
-import { fetchDataUser } from "@/services/GetServices";
+import { fetchDataUser } from "@/services/getServices";
 
 const Header = () => {
   const navigate = useNavigate();

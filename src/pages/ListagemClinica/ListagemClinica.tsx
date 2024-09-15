@@ -19,8 +19,8 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { useNavigate } from "react-router-dom";
 import { useUserSelector } from "@/store/hooks";
-import { fetchClinicasList } from "@/services/GetServices";
-import { handleDeleteClinic } from "@/services/DeleteServices";
+import { fetchClinicasList } from "@/services/getServices";
+import { handleDeleteClinic } from "@/services/deleteServices";
 
 const ListagemClinica = () => {
   const navigate = useNavigate();
