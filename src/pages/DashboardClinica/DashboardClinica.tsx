@@ -13,7 +13,7 @@ import { useQuery } from "@tanstack/react-query";
 import "dayjs/locale/es";
 import { useNavigate, useParams } from "react-router-dom";
 import { useUserSelector } from "@/store/hooks";
-import dayjs from "dayjs";
+import * as dayjs from "dayjs";
 import {
   fetchAgendamentosList,
   fetchPacientsList,

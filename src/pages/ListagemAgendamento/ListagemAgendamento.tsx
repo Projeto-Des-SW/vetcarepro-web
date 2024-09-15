@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/table";
 import { handleDeleteAgendamento } from "@/services/DeleteServices";
 import { Separator } from "@/components/ui/separator";
-import dayjs from "dayjs";
+import * as dayjs from "dayjs";
 import { IAgendamentoGet } from "@/interfaces/agendamento";
 
 const ListagemAgendamento = () => {

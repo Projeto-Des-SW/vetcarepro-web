@@ -13,7 +13,7 @@ import { useUserSelector } from "@/store/hooks";
 import { IService } from "@/interfaces/servico";
 import { fetchServiceItemList } from "@/services/GetServices";
 import { Separator } from "@/components/ui/separator";
-import dayjs from "dayjs";
+import * as dayjs from "dayjs";
 
 const DetailsServico = () => {
   const baseUrl = import.meta.env.VITE_URL as string;
