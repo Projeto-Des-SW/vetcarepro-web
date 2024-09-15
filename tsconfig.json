@@ -15,7 +15,7 @@
     "moduleResolution": "node",
     "noImplicitAny": false,
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["src/*"]
     }
   }
 }
