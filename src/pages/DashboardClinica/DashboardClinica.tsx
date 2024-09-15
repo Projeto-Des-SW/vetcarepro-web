@@ -387,7 +387,9 @@ const DashboardClinica = () => {
                       <CardTitle>Consultas</CardTitle>{" "}
                       <input
                         type="text"
-                        className={`bg-dark ${user.isDarkMode && "bg-dark"}`}
+                        className={`${
+                          user.isDarkMode ? "bg-gray-900" : "bg-transparent"
+                        } placeholder-gray-500 text-gray-900 p-2 mt-2 pl-0 rounded-md`}
                         placeholder="Pesquisar consultas"
                         onChange={(e) => setSearchConsulta(e.target.value)}
                       />
@@ -525,7 +527,7 @@ const DashboardClinica = () => {
                       }
                     />
 
-                    {totalPages[0].map((_item, index) => (
+                    {totalPages.map((_item, index) => (
                       <PaginationLink
                         key={index}
                         onClick={() => setCurrentPage(index)}
@@ -567,6 +569,9 @@ const DashboardClinica = () => {
                     <CardTitle>Serviços disponiveis</CardTitle>
                     <input
                       type="text"
+                      className={`${
+                        user.isDarkMode ? "bg-gray-900" : "bg-transparent"
+                      } placeholder-gray-500 text-gray-900 p-2 mt-2 pl-0 rounded-md`}
                       placeholder="Pesquisar serviços"
                       onChange={(e) => setSearchServices(e.target.value)}
                     />

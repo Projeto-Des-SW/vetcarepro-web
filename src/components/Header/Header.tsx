@@ -198,9 +198,17 @@ const Header = () => {
                       <NavigationMenuItem>
                         <NavigationMenuTrigger className="flex items-center gap-4 p-2 text-white bg-transparent">
                           {user.notifications.length <= 1 ? (
-                            <NotificationsNoneIcon />
+                            <NotificationsNoneIcon
+                              className={`${
+                                user.isDarkMode && "dark  text-black"
+                              }`}
+                            />
                           ) : (
-                            <NotificationsActiveIcon />
+                            <NotificationsActiveIcon
+                              className={`${
+                                user.isDarkMode && "dark  text-black"
+                              }`}
+                            />
                           )}
                         </NavigationMenuTrigger>
 
@@ -235,7 +243,7 @@ const Header = () => {
                       <NavigationMenuItem>
                         <NavigationMenuTrigger className="flex items-center gap-2 p-2 text-white bg-transparent">
                           <Avatar className="w-9 h-9">
-                            <AvatarFallback className="text-black  ">
+                            <AvatarFallback className={`text-black ${user.isDarkMode && 'text-white'}`}>
                               {data?.name.charAt(0)}
                             </AvatarFallback>
                           </Avatar>
