@@ -11,6 +11,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "strict": false,
+    "moduleResolution": "node",
     "noImplicitAny": false,
     "paths": {
       "@/*": ["./src/*"]

@@ -1,11 +1,12 @@
 {
   "compilerOptions": {
+    "moduleResolution": "node",
     "composite": true,
     "noImplicitAny": false,
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
     "skipLibCheck": true,
     "module": "ESNext",
-    "moduleResolution": "bundler",
+    // "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true,
     "strict": false,
     "noEmit": true
