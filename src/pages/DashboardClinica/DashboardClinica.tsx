@@ -60,6 +60,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import PIX from "react-qrcode-pix";
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
+import PixIcon from "@mui/icons-material/Pix";
 
 const DashboardClinica = () => {
   const [searchConsulta, setSearchConsulta] = useState("");
@@ -124,6 +126,15 @@ const DashboardClinica = () => {
     if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status as any)) {
       setTourRunning(false);
     }
+  };
+
+  const handleWhatsapp = (numero: number, mensagem: string) => {
+    const editedNumber = `+55${numero}`
+    let target = `https://api.whatsapp.com/send?phone=${encodeURIComponent(
+      editedNumber
+    )}&text=${encodeURIComponent(mensagem)}`;
+
+    window.open(target, "_blank");
   };
 
   useEffect(() => {
@@ -549,7 +560,18 @@ const DashboardClinica = () => {
                                 </p>
                               )}
                             </TableCell>
-                            <TableCell>
+                            <TableCell className="flex items-center gap-2">
+                              <Button
+                                variant="outline"
+                                onClick={() =>
+                                  handleWhatsapp(
+                                    item.patient.guardian_contact,
+                                    "ola"
+                                  )
+                                }
+                              >
+                                <WhatsAppIcon />
+                              </Button>
                               <Button
                                 variant="outline"
                                 onClick={() => {
@@ -557,7 +579,7 @@ const DashboardClinica = () => {
                                   setOpenPix((prevState) => !prevState);
                                 }}
                               >
-                                Pagar consulta
+                                <PixIcon />
                               </Button>
                             </TableCell>
                           </TableRow>

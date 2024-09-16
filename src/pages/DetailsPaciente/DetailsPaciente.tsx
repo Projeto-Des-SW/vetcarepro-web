@@ -13,7 +13,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useUserSelector } from "@/store/hooks";
 import { Separator } from "@/components/ui/separator";
 import { fetchAgendamentosList } from "@/services/getServices";
-import * as dayjs from "dayjs";
+import dayjs from "dayjs";
 
 const DetailsPaciente = () => {
   const baseUrl = import.meta.env.VITE_URL as string;
