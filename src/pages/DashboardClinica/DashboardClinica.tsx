@@ -210,11 +210,9 @@ const DashboardClinica = () => {
         open={openPix}
         onOpenChange={() => setOpenPix((prevState) => !prevState)}
       >
-        <DialogContent className={`${user.isDarkMode && "dark"}`}>
+        <DialogContent>
           <DialogHeader>
-            <DialogTitle className={`${user.isDarkMode && "text-white"}`}>
-              Pagamento via pix
-            </DialogTitle>
+            <DialogTitle>Pagamento via pix</DialogTitle>
             <DialogDescription className="flex items-center gap-2 flex-col">
               {!user.chavePix ? (
                 <p>Chave pix não cadastrada</p>

@@ -43,13 +43,7 @@ import { Switch } from "../ui/switch";
 import { Label } from "../ui/label";
 import { fetchDataUser } from "@/services/getServices";
 import { Badge } from "../ui/badge";
-import {
-  BellIcon,
-  CalendarCheck2Icon,
-  PackageIcon,
-  WalletIcon,
-  XIcon,
-} from "lucide-react";
+import { CalendarCheck2Icon } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -216,8 +210,7 @@ const Header = () => {
                   <Skeleton className="h-8 w-36" />
                 </>
               ) : (
-                <>
-                  {" "}
+                <div className="flex gap-4 items-center">
                   <Label
                     htmlFor="airplane-mode"
                     className="flex items-center gap-2"
@@ -229,85 +222,69 @@ const Header = () => {
                       onCheckedChange={handleSetDarkMode}
                     />
                   </Label>
+
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="rounded-full"
-                      >
-                        <BellIcon className="h-6 w-6" />
-                        <span className="sr-only">Notifications</span>
-                      </Button>
+                      {user.notifications.length <= 1 ? (
+                        <NotificationsNoneIcon
+                          className={`${
+                            user.isDarkMode && "dark  text-black"
+                          } cursor-pointer`}
+                        />
+                      ) : (
+                        <NotificationsActiveIcon
+                          className={`${
+                            user.isDarkMode && "dark  text-black"
+                          } cursor-pointer`}
+                        />
+                      )}
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-[360px] p-4">
                       <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-lg font-semibold">Notifications</h3>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="rounded-full"
-                        >
-                          <XIcon className="h-4 w-4" />
-                          <span className="sr-only">Close</span>
-                        </Button>
+                        <h3 className="text-lg font-semibold">Notificações</h3>
                       </div>
                       <div className="grid gap-4">
                         <div className="flex items-start gap-4">
-                          <div className="flex items-center justify-center rounded-full bg-primary text-primary-foreground w-8 h-8">
-                            <CalendarCheck2Icon className="h-4 w-4" />
-                          </div>
-                          <div>
-                            <h4 className="text-sm font-medium">
-                              Consulta Agendada
-                            </h4>
-                            <p className="text-sm text-muted-foreground">
-                              Sua consulta com o Dr. Silva foi agendada para
-                              amanhã às 15:00.
-                            </p>
-                            <div className="text-xs text-muted-foreground">
-                              Há 2 horas
-                            </div>
-                          </div>
+                          <ul
+                            className={`flex flex-col justify-center gap-3  ${
+                              user.isDarkMode && "dark bg-black text-white"
+                            }`}
+                          >
+                            {user.notifications.map((notification, index) => (
+                              <>
+                                {index > 0 && (
+                                  <li
+                                    className="flex items-start gap-4"
+                                    key={index}
+                                  >
+                                    <div className="flex items-center justify-center rounded-full bg-primary text-primary-foreground w-8 h-8">
+                                      <CalendarCheck2Icon className="h-4 w-4" />
+                                    </div>
+                                    <div>
+                                      <h4 className="text-sm font-medium">
+                                        {notification.title}
+                                      </h4>
+                                      <p className="text-sm text-muted-foreground">
+                                        {notification.description}
+                                      </p>
+                                    </div>
+                                  </li>
+                                )}
+                              </>
+                            ))}
+                          </ul>
                         </div>
-                        <div className="flex items-start gap-4">
-                          <div className="flex items-center justify-center rounded-full bg-primary text-primary-foreground w-8 h-8">
-                            <WalletIcon className="h-4 w-4" />
-                          </div>
-                          <div>
-                            <h4 className="text-sm font-medium">
-                              Pagamento Pendente
-                            </h4>
-                            <p className="text-sm text-muted-foreground">
-                              Sua fatura de Março ainda não foi paga.
-                            </p>
-                            <div className="text-xs text-muted-foreground">
-                              Há 1 dia
-                            </div>
-                          </div>
-                        </div>
-                        <div className="flex items-start gap-4">
-                          <div className="flex items-center justify-center rounded-full bg-primary text-primary-foreground w-8 h-8">
-                            <PackageIcon className="h-4 w-4" />
-                          </div>
-                          <div>
-                            <h4 className="text-sm font-medium">
-                              Pedido Enviado
-                            </h4>
-                            <p className="text-sm text-muted-foreground">
-                              Seu pedido de suprimentos foi enviado e chegará em
-                              2-3 dias úteis.
-                            </p>
-                            <div className="text-xs text-muted-foreground">
-                              Há 3 dias
-                            </div>
-                          </div>
-                        </div>
+                        {user.notifications.length > 0 ? (
+                          <Button onClick={handleClearNotifications}>
+                            <DeleteIcon />
+                          </Button>
+                        ) : (
+                          <p>Sem notificacões</p>
+                        )}
                       </div>
                     </DropdownMenuContent>
                   </DropdownMenu>
-
-                  <NavigationMenu>
+                  {/* <NavigationMenu>
                     <NavigationMenuList>
                       <NavigationMenuItem>
                         <NavigationMenuTrigger className="flex items-center gap-4 p-2 text-white bg-transparent">
@@ -372,8 +349,7 @@ const Header = () => {
                         </NavigationMenuContent>
                       </NavigationMenuItem>
                     </NavigationMenuList>
-                  </NavigationMenu>
-                  
+                  </NavigationMenu> */}
                   <NavigationMenu>
                     <NavigationMenuList>
                       <NavigationMenuItem>
@@ -424,7 +400,7 @@ const Header = () => {
                       </NavigationMenuItem>
                     </NavigationMenuList>
                   </NavigationMenu>
-                </>
+                </div>
               )}
             </>
           )}
