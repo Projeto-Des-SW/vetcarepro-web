@@ -4,6 +4,7 @@ export interface UserDataProps {
   email: string;
   token?: string;
   name?: string;
+  chavePix?: string;
   isDarkMode: boolean;
   notifications: INotifications[];
 }
@@ -15,8 +16,8 @@ interface INotifications {
 
 const userInicialState: UserDataProps = {
   email: "",
-  token:
-    "",
+  token: "",
+  chavePix: "",
   notifications: [{ title: "", description: "" }],
   isDarkMode: false,
 };
@@ -44,6 +45,9 @@ const userSlice = createSlice({
     setDarkMode(state) {
       state.isDarkMode = !state.isDarkMode;
     },
+    setChavePix(state, action: PayloadAction<string>) {
+      state.chavePix = action.payload;
+    },
   },
 });
 
@@ -54,4 +58,5 @@ export const {
   addNotification,
   clearNotifications,
   setDarkMode,
+  setChavePix
 } = userSlice.actions;

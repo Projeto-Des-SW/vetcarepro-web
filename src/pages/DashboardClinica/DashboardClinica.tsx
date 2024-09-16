@@ -51,6 +51,15 @@ import {
 } from "@/components/ui/tooltip";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import Joyride, { CallBackProps, STATUS, Step } from "react-joyride";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import PIX from "react-qrcode-pix";
 
 const DashboardClinica = () => {
   const [searchConsulta, setSearchConsulta] = useState("");
@@ -63,6 +72,8 @@ const DashboardClinica = () => {
   const [itemsPerPage, setItemsPerPage] = useState(5);
   const [itemsPerPageServices, setItemsPerPageServices] = useState(5);
   const [tourRunning, setTourRunning] = useState(false);
+  const [openPix, setOpenPix] = useState(false);
+  const [valuePix, setValuePix] = useState<number>();
 
   const { idClinica } = useParams();
   const user = useUserSelector((state) => state.user);
@@ -195,6 +206,31 @@ const DashboardClinica = () => {
         user.isDarkMode && "dark"
       }`}
     >
+      <Dialog
+        open={openPix}
+        onOpenChange={() => setOpenPix((prevState) => !prevState)}
+      >
+        <DialogContent className={`${user.isDarkMode && "dark"}`}>
+          <DialogHeader>
+            <DialogTitle className={`${user.isDarkMode && "text-white"}`}>
+              Pagamento via pix
+            </DialogTitle>
+            <DialogDescription className="flex items-center gap-2 flex-col">
+              {!user.chavePix ? (
+                <p>Chave pix não cadastrada</p>
+              ) : (
+                <p>Leia o QR code para realizar o pagamento</p>
+              )}
+              <PIX
+                pixkey={user.chavePix || ""}
+                merchant="Pedro"
+                city="Feira Nova"
+                amount={valuePix}
+              />
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
       <Joyride
         steps={steps}
         continuous
@@ -466,6 +502,7 @@ const DashboardClinica = () => {
                         <TableHead>Paciente</TableHead>
                         <TableHead>Serviço</TableHead>
                         <TableHead>Status</TableHead>
+                        <TableHead>Ação</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -489,7 +526,9 @@ const DashboardClinica = () => {
                               {dayjs(item.date).format("DD/MM/YYYY - HH:mm")}
                             </TableCell>
                             <TableCell>{item.patient.name}</TableCell>
-                            <TableCell>{item.service.title}</TableCell>
+                            <TableCell>
+                              {item.service.title} - {item.service.amount}
+                            </TableCell>
                             <TableCell>
                               {dayjs(item.date).diff(dayjs(), "days") === 0 ? (
                                 dayjs(item.date).diff(dayjs(), "hours") ===
@@ -511,6 +550,17 @@ const DashboardClinica = () => {
                                   dias
                                 </p>
                               )}
+                            </TableCell>
+                            <TableCell>
+                              <Button
+                                variant="outline"
+                                onClick={() => {
+                                  setValuePix(parseFloat(item.service.amount));
+                                  setOpenPix((prevState) => !prevState);
+                                }}
+                              >
+                                Pagar consulta
+                              </Button>
                             </TableCell>
                           </TableRow>
                         ))}

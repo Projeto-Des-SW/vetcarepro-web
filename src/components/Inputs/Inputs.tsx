@@ -8,7 +8,7 @@ interface InputsProps extends ComponentPropsWithoutRef<"input"> {
   name: string;
   register: UseFormRegister<any>;
   error: FieldErrors | undefined;
-  icon?: ReactNode; // Adiciona a prop 'icon' que aceita um componente React
+  icon?: ReactNode;
 }
 
 const Inputs = ({

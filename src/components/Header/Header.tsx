@@ -43,6 +43,18 @@ import { Switch } from "../ui/switch";
 import { Label } from "../ui/label";
 import { fetchDataUser } from "@/services/getServices";
 import { Badge } from "../ui/badge";
+import {
+  BellIcon,
+  CalendarCheck2Icon,
+  PackageIcon,
+  WalletIcon,
+  XIcon,
+} from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -217,6 +229,84 @@ const Header = () => {
                       onCheckedChange={handleSetDarkMode}
                     />
                   </Label>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="rounded-full"
+                      >
+                        <BellIcon className="h-6 w-6" />
+                        <span className="sr-only">Notifications</span>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-[360px] p-4">
+                      <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-lg font-semibold">Notifications</h3>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="rounded-full"
+                        >
+                          <XIcon className="h-4 w-4" />
+                          <span className="sr-only">Close</span>
+                        </Button>
+                      </div>
+                      <div className="grid gap-4">
+                        <div className="flex items-start gap-4">
+                          <div className="flex items-center justify-center rounded-full bg-primary text-primary-foreground w-8 h-8">
+                            <CalendarCheck2Icon className="h-4 w-4" />
+                          </div>
+                          <div>
+                            <h4 className="text-sm font-medium">
+                              Consulta Agendada
+                            </h4>
+                            <p className="text-sm text-muted-foreground">
+                              Sua consulta com o Dr. Silva foi agendada para
+                              amanhã às 15:00.
+                            </p>
+                            <div className="text-xs text-muted-foreground">
+                              Há 2 horas
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-4">
+                          <div className="flex items-center justify-center rounded-full bg-primary text-primary-foreground w-8 h-8">
+                            <WalletIcon className="h-4 w-4" />
+                          </div>
+                          <div>
+                            <h4 className="text-sm font-medium">
+                              Pagamento Pendente
+                            </h4>
+                            <p className="text-sm text-muted-foreground">
+                              Sua fatura de Março ainda não foi paga.
+                            </p>
+                            <div className="text-xs text-muted-foreground">
+                              Há 1 dia
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-4">
+                          <div className="flex items-center justify-center rounded-full bg-primary text-primary-foreground w-8 h-8">
+                            <PackageIcon className="h-4 w-4" />
+                          </div>
+                          <div>
+                            <h4 className="text-sm font-medium">
+                              Pedido Enviado
+                            </h4>
+                            <p className="text-sm text-muted-foreground">
+                              Seu pedido de suprimentos foi enviado e chegará em
+                              2-3 dias úteis.
+                            </p>
+                            <div className="text-xs text-muted-foreground">
+                              Há 3 dias
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+
                   <NavigationMenu>
                     <NavigationMenuList>
                       <NavigationMenuItem>
@@ -238,15 +328,37 @@ const Header = () => {
 
                         <NavigationMenuContent className="flex flex-col w-full">
                           <ul
-                            className={`flex flex-col w-[200px] gap-3 p-4 ${
+                            className={`flex flex-col w-[360px] gap-3 p-4 ${
                               user.isDarkMode && "dark bg-black text-white"
                             }`}
                           >
+                            <h3 className="text-lg font-semibold">
+                              Notifications
+                            </h3>
                             {user.notifications.map((notification, index) => (
-                              <li key={index}>
-                                <p>{notification.title}</p>
-                                <p>{notification.description}</p>
-                              </li>
+                              <>
+                                {index > 0 && (
+                                  <li
+                                    className="flex items-start gap-4"
+                                    key={index}
+                                  >
+                                    <div className="flex items-center justify-center rounded-full bg-primary text-primary-foreground w-8 h-8">
+                                      <CalendarCheck2Icon className="h-4 w-4" />
+                                    </div>
+                                    <div>
+                                      <h4 className="text-sm font-medium">
+                                        {notification.title}
+                                      </h4>
+                                      <p className="text-sm text-muted-foreground">
+                                        {notification.description}
+                                      </p>
+                                      <div className="text-xs text-muted-foreground">
+                                        Há 2 horas
+                                      </div>
+                                    </div>
+                                  </li>
+                                )}
+                              </>
                             ))}
                             {user.notifications.length > 0 ? (
                               <Button onClick={handleClearNotifications}>
@@ -261,6 +373,7 @@ const Header = () => {
                       </NavigationMenuItem>
                     </NavigationMenuList>
                   </NavigationMenu>
+                  
                   <NavigationMenu>
                     <NavigationMenuList>
                       <NavigationMenuItem>

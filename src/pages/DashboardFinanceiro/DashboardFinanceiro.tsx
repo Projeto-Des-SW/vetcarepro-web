@@ -13,7 +13,7 @@ import { IFuncionario } from "@/interfaces/funcionario";
 import { fetchFuncionariosList } from "@/services/getServices";
 import { useUserSelector } from "@/store/hooks";
 import { useQuery } from "@tanstack/react-query";
-import { BarChart, LineChart, PieChart } from "lucide-react";
+import { BarChart, PieChart } from "lucide-react";
 import { useParams } from "react-router-dom";
 import {
   Dialog,
@@ -24,22 +24,39 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { useDispatch } from "react-redux";
+import { setChavePix } from "@/store/user-slice";
+import { toast } from "sonner";
 
 const DashboardFinanceiro = () => {
   const { idClinica } = useParams();
+  const dispatch = useDispatch();
   const [openConfirmation, setOpenConfirmation] = useState(false);
   const [selectedFuncionario, setSelectedFuncionario] = useState({
     id: "",
     name: "",
     salario: "",
   });
+
   const user = useUserSelector((state) => state.user);
+
+  const [currentChavePix, setCurrentChavePix] = useState(user.chavePix || "");
+
   // const navigate = useNavigate();
 
   const { data, isPending } = useQuery({
     queryKey: ["FuncionariosList"],
     queryFn: () => fetchFuncionariosList(idClinica, user.token),
   });
+
+  const handleCadastrarChavePix = () => {
+    toast(`Chave pix cadastrada com sucesso com sucesso`, {
+      description: "Sua chave pix foi alterada!",
+    });
+
+    dispatch(setChavePix(currentChavePix));
+  };
 
   return (
     <main className="flex-1">
@@ -208,7 +225,7 @@ const DashboardFinanceiro = () => {
                                   onClick={() => {
                                     setOpenConfirmation(true);
                                     setSelectedFuncionario({
-                                      id: service.id || '',
+                                      id: service.id || "",
                                       name: service.name,
                                       salario: "500",
                                     });
@@ -231,19 +248,29 @@ const DashboardFinanceiro = () => {
                   <div className="flex items-center gap-4">
                     {/* <BarChartIcon className="h-8 w-8 text-primary" /> */}
                     <div>
-                      <h3 className="text-lg font-semibold">Fluxo de Caixa</h3>
+                      <h3 className="text-lg font-semibold">Chave pix</h3>
                       <p className="text-sm text-muted-foreground">
-                        Últimos 6 meses
+                        Cadastre ou altere a chave pix para receber sua receita
                       </p>
                     </div>
                   </div>
-                  <Button variant="outline" size="sm" className="text-primary">
-                    Ver Detalhes
-                  </Button>
+
+                  <div className="flex gap-2 items-center">
+                    <Input
+                      value={currentChavePix}
+                      className="w-2/3"
+                      onChange={(e) => setCurrentChavePix(e.target.value)}
+                    />
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="text-primary w-fit h-auto flex text-wrap"
+                      onClick={handleCadastrarChavePix}
+                    >
+                      Cadastrar chave
+                    </Button>
+                  </div>
                 </CardHeader>
-                <CardContent className="p-6">
-                  <LineChart className="w-full aspect-[4/3]" />
-                </CardContent>
               </Card>
               <Card className="bg-background shadow-lg">
                 <CardHeader className="flex items-center justify-between p-6">
