@@ -21,6 +21,7 @@ import CadastroFuncionario from "@/pages/CadastroFuncionario/CadastroFuncionario
 import ListagemFuncionario from "@/pages/listagemFuncionario/listagemFuncionario";
 import ListagemAgendamento from "@/pages/ListagemAgendamento/ListagemAgendamento";
 import DashboardFinanceiro from "@/pages/DashboardFinanceiro/DashboardFinanceiro";
+import Adoption from "@/pages/Adoption/Adoption";
 
 const AppRoutes = () => {
   const user = useUserSelector((state) => state.user);
@@ -31,6 +32,7 @@ const AppRoutes = () => {
         <Route index element={<Navigate to="/home" />} />
         <Route path="home" element={<Home />} />
         <Route path="pricing" element={<Pricing />} />
+        <Route path="adoption" element={<Adoption />} />
         {user.email ? (
           <>
             <Route path="dashboard" element={<Dashboard />}>
