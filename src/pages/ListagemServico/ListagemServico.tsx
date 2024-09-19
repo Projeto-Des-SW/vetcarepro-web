@@ -104,30 +104,36 @@ const ListagemServico = () => {
                     </TableCell>
                   </TableRow>
                 ))
-              : totalPages[currentPage]?.map((service: IService) => (
-                  <TableRow key={service.id}>
-                    <TableCell className="font-medium">
-                      {service.title}
-                    </TableCell>
-                    <TableCell>{service.type}</TableCell>
-                    <TableCell>{service.amount}</TableCell>
-                    <TableCell className="flex justify-end gap-2 ">
-                      <Button
-                        onClick={() =>
-                          navigate(`../detailsServico/${service.id}`)
-                        }
-                      >
-                        Detalhes
-                      </Button>
-                      <Button
-                        onClick={() => handleDelete(service.id)}
-                        variant={"destructive"}
-                      >
-                        Apagar
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
+              : totalPages[currentPage]?.map(
+                  (service: IService, index: number) => (
+                    <TableRow
+                      key={service.id}
+                      className={index % 2 === 0 && "bg-background"}
+                    >
+                      {" "}
+                      <TableCell className="font-medium">
+                        {service.title}
+                      </TableCell>
+                      <TableCell>{service.type}</TableCell>
+                      <TableCell>{service.amount}</TableCell>
+                      <TableCell className="flex justify-end gap-2 ">
+                        <Button
+                          onClick={() =>
+                            navigate(`../detailsServico/${service.id}`)
+                          }
+                        >
+                          Detalhes
+                        </Button>
+                        <Button
+                          onClick={() => handleDelete(service.id)}
+                          variant={"destructive"}
+                        >
+                          Apagar
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  )
+                )}
           </TableBody>
         </Table>
         <Separator />

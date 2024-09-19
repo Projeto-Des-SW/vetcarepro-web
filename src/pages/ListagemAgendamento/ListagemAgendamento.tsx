@@ -93,37 +93,42 @@ const ListagemAgendamento = () => {
                     </TableCell>
                   </TableRow>
                 ))
-              : totalPages[currentPage]?.map((paciente: IAgendamentoGet) => (
-                  <TableRow key={paciente.id}>
-                    <TableCell className="font-medium">
-                      {dayjs(paciente.date).format("DD/MM/YYYY - HH:mm")}
-                    </TableCell>
-                    <TableCell>{paciente.patient.name}</TableCell>
-                    <TableCell>{paciente.service.title}</TableCell>
-                    <TableCell>{paciente.service.amount}</TableCell>
-                    <TableCell>
-                      {!dayjs().isBefore(paciente.date) === false
-                        ? "A ser realizado"
-                        : "Concluido"}
-                    </TableCell>
+              : totalPages[currentPage]?.map(
+                  (paciente: IAgendamentoGet, index: number) => (
+                    <TableRow
+                      key={paciente.id}
+                      className={index % 2 === 0 && "bg-background"}
+                    >
+                      <TableCell className="font-medium">
+                        {dayjs(paciente.date).format("DD/MM/YYYY - HH:mm")}
+                      </TableCell>
+                      <TableCell>{paciente.patient.name}</TableCell>
+                      <TableCell>{paciente.service.title}</TableCell>
+                      <TableCell>{paciente.service.amount}</TableCell>
+                      <TableCell>
+                        {!dayjs().isBefore(paciente.date) === false
+                          ? "A ser realizado"
+                          : "Concluido"}
+                      </TableCell>
 
-                    <TableCell className="flex justify-end gap-2 ">
-                      <Button
-                        onClick={() =>
-                          navigate(`../editarAgendamento/${paciente.id}`)
-                        }
-                      >
-                        Editar
-                      </Button>
-                      <Button
-                        onClick={() => mutation.mutate(paciente.id)}
-                        variant={"destructive"}
-                      >
-                        Apagar
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                      <TableCell className="flex justify-end gap-2 ">
+                        <Button
+                          onClick={() =>
+                            navigate(`../editarAgendamento/${paciente.id}`)
+                          }
+                        >
+                          Editar
+                        </Button>
+                        <Button
+                          onClick={() => mutation.mutate(paciente.id)}
+                          variant={"destructive"}
+                        >
+                          Apagar
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  )
+                )}
           </TableBody>
         </Table>
         <Separator />

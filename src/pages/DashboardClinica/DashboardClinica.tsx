@@ -129,7 +129,7 @@ const DashboardClinica = () => {
   };
 
   const handleWhatsapp = (numero: number, mensagem: string) => {
-    const editedNumber = `+55${numero}`
+    const editedNumber = `+55${numero}`;
     let target = `https://api.whatsapp.com/send?phone=${encodeURIComponent(
       editedNumber
     )}&text=${encodeURIComponent(mensagem)}`;
@@ -212,11 +212,7 @@ const DashboardClinica = () => {
   }, 0);
 
   return (
-    <section
-      className={`flex h-full w-full overflow-y-auto ${
-        user.isDarkMode && "dark"
-      }`}
-    >
+    <section className={`flex h-full w-full overflow-y-auto `}>
       <Dialog
         open={openPix}
         onOpenChange={() => setOpenPix((prevState) => !prevState)}
@@ -247,7 +243,7 @@ const DashboardClinica = () => {
         run={tourRunning}
         callback={handleJoyrideCallback}
       />
-      <main className="flex-1 bg-background flex flex-col">
+      <main className="flex-1 flex flex-col">
         <div className="grid grid-cols-3 gap-8">
           {isPendingPacientes ? (
             Array.from({ length: 3 }).map((_, index) => (
@@ -561,26 +557,47 @@ const DashboardClinica = () => {
                               )}
                             </TableCell>
                             <TableCell className="flex items-center gap-2">
-                              <Button
-                                variant="outline"
-                                onClick={() =>
-                                  handleWhatsapp(
-                                    item.patient.guardian_contact,
-                                    "ola"
-                                  )
-                                }
-                              >
-                                <WhatsAppIcon />
-                              </Button>
-                              <Button
-                                variant="outline"
-                                onClick={() => {
-                                  setValuePix(parseFloat(item.service.amount));
-                                  setOpenPix((prevState) => !prevState);
-                                }}
-                              >
-                                <PixIcon />
-                              </Button>
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <Button
+                                      variant="outline"
+                                      onClick={() =>
+                                        handleWhatsapp(
+                                          item.patient.guardian_contact,
+                                          "ola"
+                                        )
+                                      }
+                                    >
+                                      <WhatsAppIcon />
+                                    </Button>
+                                  </TooltipTrigger>
+                                  <TooltipContent side="bottom">
+                                    <p>Enviar mensagem</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <Button
+                                      variant="outline"
+                                      onClick={() => {
+                                        setValuePix(
+                                          parseFloat(item.service.amount)
+                                        );
+                                        setOpenPix((prevState) => !prevState);
+                                      }}
+                                    >
+                                      <PixIcon />
+                                    </Button>
+                                  </TooltipTrigger>
+                                  <TooltipContent side="bottom">
+                                    <p>Pagar com PIX</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
                             </TableCell>
                           </TableRow>
                         ))}

@@ -5,6 +5,8 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import { useUserSelector } from "@/store/hooks";
 import { useDispatch } from "react-redux";
 import { logoutUser } from "@/store/user-slice";
+import { PawPrint } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 const Dashboard = () => {
   const user = useUserSelector((state) => state.user);
@@ -45,6 +47,21 @@ const Dashboard = () => {
           >
             <HomeWorkIcon />
             <span>Cadastrar Clinicas</span>
+          </NavLink>
+          <NavLink
+            to="/adoption"
+            className={({ isActive }) =>
+              `flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
+                isActive
+                  ? "bg-accent text-accent-foreground"
+                  : "text-muted-foreground hover:bg-muted/50"
+              }`
+            }
+          >
+            <PawPrint />
+            <span className="flex flex-col w-fit items-start gap-1">
+              Adoções <br></br><Badge className="mt-[-8px] text-xs">Novo</Badge>
+            </span>
           </NavLink>
         </div>
         <div className="mt-auto flex flex-col items-start gap-2 px-4 py-5">
