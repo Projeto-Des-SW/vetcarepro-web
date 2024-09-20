@@ -66,7 +66,7 @@ const DashboardFinanceiro = () => {
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Meus pacientes</DialogTitle>
+            <DialogTitle>Meus funcionarios</DialogTitle>
             <DialogDescription className="flex flex-col justify-between p-4">
               <p>Você confirma o pagamento do funcionario?</p>
               {selectedFuncionario.name} - {selectedFuncionario.salario}
@@ -227,7 +227,7 @@ const DashboardFinanceiro = () => {
                                     setSelectedFuncionario({
                                       id: service.id || "",
                                       name: service.name,
-                                      salario: "500",
+                                      salario: service.salary,
                                     });
                                   }}
                                 >

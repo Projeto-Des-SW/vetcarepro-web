@@ -115,7 +115,7 @@ const ListagemServico = () => {
                         {service.title}
                       </TableCell>
                       <TableCell>{service.type}</TableCell>
-                      <TableCell>{service.amount}</TableCell>
+                      <TableCell>{parseFloat(service.amount).toFixed(2)}</TableCell>
                       <TableCell className="flex justify-end gap-2 ">
                         <Button
                           onClick={() =>

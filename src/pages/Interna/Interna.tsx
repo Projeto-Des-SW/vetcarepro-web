@@ -12,6 +12,7 @@ import { logoutUser } from "@/store/user-slice";
 import { Button } from "@/components/ui/button";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import { Separator } from "@/components/ui/separator";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import {
   Dialog,
   DialogContent,
@@ -330,6 +331,20 @@ const Interna = () => {
           </NavLink>
 
           <NavLink
+            to={`listagemProdutos`}
+            className={({ isActive }) =>
+              `flex items-center gap-3 rounded-lg px-3 py-2 transition-all dashboard ${
+                isActive
+                  ? "bg-accent text-accent-foreground"
+                  : "text-muted-foreground hover:bg-muted/50"
+              }`
+            }
+          >
+            <ShoppingCartIcon className="h-5 w-5" />
+            {openMenu && <span>Meus produtos</span>}
+          </NavLink>
+
+          <NavLink
             to={`/internalClinica/${idClinica}/dashboardFinanceiro`}
             className={({ isActive }) =>
               `flex items-center gap-3 rounded-lg px-3 py-2 transition-all finanças ${
@@ -422,20 +437,6 @@ const Interna = () => {
               )}
             </Tooltip>
           </TooltipProvider>
-
-          <NavLink
-            to={`listagemProdutos`}
-            className={({ isActive }) =>
-              `flex items-center gap-3 rounded-lg px-3 py-2 transition-all dashboard ${
-                isActive
-                  ? "bg-accent text-accent-foreground"
-                  : "text-muted-foreground hover:bg-muted/50"
-              }`
-            }
-          >
-            <DashboardIcon className="h-5 w-5" />
-            {openMenu && <span>Dashboard</span>}
-          </NavLink>
         </div>
 
         <Separator />
