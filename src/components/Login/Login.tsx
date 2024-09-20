@@ -94,6 +94,7 @@ const Login = () => {
               token: data.token,
               notifications: [],
               isDarkMode: false,
+              cart: []
             })
           );
 

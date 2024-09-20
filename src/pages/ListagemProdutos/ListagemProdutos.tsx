@@ -278,7 +278,7 @@ const ListagemProdutos = () => {
                   </div>
                 </div>
 
-                <div className="flex gap-1">
+                <div className="flex gap-1 flex-wrap">
                   <Button onClick={() => handleChangeMode(false, product.id)}>
                     <Pencil />
                   </Button>

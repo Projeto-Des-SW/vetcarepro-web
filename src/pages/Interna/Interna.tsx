@@ -44,6 +44,7 @@ const Interna = () => {
   const [openServices, setOpenServices] = useState(false);
   const [openFuncionarios, setOpenFuncionarios] = useState(false);
   const [openAgendamento, setOpenAgendamento] = useState(false);
+  const [tourRunning, setTourRunning] = useState(false);
   const [openMenu, setOpenMenu] = useState(false);
   const dispatch = useDispatch();
   const { idClinica } = useParams();
@@ -92,9 +93,8 @@ const Interna = () => {
     queryKey: ["userData"],
     queryFn: () => fetchUserData(user.token),
   });
-  if (isPending) return <div>Carregando</div>;
 
-  const [tourRunning, setTourRunning] = useState(false);
+  if (isPending) return <div>Carregando</div>;
 
   const handleJoyrideCallback = (data: CallBackProps) => {
     const { status } = data;
