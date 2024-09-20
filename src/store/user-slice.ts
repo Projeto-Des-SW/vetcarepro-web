@@ -1,3 +1,4 @@
+import { IProduct } from "@/interfaces/product";
 import { type PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 export interface UserDataProps {
@@ -6,6 +7,7 @@ export interface UserDataProps {
   name?: string;
   chavePix?: string;
   isDarkMode: boolean;
+  cart: IProduct[];
   notifications: INotifications[];
 }
 
@@ -14,11 +16,15 @@ interface INotifications {
   description: string;
 }
 
+//Todo o gerenciamento do usuario vai ser em apenas um slice.
+//Ideal? não, mas 0 coragem de criar outra slice
+
 const userInicialState: UserDataProps = {
   email: "",
   token: "",
-  chavePix: "",
+  chavePix: "81998436108",
   notifications: [{ title: "", description: "" }],
+  cart: [],
   isDarkMode: false,
 };
 
@@ -48,6 +54,44 @@ const userSlice = createSlice({
     setChavePix(state, action: PayloadAction<string>) {
       state.chavePix = action.payload;
     },
+    setItemCart(state, action: PayloadAction<IProduct>) {
+      const existingProduct = state.cart.find(
+        (item) => item.id === action.payload.id
+      );
+      if (existingProduct) {
+        existingProduct.quantity += 1;
+      } else {
+        state.cart.push({ ...action.payload, quantity: 1 });
+      }
+    },
+    setIncrementItemCart(state, action: PayloadAction<string>) {
+      const existingProduct = state.cart.find(
+        (item) => item.id === action.payload
+      );
+      if (existingProduct) {
+        existingProduct.quantity += 1;
+      }
+    },
+    setDecrementItemCart(state, action: PayloadAction<string>) {
+      const existingProduct = state.cart.find(
+        (item) => item.id === action.payload
+      );
+      if (existingProduct) {
+        existingProduct.quantity -= 1;
+      }
+    },
+    setRemoveItemCart(state, action: PayloadAction<string>) {
+      const existingProduct = state.cart.findIndex(
+        (item) => item.id === action.payload
+      );
+
+      if (existingProduct !== -1) {
+        state.cart.splice(existingProduct, 1);
+      }
+    },
+    setClearCart(state) {
+      state.cart = [];
+    },
   },
 });
 
@@ -58,5 +102,10 @@ export const {
   addNotification,
   clearNotifications,
   setDarkMode,
-  setChavePix
+  setChavePix,
+  setItemCart,
+  setClearCart,
+  setIncrementItemCart,
+  setDecrementItemCart,
+  setRemoveItemCart,
 } = userSlice.actions;
