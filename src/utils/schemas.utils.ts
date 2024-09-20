@@ -42,10 +42,21 @@ export const serviceSchema = yup
   .object({
     clinic_id: yup.string(),
     title: yup.string().required("Pet name is required"),
-    type: yup.string().required("Service type is required"),
+    // quantity: yup.string().required("Service type is required"),
     amount: yup.string().required("Amount is required"),
+    type: yup.string().required("Amount is required"),
   })
   .required();
+
+  
+export const productSchema = yup
+.object({
+  clinic_id: yup.string(),
+  title: yup.string().required("Pet name is required"),
+  quantity: yup.string().required("Service type is required"),
+  amount: yup.string().required("Amount is required"),
+})
+.required();
 
 export const petSchema = yup
   .object({

@@ -20,3 +20,7 @@ export const splitIntoGroups = (array: any[], size: number) => {
 
 export const INTERVAL_TIME = 10000;
 export const PROGRESS_INCREMENT = 100 / (INTERVAL_TIME / 100);
+
+export function capitalizeFirstLetter(texto: string) {
+  return texto.charAt(0).toUpperCase() + texto.slice(1);
+}

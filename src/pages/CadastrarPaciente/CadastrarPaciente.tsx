@@ -137,14 +137,6 @@ const CadastrarPaciente = ({ mode = "create" }: ICrud) => {
               Cuidando com amor do seu melhor amigo
             </p>
           </header>
-          {/* <h2 className="text-3xl font-semibold text-primary mb-6 flex items-center">
-            {mode === "create" ? (
-              <Heart className="w-6 h-6 mr-2 text-red-500" />
-            ) : (
-              <PencilOff className="w-6 h-6 mr-2 text-red-500" />
-            )}
-            {mode === "create" ? "Cadastre" : "Edite"} o paciente
-          </h2> */}
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Inputs

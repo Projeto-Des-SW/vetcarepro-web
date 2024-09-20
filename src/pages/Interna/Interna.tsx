@@ -39,8 +39,6 @@ import PetsIcon from "@mui/icons-material/Pets";
 import { Crown } from "lucide-react";
 
 const Interna = () => {
-  const navigate = useNavigate();
-  const user = useUserSelector((state) => state.user);
   const [openPacientes, setOpenPacientes] = useState(false);
   const [openServices, setOpenServices] = useState(false);
   const [openFuncionarios, setOpenFuncionarios] = useState(false);
@@ -48,18 +46,8 @@ const Interna = () => {
   const [openMenu, setOpenMenu] = useState(false);
   const dispatch = useDispatch();
   const { idClinica } = useParams();
-
-  console.log(user);
-  const handleLogout = () => {
-    dispatch(logoutUser());
-    navigate("/home");
-  };
-
-  const { data: userData, isPending } = useQuery({
-    queryKey: ["userData"],
-    queryFn: () => fetchUserData(user.token),
-  });
-  if (isPending) return <div>Carregando</div>;
+  const navigate = useNavigate();
+  const user = useUserSelector((state) => state.user);
 
   const [steps] = useState<Step[]>([
     {
@@ -93,6 +81,17 @@ const Interna = () => {
         "Nesta seção, você pode visualizar e gerenciar os agendamentos de consultas e procedimentos realizados na clínica.",
     },
   ]);
+  console.log(user);
+  const handleLogout = () => {
+    dispatch(logoutUser());
+    navigate("/home");
+  };
+
+  const { data: userData, isPending } = useQuery({
+    queryKey: ["userData"],
+    queryFn: () => fetchUserData(user.token),
+  });
+  if (isPending) return <div>Carregando</div>;
 
   const [tourRunning, setTourRunning] = useState(false);
 
@@ -423,6 +422,20 @@ const Interna = () => {
               )}
             </Tooltip>
           </TooltipProvider>
+
+          <NavLink
+            to={`listagemProdutos`}
+            className={({ isActive }) =>
+              `flex items-center gap-3 rounded-lg px-3 py-2 transition-all dashboard ${
+                isActive
+                  ? "bg-accent text-accent-foreground"
+                  : "text-muted-foreground hover:bg-muted/50"
+              }`
+            }
+          >
+            <DashboardIcon className="h-5 w-5" />
+            {openMenu && <span>Dashboard</span>}
+          </NavLink>
         </div>
 
         <Separator />

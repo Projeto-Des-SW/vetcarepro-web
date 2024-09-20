@@ -83,7 +83,7 @@ const ListagemClinica = () => {
               </Card>
             ))
           : currentItems?.map((clinica, index) => (
-              <>
+              <div key={index}>
                 <Card className="h-fit max-h-[300px] max-w-[600px]" key={index * 2}>
                   <CardHeader className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
@@ -157,7 +157,7 @@ const ListagemClinica = () => {
                     </Button>
                   </CardFooter>
                 </Card>
-              </>
+              </div>
             ))}
       </div>
       <Pagination>

@@ -22,6 +22,7 @@ import ListagemFuncionario from "@/pages/listagemFuncionario/listagemFuncionario
 import ListagemAgendamento from "@/pages/ListagemAgendamento/ListagemAgendamento";
 import DashboardFinanceiro from "@/pages/DashboardFinanceiro/DashboardFinanceiro";
 import Adoption from "@/pages/Adoption/Adoption";
+import ListagemProdutos from "@/pages/ListagemProdutos/ListagemProdutos";
 
 const AppRoutes = () => {
   const user = useUserSelector((state) => state.user);
@@ -89,6 +90,8 @@ const AppRoutes = () => {
                 path="editarAgendamento/:id"
                 element={<AgendarConsulta mode="edit" />}
               />
+
+              <Route path="listagemProdutos" element={<ListagemProdutos />} />
             </Route>
 
             {/* <Route path="*" element={<Navigate to="/dashboard" />} /> */}

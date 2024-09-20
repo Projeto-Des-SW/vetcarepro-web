@@ -57,6 +57,19 @@ const Header = () => {
   const [openModal, setOpenModal] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
 
+  useEffect(() => {
+    if (isChecked) {
+      localStorage.removeItem("joyrideMenu");
+      localStorage.removeItem("joyride");
+    }
+  }, [isChecked]);
+
+  useEffect(() => {
+    if (!localStorage.getItem("joyride")) {
+      setIsChecked(true);
+    }
+  }, []);
+
   const handleCheckboxChange = (checked: boolean) => {
     setIsChecked(checked);
     console.log(checked);
@@ -80,19 +93,6 @@ const Header = () => {
     queryKey: ["userData"],
     queryFn: () => fetchDataUser(user.token),
   });
-
-  useEffect(() => {
-    if (isChecked) {
-      localStorage.removeItem("joyrideMenu");
-      localStorage.removeItem("joyride");
-    }
-  }, [isChecked]);
-
-  useEffect(() => {
-    if (!localStorage.getItem("joyride")) {
-      setIsChecked(true);
-    }
-  }, []);
 
   return (
     <>
@@ -223,8 +223,6 @@ const Header = () => {
                     />
                   </Label>
 
-                  
-
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       {user.notifications.length <= 1 ? (
@@ -253,7 +251,7 @@ const Header = () => {
                             }`}
                           >
                             {user.notifications.map((notification, index) => (
-                              <>
+                              <div key={index}>
                                 {index > 0 && (
                                   <li
                                     className="flex items-start gap-4"
@@ -272,7 +270,7 @@ const Header = () => {
                                     </div>
                                   </li>
                                 )}
-                              </>
+                              </div>
                             ))}
                           </ul>
                         </div>

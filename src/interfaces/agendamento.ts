@@ -33,4 +33,5 @@ export interface IAgendamentoGet {
 
 export interface ICrudClinia {
   mode?: "create" | "edit";
+  id?: string;
 }

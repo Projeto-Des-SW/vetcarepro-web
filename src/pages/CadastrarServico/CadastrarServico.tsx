@@ -64,7 +64,7 @@ const CadastrarServico = ({ mode = "create" }: ICrudClinia) => {
   }, [mode, reset, user.token, baseUrl, setValue, idClinica, id]);
 
   const errorCount = Object.keys(errors).length;
-
+  console.log(errors)
   const handleSubmitClinica: SubmitHandler<IService> = (data) => {
     const url =
       mode === "create"
