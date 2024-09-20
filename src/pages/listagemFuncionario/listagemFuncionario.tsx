@@ -83,6 +83,8 @@ const ListagemFuncionario = () => {
               <TableHead className="w-[100px]">Nome</TableHead>
               <TableHead>Email</TableHead>
               <TableHead>Cargo</TableHead>
+              <TableHead>Salario</TableHead>
+              <TableHead>Ultimo pagamento</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -109,7 +111,9 @@ const ListagemFuncionario = () => {
                       {service.name}
                     </TableCell>
                     <TableCell>{service.email}</TableCell>
-                    {/* <TableCell>{service.amount}</TableCell> */}
+                    <TableCell>{service.position}</TableCell>
+                    <TableCell>{service.salary}</TableCell>
+                    <TableCell>{service.last_payment_date}</TableCell>
                     <TableCell className="flex justify-end gap-2 ">
                       <Button
                         onClick={() =>

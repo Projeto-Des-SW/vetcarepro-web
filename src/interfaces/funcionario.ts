@@ -3,4 +3,7 @@ export interface IFuncionario {
   name?: string;
   email?: string;
   password?: string;
+  salary?: string;
+  position?: string;
+  last_payment_date?: string;
 }

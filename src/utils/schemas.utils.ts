@@ -18,6 +18,16 @@ export const cadastroSchema = yup
   })
   .required();
 
+export const cadastroFuncionarioSchema = yup
+  .object({
+    name: yup.string().required(),
+    email: yup.string().required(),
+    password: yup.string().required(),
+    position: yup.string().required(),
+    salary: yup.string().required(),
+  })
+  .required();
+
 export const cadastroClinicaSchema = yup
   .object({
     title: yup.string().required("Nome da clínica é obrigatório"),
@@ -48,15 +58,14 @@ export const serviceSchema = yup
   })
   .required();
 
-  
 export const productSchema = yup
-.object({
-  clinic_id: yup.string(),
-  title: yup.string().required("Pet name is required"),
-  quantity: yup.string().required("Service type is required"),
-  amount: yup.string().required("Amount is required"),
-})
-.required();
+  .object({
+    clinic_id: yup.string(),
+    title: yup.string().required("Pet name is required"),
+    quantity: yup.string().required("Service type is required"),
+    amount: yup.string().required("Amount is required"),
+  })
+  .required();
 
 export const petSchema = yup
   .object({

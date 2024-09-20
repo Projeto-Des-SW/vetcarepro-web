@@ -13,7 +13,7 @@ import { useUserSelector } from "@/store/hooks";
 import { Card } from "@/components/ui/card";
 import { useDispatch } from "react-redux";
 import { addNotification } from "@/store/user-slice";
-import { formattedDate, formattedTime } from "@/utils/const.utils";
+import { capitalizeFirstLetter, formattedDate, formattedTime } from "@/utils/const.utils";
 import { IFuncionario } from "@/interfaces/funcionario";
 import { UserRoundPlus } from "lucide-react";
 import { cadastroSchema } from "@/utils/schemas.utils";
@@ -84,7 +84,7 @@ const CadastroFuncionario = ({ mode = "create" }: ICrudClinia) => {
         const successMessage = `Clinica - ${response.statusText}`;
         const successDescription = `Data: ${formattedDate}, Hora: ${formattedTime}`;
 
-        toast(`${mode} realizado com sucesso`, {
+        toast(`${capitalizeFirstLetter(mode)} realizado com sucesso`, {
           description: successDescription,
         });
 
@@ -132,14 +132,6 @@ const CadastroFuncionario = ({ mode = "create" }: ICrudClinia) => {
                 : "Edite as informações do funcionario"}
             </p>
           </header>
-          {/* <h2 className="text-3xl font-semibold text-primary mb-6 flex items-center">
-            {mode === "create" ? (
-              <UserRoundPlus className="w-6 h-6 mr-2 text-red-500" />
-            ) : (
-              <UserRoundPen className="w-6 h-6 mr-2 text-red-500" />
-            )}
-            {mode === "create" ? "Cadastre" : "Edite"} seu funcionario
-          </h2> */}
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Inputs
@@ -166,7 +158,22 @@ const CadastroFuncionario = ({ mode = "create" }: ICrudClinia) => {
               register={register}
               error={errors}
             />
+            <Inputs
+              label="Cargo"
+              name="position"
+              placeholder="Digite o cargo do funcionario"
+              register={register}
+              error={errors}
+            />
           </div>
+
+          <Inputs
+            label="Salario"
+            name="salary"
+            placeholder="Digite o salario do funcionario"
+            register={register}
+            error={errors}
+          />
 
           <Button type="submit">
             {mode === "create" ? "Criar" : "Salvar alterações"}
