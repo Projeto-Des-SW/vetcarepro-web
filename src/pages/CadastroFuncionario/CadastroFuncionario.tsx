@@ -13,10 +13,14 @@ import { useUserSelector } from "@/store/hooks";
 import { Card } from "@/components/ui/card";
 import { useDispatch } from "react-redux";
 import { addNotification } from "@/store/user-slice";
-import { capitalizeFirstLetter, formattedDate, formattedTime } from "@/utils/const.utils";
+import {
+  capitalizeFirstLetter,
+  formattedDate,
+  formattedTime,
+} from "@/utils/const.utils";
 import { IFuncionario } from "@/interfaces/funcionario";
 import { UserRoundPlus } from "lucide-react";
-import { cadastroSchema } from "@/utils/schemas.utils";
+import { cadastroFuncionarioSchema } from "@/utils/schemas.utils";
 import { ICrudClinia } from "@/interfaces/agendamento";
 
 const CadastroFuncionario = ({ mode = "create" }: ICrudClinia) => {
@@ -32,7 +36,7 @@ const CadastroFuncionario = ({ mode = "create" }: ICrudClinia) => {
     formState: { errors },
     reset,
   } = useForm<IFuncionario>({
-    resolver: yupResolver(cadastroSchema),
+    resolver: yupResolver(cadastroFuncionarioSchema),
   });
 
   const errorCount = Object.keys(errors).length;
@@ -62,6 +66,11 @@ const CadastroFuncionario = ({ mode = "create" }: ICrudClinia) => {
         : `${baseUrl}/clinics/${idClinica}/employees/${id}`;
     const method = mode === "create" ? "POST" : "PUT";
 
+    const myData = {
+      ...data,
+      last_payment_date: "",
+    };
+
     const notify = (title: string, description: string) => {
       dispatch(
         addNotification({
@@ -78,7 +87,7 @@ const CadastroFuncionario = ({ mode = "create" }: ICrudClinia) => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${user.token}`,
       },
-      data,
+      data: myData,
     })
       .then((response) => {
         const successMessage = `Clinica - ${response.statusText}`;

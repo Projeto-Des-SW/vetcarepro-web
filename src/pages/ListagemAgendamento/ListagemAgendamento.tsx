@@ -104,7 +104,7 @@ const ListagemAgendamento = () => {
                       </TableCell>
                       <TableCell>{paciente.patient.name}</TableCell>
                       <TableCell>{paciente.service.title}</TableCell>
-                      <TableCell>{paciente.service.amount}</TableCell>
+                      <TableCell>{parseFloat(paciente.service.amount).toFixed(2)}</TableCell>
                       <TableCell>
                         {!dayjs().isBefore(paciente.date) === false
                           ? "A ser realizado"

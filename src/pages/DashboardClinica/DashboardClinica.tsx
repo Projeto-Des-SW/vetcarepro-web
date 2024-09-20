@@ -532,7 +532,8 @@ const DashboardClinica = () => {
                             </TableCell>
                             <TableCell>{item.patient.name}</TableCell>
                             <TableCell>
-                              {item.service.title} - {item.service.amount}
+                              {item.service.title} -{" "}
+                              {parseFloat(item.service.amount).toFixed(2)}
                             </TableCell>
                             <TableCell>
                               {dayjs(item.date).diff(dayjs(), "days") === 0 ? (
@@ -743,7 +744,9 @@ const DashboardClinica = () => {
                           {item.title}
                         </TableCell>
                         <TableCell>{item.type}</TableCell>
-                        <TableCell>{item.amount}</TableCell>
+                        <TableCell>
+                          {parseFloat(item.amount).toFixed(2)}
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
