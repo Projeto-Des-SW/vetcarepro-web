@@ -50,6 +50,13 @@ import {
 } from "../ui/dropdown-menu";
 import NightsStayIcon from "@mui/icons-material/NightsStay";
 import LightModeIcon from "@mui/icons-material/LightMode";
+import { splitIntoGroups } from "@/utils/const.utils";
+import {
+  Pagination,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "../ui/pagination";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -57,6 +64,9 @@ const Header = () => {
   const dispatch = useDispatch();
   const [openModal, setOpenModal] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0);
+
+  const itemsPerPage = 7;
 
   useEffect(() => {
     if (isChecked) {
@@ -94,6 +104,8 @@ const Header = () => {
     queryKey: ["userData"],
     queryFn: () => fetchDataUser(user.token),
   });
+
+  const totalPages = splitIntoGroups(user.notifications, itemsPerPage);
 
   return (
     <>
@@ -243,28 +255,58 @@ const Header = () => {
                               user.isDarkMode && "dark bg-black text-white"
                             }`}
                           >
-                            {user.notifications.map((notification, index) => (
-                              <div key={index}>
-                                {index > 0 && (
-                                  <li
-                                    className="flex items-start gap-4"
+                            {totalPages[currentPage]?.map(
+                              (notification, index) => (
+                                <div key={index}>
+                                  {index > 0 && (
+                                    <li
+                                      className="flex items-start gap-4"
+                                      key={index}
+                                    >
+                                      <div className="flex items-center justify-center rounded-full bg-primary text-primary-foreground w-8 h-8">
+                                        <CalendarCheck2Icon className="h-4 w-4" />
+                                      </div>
+                                      <div>
+                                        <h4 className="text-sm font-medium">
+                                          {notification.title}
+                                        </h4>
+                                        <p className="text-sm text-muted-foreground">
+                                          {notification.description}
+                                        </p>
+                                      </div>
+                                    </li>
+                                  )}
+                                </div>
+                              )
+                            )}
+
+                            <div className="flex justify-center mt-4">
+                              <Pagination>
+                                <PaginationPrevious
+                                  onClick={() =>
+                                    currentPage !== 0 &&
+                                    setCurrentPage((prevState) => prevState - 1)
+                                  }
+                                />
+
+                                {totalPages.map((_item, index) => (
+                                  <PaginationLink
                                     key={index}
+                                    onClick={() => setCurrentPage(index)}
+                                    isActive={currentPage === index}
                                   >
-                                    <div className="flex items-center justify-center rounded-full bg-primary text-primary-foreground w-8 h-8">
-                                      <CalendarCheck2Icon className="h-4 w-4" />
-                                    </div>
-                                    <div>
-                                      <h4 className="text-sm font-medium">
-                                        {notification.title}
-                                      </h4>
-                                      <p className="text-sm text-muted-foreground">
-                                        {notification.description}
-                                      </p>
-                                    </div>
-                                  </li>
-                                )}
-                              </div>
-                            ))}
+                                    {index + 1}
+                                  </PaginationLink>
+                                ))}
+
+                                <PaginationNext
+                                  onClick={() =>
+                                    currentPage !== totalPages.length - 1 &&
+                                    setCurrentPage((prevState) => prevState + 1)
+                                  }
+                                />
+                              </Pagination>
+                            </div>
                           </ul>
                         </div>
                         {user.notifications.length > 0 ? (
