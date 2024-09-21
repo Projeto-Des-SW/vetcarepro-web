@@ -2,6 +2,7 @@ export interface IProduct {
   amount: string;
   title: string;
   quantity: number;
+  cartQuantity?: number;
   status: boolean;
   clinic_id: string;
   created_at: string;

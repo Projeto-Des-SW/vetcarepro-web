@@ -13,6 +13,7 @@ import { handleDeleteProduct } from "@/services/deleteServices";
 import { fetchPacientsList, fetchProductList } from "@/services/getServices";
 import { useUserSelector } from "@/store/hooks";
 import {
+  addNotification,
   setClearCart,
   setDecrementItemCart,
   setIncrementItemCart,
@@ -31,12 +32,20 @@ import {
   Trash2,
   XIcon,
 } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import PIX from "react-qrcode-pix";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import PixIcon from "@mui/icons-material/Pix";
 import { toast } from "sonner";
+import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { motion } from "framer-motion";
 
 const ListagemProdutos = () => {
   const user = useUserSelector((state) => state.user);
@@ -47,9 +56,11 @@ const ListagemProdutos = () => {
   const [currentIdEdit, setCurrentIdEdit] = useState("");
   const queryClient = useQueryClient();
   const [showPix, setShowPix] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const constraintsRef = useRef(null);
+
   const dispatch = useDispatch();
   const baseUrl = import.meta.env.VITE_URL as string;
-  console.log("carrinho", user.cart);
 
   const { data, isPending } = useQuery({
     queryKey: ["ProductList"],
@@ -69,6 +80,13 @@ const ListagemProdutos = () => {
 
   const handleRefresh = () => {
     queryClient.invalidateQueries({ queryKey: ["ProductList"] });
+  };
+
+  const handleClick = () => {
+    if (!isDragging) {
+      console.log("Botão clicado!");
+      setOpenCart(true);
+    }
   };
 
   const mutation = useMutation({
@@ -120,7 +138,7 @@ const ListagemProdutos = () => {
   }
 
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-full" ref={constraintsRef}>
       <Dialog
         open={openNewProduct}
         onOpenChange={() => {
@@ -177,11 +195,12 @@ const ListagemProdutos = () => {
                         <MinusIcon className="h-4 w-4" />
                       </Button>
                       <div className="text-lg font-semibold">
-                        {product.quantity}
+                        {product.cartQuantity}
                       </div>
                       <Button
                         size="icon"
                         variant="ghost"
+                        disabled={product.cartQuantity + 1 > product.quantity}
                         onClick={() =>
                           dispatch(setIncrementItemCart(product.id))
                         }
@@ -191,9 +210,9 @@ const ListagemProdutos = () => {
                     </div>
                     <div className="text-3xl font-bold text-primary">
                       $
-                      {(parseFloat(product.amount) * product.quantity).toFixed(
-                        2
-                      )}
+                      {(
+                        parseFloat(product.amount) * product.cartQuantity
+                      ).toFixed(2)}
                     </div>
                     <Button
                       size="icon"
@@ -266,62 +285,102 @@ const ListagemProdutos = () => {
         </Button>
       </header>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8">
-        {data.map((product) => (
-          <Card key={product.id} className="bg-background shadow-lg">
-            <CardHeader className="flex">
-              <div className="flex justify-between">
-                <div>
-                  <h3 className="text-lg font-semibold">{product.title}</h3>
-                  <div className="text-3xl font-bold text-primary">
-                    ${parseFloat(product.amount).toFixed(2)}
+      <div className="grid grid-cols-4 gap-8">
+        {data.map((product) => {
+          const currentProduct = user.cart.filter(
+            (productC) => productC.id === product.id
+          );
+
+          console.log(currentProduct);
+          console.log(product);
+          return (
+            <Card key={product.id} className="bg-background shadow-lg">
+              <CardHeader className="flex">
+                <div className="flex justify-between">
+                  <div>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <h3 className="text-lg font-semibold text-ellipsis w-full overflow-hidden whitespace-nowrap max-w-[150px]">
+                            {product.title}
+                          </h3>
+                        </TooltipTrigger>
+                        <TooltipContent>{product.title} </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+
+                    <div className="text-3xl font-bold text-primary">
+                      ${parseFloat(product.amount).toFixed(2)}
+                    </div>
                   </div>
                 </div>
 
-                <div className="flex gap-1 flex-wrap">
-                  <Button onClick={() => handleChangeMode(false, product.id)}>
-                    <Pencil />
-                  </Button>
-                  <Button
-                    variant="destructive"
-                    onClick={() => mutation.mutate(product.id)}
-                  >
-                    <Trash2 />
-                  </Button>
-                </div>
-              </div>
+                <p className="text-sm text-muted-foreground">
+                  Quantidade disponível: {product.quantity}
+                </p>
+              </CardHeader>
 
-              <p className="text-sm text-muted-foreground">
-                Quantidade disponivel: {product.quantity}
-              </p>
-            </CardHeader>
-            <CardContent className="p-6 border-t">
-              <Button
-                variant="outline"
-                className="w-full"
-                onClick={() => {
-                  dispatch(setItemCart(product));
-                  toast(`Produto adicionado ao carrinho com sucesso`, {
-                    description: product.title,
-                  });
-                }}
-              >
-                Adicionar ao Carrinho
-              </Button>
-            </CardContent>
-          </Card>
-        ))}
+              <CardContent className="p-6 border-t flex gap-2 w-full flex-wrap relative bottom-0">
+                <Button
+                  variant="outline"
+                  disabled={
+                    (currentProduct[0]?.cartQuantity || 0) + 1 >
+                    product.quantity
+                  }
+                  onClick={() => {
+                    dispatch(setItemCart(product));
+
+                    toast(`Produto adicionado ao carrinho com sucesso`, {
+                      description: product.title,
+                    });
+
+                    dispatch(
+                      addNotification({
+                        title: 'Produto adicionado ao carrinho com sucesso',
+                        description: product.title,
+                      })
+                    );
+                  }}
+                >
+                  <AddShoppingCartIcon />
+                </Button>
+                <Button
+                  onClick={() => handleChangeMode(false, product.id)}
+                  variant="outline"
+                  // className="w-full"
+                >
+                  <Pencil />
+                </Button>
+                <Button
+                  variant="destructive"
+                  // className="w-full"
+
+                  onClick={() => mutation.mutate(product.id)}
+                >
+                  <Trash2 />
+                </Button>
+                <div className="flex "></div>
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
 
-      <div className="bottom-[80px] absolute right-0 p-8">
+      <motion.div
+        drag
+        dragConstraints={constraintsRef}
+        dragMomentum={false}
+        className="bottom-[0px] absolute right-0 p-8"
+      >
         <Fab
           color="primary"
           aria-label="add"
-          onClick={() => setOpenCart((prevState) => !prevState)}
+          onDragStart={() => setIsDragging(true)}
+          onDragEnd={() => setIsDragging(false)}
         >
-          <ShoppingCart />
+          <ShoppingCart onClick={handleClick} />
         </Fab>
-      </div>
+      </motion.div>
     </div>
   );
 };
