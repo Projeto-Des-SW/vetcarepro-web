@@ -48,6 +48,8 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import NightsStayIcon from "@mui/icons-material/NightsStay";
+import LightModeIcon from "@mui/icons-material/LightMode";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -210,17 +212,9 @@ const Header = () => {
                 </>
               ) : (
                 <div className="flex gap-4 items-center">
-                  <Label
-                    htmlFor="airplane-mode"
-                    className="flex items-center gap-2"
-                  >
-                    Modo escuro
-                    <Switch
-                      id="airplane-mode"
-                      checked={user.isDarkMode}
-                      onCheckedChange={handleSetDarkMode}
-                    />
-                  </Label>
+                  <Button onClick={handleSetDarkMode} variant="ghost">
+                    {!user.isDarkMode ? <NightsStayIcon /> : <LightModeIcon />}
+                  </Button>
 
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
