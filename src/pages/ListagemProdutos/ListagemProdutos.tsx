@@ -46,6 +46,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { motion } from "framer-motion";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const ListagemProdutos = () => {
   const user = useUserSelector((state) => state.user);
@@ -286,84 +287,98 @@ const ListagemProdutos = () => {
       </header>
 
       <div className="grid grid-cols-4 gap-8">
-        {data.map((product) => {
-          const currentProduct = user.cart.filter(
-            (productC) => productC.id === product.id
-          );
+        {isPending
+          ? Array.from({ length: 8 }).map((_, index) => (
+              <Card key={index} className="bg-background shadow-lg">
+                <CardHeader className="flex">
+                  <Skeleton className="h-6 w-full mb-2" />
+                  <Skeleton className="h-8 w-1/2" />
+                </CardHeader>
+                <CardContent className="p-6 border-t flex gap-2 w-full flex-wrap relative bottom-0">
+                  <Skeleton className="h-10 w-12" />
+                  <Skeleton className="h-10 w-12" />
+                  <Skeleton className="h-10 w-12" />
+                </CardContent>
+              </Card>
+            ))
+          : data.map((product) => {
+              const currentProduct = user.cart.filter(
+                (productC) => productC.id === product.id
+              );
 
-          console.log(currentProduct);
-          console.log(product);
-          return (
-            <Card key={product.id} className="bg-background shadow-lg">
-              <CardHeader className="flex">
-                <div className="flex justify-between">
-                  <div>
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger>
-                          <h3 className="text-lg font-semibold text-ellipsis w-full overflow-hidden whitespace-nowrap max-w-[150px]">
-                            {product.title}
-                          </h3>
-                        </TooltipTrigger>
-                        <TooltipContent>{product.title} </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
+              console.log(currentProduct);
+              console.log(product);
+              return (
+                <Card key={product.id} className="bg-background shadow-lg">
+                  <CardHeader className="flex">
+                    <div className="flex justify-between">
+                      <div>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <h3 className="text-lg font-semibold text-ellipsis w-full overflow-hidden whitespace-nowrap max-w-[150px]">
+                                {product.title}
+                              </h3>
+                            </TooltipTrigger>
+                            <TooltipContent>{product.title} </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
 
-                    <div className="text-3xl font-bold text-primary">
-                      ${parseFloat(product.amount).toFixed(2)}
+                        <div className="text-3xl font-bold text-primary">
+                          ${parseFloat(product.amount).toFixed(2)}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
 
-                <p className="text-sm text-muted-foreground">
-                  Quantidade disponível: {product.quantity}
-                </p>
-              </CardHeader>
+                    <p className="text-sm text-muted-foreground">
+                      Quantidade disponível: {product.quantity}
+                    </p>
+                  </CardHeader>
 
-              <CardContent className="p-6 border-t flex gap-2 w-full flex-wrap relative bottom-0">
-                <Button
-                  variant="outline"
-                  disabled={
-                    (currentProduct[0]?.cartQuantity || 0) + 1 >
-                    product.quantity
-                  }
-                  onClick={() => {
-                    dispatch(setItemCart(product));
+                  <CardContent className="p-6 border-t flex gap-2 w-full flex-wrap relative bottom-0">
+                    <Button
+                      variant="outline"
+                      disabled={
+                        (currentProduct[0]?.cartQuantity || 0) + 1 >
+                        product.quantity
+                      }
+                      onClick={() => {
+                        dispatch(setItemCart(product));
 
-                    toast(`Produto adicionado ao carrinho com sucesso`, {
-                      description: product.title,
-                    });
+                        toast(`Produto adicionado ao carrinho com sucesso`, {
+                          description: product.title,
+                        });
 
-                    dispatch(
-                      addNotification({
-                        title: 'Produto adicionado ao carrinho com sucesso',
-                        description: product.title,
-                      })
-                    );
-                  }}
-                >
-                  <AddShoppingCartIcon />
-                </Button>
-                <Button
-                  onClick={() => handleChangeMode(false, product.id)}
-                  variant="outline"
-                  // className="w-full"
-                >
-                  <Pencil />
-                </Button>
-                <Button
-                  variant="destructive"
-                  // className="w-full"
+                        dispatch(
+                          addNotification({
+                            title: "Produto adicionado ao carrinho com sucesso",
+                            description: product.title,
+                          })
+                        );
+                      }}
+                    >
+                      <AddShoppingCartIcon />
+                    </Button>
+                    <Button
+                      onClick={() => handleChangeMode(false, product.id)}
+                      variant="outline"
+                      // className="w-full"
+                    >
+                      <Pencil />
+                    </Button>
+                    <Button
+                      variant="destructive"
+                      // className="w-full"
 
-                  onClick={() => mutation.mutate(product.id)}
-                >
-                  <Trash2 />
-                </Button>
-                <div className="flex "></div>
-              </CardContent>
-            </Card>
-          );
-        })}
+                      onClick={() => mutation.mutate(product.id)}
+                    >
+                      <Trash2 />
+                    </Button>
+                    <div className="flex "></div>
+                  </CardContent>
+                </Card>
+              );
+            })}
       </div>
 
       <motion.div
