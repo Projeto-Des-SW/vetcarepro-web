@@ -26,7 +26,6 @@ import Inputs from "../Inputs/Inputs";
 
 const CadastrarProduto = ({ mode = "create", id }: ICrudClinia) => {
   const { idClinica } = useParams();
-  console.log(mode, id);
   const user = useUserSelector((state) => state.user);
   const baseUrl = import.meta.env.VITE_URL as string;
   const [errorForm, setErrorForm] = useState("");
@@ -133,7 +132,7 @@ const CadastrarProduto = ({ mode = "create", id }: ICrudClinia) => {
       <Card
         className={`${
           user.isDarkMode ? "dark" : "bg-white/90"
-        } flex p-8 w-fit  backdrop-blur-sm rounded-2xl shadow-2xl h-fit items-center gap-4`}
+        } flex p-8 w-fit  h-fit items-center gap-4`}
       >
         {" "}
         <form
