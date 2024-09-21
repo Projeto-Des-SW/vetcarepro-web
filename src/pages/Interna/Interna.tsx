@@ -37,7 +37,6 @@ import { fetchUserData } from "@/services/getServices";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import Joyride, { CallBackProps, STATUS, Step } from "react-joyride";
 import PetsIcon from "@mui/icons-material/Pets";
-import { Crown } from "lucide-react";
 
 const Interna = () => {
   const [openPacientes, setOpenPacientes] = useState(false);
@@ -464,9 +463,8 @@ const Interna = () => {
 
         <div className="bottom-0 absolute p-4 ">
           <div className="flex items-center gap-2 justify-center">
-            <div className="flex items-center">
+            <div className="flex items-center gap-2 ">
               <div className="flex flex-col">
-                <Crown className="rotate-45 text-yellow-400 hover:rotate-[60deg] mb-[-10px] ml-[30px] transition ease-in-out delay-150" />
                 <Avatar className="w-10 h-10">
                   <AvatarFallback className="text-white bg-[#4EBA9D]">
                     {userData?.name.charAt(0)}
@@ -476,7 +474,7 @@ const Interna = () => {
 
               {openMenu && (
                 <p
-                  className={`text-sm mt-[13px] ${
+                  className={`text-sm text-ellipsis overflow-hidden whitespace-nowrap  max-w-[150px] ${
                     user.isDarkMode && "text-white"
                   }`}
                 >
@@ -489,7 +487,7 @@ const Interna = () => {
       </aside>
 
       <main
-        className={`flex-1 flex m-10 box-border w-full justify-center overflow-y-auto ${
+        className={`flex-1 flex m-10 box-border  w-full justify-center overflow-y-auto ${
           user.isDarkMode && "dark"
         }`}
       >

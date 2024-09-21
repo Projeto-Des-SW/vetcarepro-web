@@ -230,19 +230,21 @@ const Header = () => {
 
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      {user.notifications.length <= 1 ? (
-                        <NotificationsNoneIcon
-                          className={`${
-                            user.isDarkMode && "dark  text-black"
-                          } cursor-pointer`}
-                        />
-                      ) : (
-                        <NotificationsActiveIcon
-                          className={`${
-                            user.isDarkMode && "dark  text-black"
-                          } cursor-pointer`}
-                        />
-                      )}
+                      <Button variant="ghost">
+                        {user.notifications.length <= 1 ? (
+                          <NotificationsNoneIcon
+                            className={`${
+                              user.isDarkMode && "dark  text-black"
+                            } cursor-pointer`}
+                          />
+                        ) : (
+                          <NotificationsActiveIcon
+                            className={`${
+                              user.isDarkMode && "dark  text-black"
+                            } cursor-pointer`}
+                          />
+                        )}
+                      </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-[360px] p-4">
                       <div className="flex items-center justify-between mb-4">
@@ -319,76 +321,11 @@ const Header = () => {
                       </div>
                     </DropdownMenuContent>
                   </DropdownMenu>
-                  {/* <NavigationMenu>
-                    <NavigationMenuList>
-                      <NavigationMenuItem>
-                        <NavigationMenuTrigger className="flex items-center gap-4 p-2 text-white bg-transparent">
-                          {user.notifications.length <= 1 ? (
-                            <NotificationsNoneIcon
-                              className={`${
-                                user.isDarkMode && "dark  text-black"
-                              }`}
-                            />
-                          ) : (
-                            <NotificationsActiveIcon
-                              className={`${
-                                user.isDarkMode && "dark  text-black"
-                              }`}
-                            />
-                          )}
-                        </NavigationMenuTrigger>
 
-                        <NavigationMenuContent className="flex flex-col w-full">
-                          <ul
-                            className={`flex flex-col w-[360px] gap-3 p-4 ${
-                              user.isDarkMode && "dark bg-black text-white"
-                            }`}
-                          >
-                            <h3 className="text-lg font-semibold">
-                              Notifications
-                            </h3>
-                            {user.notifications.map((notification, index) => (
-                              <>
-                                {index > 0 && (
-                                  <li
-                                    className="flex items-start gap-4"
-                                    key={index}
-                                  >
-                                    <div className="flex items-center justify-center rounded-full bg-primary text-primary-foreground w-8 h-8">
-                                      <CalendarCheck2Icon className="h-4 w-4" />
-                                    </div>
-                                    <div>
-                                      <h4 className="text-sm font-medium">
-                                        {notification.title}
-                                      </h4>
-                                      <p className="text-sm text-muted-foreground">
-                                        {notification.description}
-                                      </p>
-                                      <div className="text-xs text-muted-foreground">
-                                        Há 2 horas
-                                      </div>
-                                    </div>
-                                  </li>
-                                )}
-                              </>
-                            ))}
-                            {user.notifications.length > 0 ? (
-                              <Button onClick={handleClearNotifications}>
-                                <DeleteIcon />
-                              </Button>
-                            ) : (
-                              <p>Sem notificacões</p>
-                            )}
-                          </ul>
-                          <Separator />
-                        </NavigationMenuContent>
-                      </NavigationMenuItem>
-                    </NavigationMenuList>
-                  </NavigationMenu> */}
                   <NavigationMenu>
                     <NavigationMenuList>
                       <NavigationMenuItem>
-                        <NavigationMenuTrigger className="flex items-center gap-2 p-2 text-white bg-transparent">
+                        <NavigationMenuTrigger className="flex  items-center gap-2 p-2 text-white bg-transparent">
                           <Avatar className="w-9 h-9">
                             <AvatarFallback
                               className={`text-black ${
@@ -398,7 +335,9 @@ const Header = () => {
                               {data?.name.charAt(0)}
                             </AvatarFallback>
                           </Avatar>
-                          Olá, {data?.name}
+                          <p className="max-w-[150px] text-ellipsis overflow-hidden whitespace-nowrap">
+                            Olá, {data?.name}
+                          </p>
                         </NavigationMenuTrigger>
                         <NavigationMenuContent className="flex flex-col w-full">
                           <ul
