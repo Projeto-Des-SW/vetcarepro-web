@@ -59,17 +59,18 @@ const userSlice = createSlice({
         (item) => item.id === action.payload.id
       );
       if (existingProduct) {
-        existingProduct.quantity += 1;
+        existingProduct.cartQuantity += 1;
       } else {
-        state.cart.push({ ...action.payload, quantity: 1 });
+        state.cart.push({ ...action.payload, cartQuantity: 1 });
       }
     },
+
     setIncrementItemCart(state, action: PayloadAction<string>) {
       const existingProduct = state.cart.find(
         (item) => item.id === action.payload
       );
       if (existingProduct) {
-        existingProduct.quantity += 1;
+        existingProduct.cartQuantity += 1;
       }
     },
     setDecrementItemCart(state, action: PayloadAction<string>) {
@@ -77,7 +78,7 @@ const userSlice = createSlice({
         (item) => item.id === action.payload
       );
       if (existingProduct) {
-        existingProduct.quantity -= 1;
+        existingProduct.cartQuantity -= 1;
       }
     },
     setRemoveItemCart(state, action: PayloadAction<string>) {
