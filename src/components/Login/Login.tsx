@@ -18,11 +18,11 @@ import {
 import { Switch } from "../ui/switch";
 import Inputs from "../Inputs/Inputs";
 import { Label } from "../ui/label";
-import { useUserSelector } from "@/store/hooks";
 import { useDispatch } from "react-redux";
 import { setCurrentUser } from "@/store/user-slice";
 import { toast } from "sonner";
 import { formattedDate, formattedTime } from "@/utils/const.utils";
+import { persistor } from "@/store/store";
 
 interface IFormInput {
   email?: string;
@@ -40,8 +40,10 @@ const loginSchema = yup
 
 const Login = () => {
   const [visibilityState, setVisibilityState] = useState(false);
+  const [switchState, setSwitchState] = useState(false);
 
   const navigate = useNavigate();
+  console.log(switchState);
 
   const {
     register,
@@ -51,11 +53,12 @@ const Login = () => {
     resolver: yupResolver(loginSchema),
   });
 
-  // console.log(errors);
-  const user = useUserSelector((state) => state.user);
+  // const user = useUserSelector((state) => state.user);
   const dispatch = useDispatch();
 
-  console.log(user);
+  const handleSwitchChange = (checked: boolean) => {
+    setSwitchState(checked); 
+  };
 
   const onSubmit: SubmitHandler<IFormInput> = (data) => {
     console.log(data);
@@ -86,15 +89,18 @@ const Login = () => {
       .then((data) => {
         console.log(data);
         if (data && data.token) {
-          console.log(data);
-          console.log(data.token);
+          if (!switchState) {
+            persistor.pause(); 
+            persistor.purge(); 
+          }
           dispatch(
             setCurrentUser({
               email: myEmail,
               token: data.token,
               notifications: [],
               isDarkMode: false,
-              cart: []
+              rememberMe: switchState,
+              cart: [],
             })
           );
 
@@ -125,16 +131,7 @@ const Login = () => {
           </CardDescription>
         </CardHeader>
         <CardContent className="">
-          <motion.main
-            whileHover={{ scale: 1.05 }}
-            // className="bg-[#4EBA9D]  flex flex-col justify-between rounded-[36px] p-7 z-20"
-            // animate={{
-            //   x: [
-            //     200, 180, 170, 160, 150, 140, 130, 120, 110, 100, 80, 70, 60,
-            //     50, 40, 30, 28, 26, 24, 22, 20, 18, 15, 13, 10, 8, 6, 4, 2, 0,
-            //   ],
-            // }}
-          >
+          <motion.main whileHover={{ scale: 1.05 }}>
             <form
               onSubmit={handleSubmit(onSubmit)}
               className="flex flex-col gap-4"
@@ -171,7 +168,11 @@ const Login = () => {
                 }
               />
               <div className="flex items-center gap-2">
-                <Switch name="stayOn" />
+                <Switch
+                  name="stayOn"
+                  checked={switchState} 
+                  onCheckedChange={handleSwitchChange}
+                />
                 <Label>Continuar logado</Label>
               </div>
 
@@ -181,9 +182,6 @@ const Login = () => {
             </form>
           </motion.main>
         </CardContent>
-        {/* <CardFooter>
-          <p>Card Footer</p>
-        </CardFooter> */}
       </Card>
     </motion.section>
   );

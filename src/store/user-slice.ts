@@ -8,6 +8,7 @@ export interface UserDataProps {
   chavePix?: string;
   isDarkMode: boolean;
   cart: IProduct[];
+  rememberMe: boolean;
   notifications: INotifications[];
 }
 
@@ -22,6 +23,7 @@ interface INotifications {
 const userInicialState: UserDataProps = {
   email: "",
   token: "",
+  rememberMe: false,
   chavePix: "81998436108",
   notifications: [{ title: "", description: "" }],
   cart: [],
@@ -35,12 +37,14 @@ const userSlice = createSlice({
     setCurrentUser(state, action: PayloadAction<UserDataProps>) {
       state.email = action.payload.email;
       state.token = action.payload.token;
+      state.rememberMe = action.payload.rememberMe; // Atualiza o valor de rememberMe
       state.notifications = [{ title: "", description: "" }];
       state.isDarkMode = false;
     },
     logoutUser(state) {
       state.email = "";
       state.token = "";
+      state.rememberMe = false; // Zera o rememberMe ao fazer logout
     },
     addNotification(state, action: PayloadAction<INotifications>) {
       state.notifications.push(action.payload);
