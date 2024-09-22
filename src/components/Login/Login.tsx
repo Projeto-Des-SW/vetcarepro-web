@@ -1,6 +1,5 @@
 import { Button } from "../ui/button";
 import { useState } from "react";
-
 import EyeClosed from "../../assets/icons/EyeClosed";
 import EyeOpen from "../../assets/icons/EyeOpen";
 import { motion } from "framer-motion";

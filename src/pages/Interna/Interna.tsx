@@ -37,6 +37,7 @@ import { fetchUserData } from "@/services/getServices";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import Joyride, { CallBackProps, STATUS, Step } from "react-joyride";
 import PetsIcon from "@mui/icons-material/Pets";
+import { Skeleton } from "@nextui-org/react";
 
 const Interna = () => {
   const [openPacientes, setOpenPacientes] = useState(false);
@@ -92,8 +93,6 @@ const Interna = () => {
     queryKey: ["userData"],
     queryFn: () => fetchUserData(user.token),
   });
-
-  if (isPending) return <div>Carregando</div>;
 
   const handleJoyrideCallback = (data: CallBackProps) => {
     const { status } = data;
@@ -463,25 +462,29 @@ const Interna = () => {
 
         <div className="bottom-0 absolute p-4 ">
           <div className="flex items-center gap-2 justify-center">
-            <div className="flex items-center gap-2 ">
-              <div className="flex flex-col">
-                <Avatar className="w-10 h-10">
-                  <AvatarFallback className="text-white bg-[#4EBA9D]">
-                    {userData?.name.charAt(0)}
-                  </AvatarFallback>
-                </Avatar>{" "}
-              </div>
+            {isPending ? (
+              <Skeleton />
+            ) : (
+              <div className="flex items-center gap-2 ">
+                <div className="flex flex-col">
+                  <Avatar className="w-10 h-10">
+                    <AvatarFallback className="text-white bg-[#4EBA9D]">
+                      {userData?.name.charAt(0)}
+                    </AvatarFallback>
+                  </Avatar>
+                </div>
 
-              {openMenu && (
-                <p
-                  className={`text-sm text-ellipsis overflow-hidden whitespace-nowrap  max-w-[150px] ${
-                    user.isDarkMode && "text-white"
-                  }`}
-                >
-                  Olá, {userData?.name}
-                </p>
-              )}
-            </div>
+                {openMenu && (
+                  <p
+                    className={`text-sm text-ellipsis overflow-hidden whitespace-nowrap  max-w-[150px] ${
+                      user.isDarkMode && "text-white"
+                    }`}
+                  >
+                    Olá, {userData?.name}
+                  </p>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </aside>

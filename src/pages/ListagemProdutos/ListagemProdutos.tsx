@@ -335,9 +335,9 @@ const ListagemProdutos = () => {
                     </p>
                   </CardHeader>
 
-                  <CardContent className="p-6 border-t flex gap-2 w-full flex-wrap relative bottom-0">
+                  <CardContent className="p-6 border-t flex gap-2 w-full relative bottom-0">
                     <Button
-                      variant="outline"
+                      className="w-full"
                       disabled={
                         (currentProduct[0]?.cartQuantity || 0) + 1 >
                         product.quantity

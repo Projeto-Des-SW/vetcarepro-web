@@ -173,9 +173,46 @@ const DashboardClinica = () => {
     queryFn: () => fetchServiceList(idClinica, user.token),
   });
 
-  if (isPendingAgendamentos || isPendingPacientes || isPendingServices)
-    return <div>loading</div>;
+  if (isPendingAgendamentos || isPendingServices || isPendingPacientes) {
+    return (
+      <div className="flex flex-col w-full gap-4">
+        <div className="flex gap-2">
+          {Array.from({ length: 3 }).map((_, index) => (
+            <Card key={index} className="w-full">
+              <CardHeader>
+                <Skeleton className="h-16 w-1/2" />
+              </CardHeader>
+              <CardContent>
+                <Skeleton className="h-10 w-1/2" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
 
+        <Skeleton className="h-10 w-1/2" />
+
+        {Array.from({ length: 1 }).map((_, index) => (
+          <Card key={index}>
+            <CardHeader>
+              <Skeleton className="h-6 w-1/2" />
+            </CardHeader>
+            <CardContent>
+              <Skeleton className="h-32 w-full" />
+            </CardContent>
+          </Card>
+        ))}
+
+        <Card>
+          <CardHeader>
+            <Skeleton className="h-6 w-1/2" />
+          </CardHeader>
+          <CardContent>
+            <Skeleton className="h-32 w-full" />
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
   const totalPages =
     Array.isArray(dataAgendamentos) && dataAgendamentos.length > 5
       ? splitIntoGroups(
@@ -190,13 +227,6 @@ const DashboardClinica = () => {
       : dataAgendamentos
       ? [dataAgendamentos]
       : [];
-
-  if (isPendingServices)
-    return (
-      <div>
-        <Skeleton className="h-16 w-1/2" />
-      </div>
-    );
 
   const totalPagesService = splitIntoGroups(
     services as any,
@@ -245,542 +275,481 @@ const DashboardClinica = () => {
       />
       <main className="flex-1 flex flex-col">
         <div className="grid grid-cols-3 gap-8">
-          {isPendingPacientes ? (
-            Array.from({ length: 3 }).map((_, index) => (
-              <Card key={index}>
-                <CardHeader>
-                  <Skeleton className="h-16 w-1/2" />
-                </CardHeader>
-                <CardContent>
-                  <Skeleton className="h-10 w-1/2" />
-                </CardContent>
-              </Card>
-            ))
-          ) : (
-            <>
-              <Card className="flex flex-col justify-center total-pacientes-card ">
-                <CardHeader>
-                  <CardTitle>Total de pacientes</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {isPendingPacientes ? (
-                    <Skeleton className="h-10 w-24" />
-                  ) : (
-                    <div className="text-4xl font-bold">
-                      {listagemPaciente?.length}
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className="pb-0">
-                  <CardTitle className="flex justify-between items-center ">
-                    Proximas consultas
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <AccessAlarmIcon className="proximas-consultas-card" />
-                        </TooltipTrigger>
-                        <TooltipContent
-                          side="bottom"
-                          className="max-w-xs p-2 text-sm"
-                        >
-                          Suas próximas 5 consultas serão apresentadas abaixo
-                          com intervalos de 10 segundos entre cada consulta.
-                          Para mais detalhes, veja no quadro de consultas.
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {isPendingAgendamentos ? (
-                    <Skeleton className="h-10 w-24" />
-                  ) : (
-                    <>
-                      <Carousel className="flex flex-col gap-2">
-                        <CarouselContent>
-                          {totalPages[0] !== undefined ? (
-                            totalPages[0].map((item, index) => (
-                              <motion.div
-                                key={index}
-                                initial={{ opacity: 0 }}
-                                animate={{
-                                  opacity: currentIndex === index ? 1 : 0,
-                                  y: 0,
-                                }}
-                                exit={{ opacity: 0, y: 20 }}
-                                transition={{ duration: 0.3 }}
-                                className={`${
-                                  currentIndex === index
-                                    ? "block"
-                                    : currentIndex !== index
-                                    ? "hidden"
-                                    : "block"
-                                } pl-4`}
-                              >
-                                Paciente: {item.patient.name} -{" "}
-                                {dayjs(item.date).format("DD/MM/YYYY - HH:mm")}
-                                {dayjs(item.date).diff(dayjs(), "days") ===
-                                0 ? (
-                                  dayjs(item.date).diff(dayjs(), "hours") ===
-                                  0 ? (
-                                    <p className="text-red-500">
-                                      Quando: Em{" "}
-                                      {dayjs(item.date).diff(
-                                        dayjs(),
-                                        "minutes"
-                                      )}{" "}
-                                      minutos
-                                    </p>
-                                  ) : (
-                                    <p className="text-orange-500">
-                                      Quando: Em{" "}
-                                      {dayjs(item.date).diff(dayjs(), "hours")}{" "}
-                                      horas
-                                    </p>
-                                  )
-                                ) : (
-                                  <p className="text-green-500">
-                                    Quando: Em{" "}
-                                    {dayjs(item.date).diff(dayjs(), "days")}{" "}
-                                    dias
-                                  </p>
-                                )}
-                                <Progress value={progressBar} />
-                              </motion.div>
-                            ))
-                          ) : (
-                            <p className="m-4">Sem dados</p>
-                          )}
-                        </CarouselContent>
-                      </Carousel>
-                    </>
-                  )}
-                </CardContent>
-              </Card>
-              <Card className="flex flex-col justify-center">
-                <CardHeader>
-                  <CardTitle className="flex justify-between items-center">
-                    Lucro
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <AttachMoneyIcon className="lucro-card" />
-                        </TooltipTrigger>
-                        <TooltipContent
-                          side="bottom"
-                          className="max-w-xs p-2 text-sm"
-                        >
-                          O seu lucro bruto é exibido abaixo. Para fins de
-                          praticidade, o valor é ajustado após a data da
-                          consulta ter sido atingida. Para consultar quanto cada
-                          consulta rendeu, acesse a listagem de consultas. Em
-                          breve teremos uma dashboard financeira detalhada
-                          disponivel.
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </CardTitle>
-                </CardHeader>
+          <Card className="flex flex-col justify-center total-pacientes-card ">
+            <CardHeader>
+              <CardTitle>Total de pacientes</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {isPendingPacientes ? (
+                <Skeleton className="h-10 w-24" />
+              ) : (
+                <div className="text-4xl font-bold">
+                  {listagemPaciente?.length}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="pb-0">
+              <CardTitle className="flex justify-between items-center ">
+                Proximas consultas
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <AccessAlarmIcon className="proximas-consultas-card" />
+                    </TooltipTrigger>
+                    <TooltipContent
+                      side="bottom"
+                      className="max-w-xs p-2 text-sm"
+                    >
+                      Suas próximas 5 consultas serão apresentadas abaixo com
+                      intervalos de 10 segundos entre cada consulta. Para mais
+                      detalhes, veja no quadro de consultas.
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {isPendingAgendamentos ? (
+                <Skeleton className="h-10 w-24" />
+              ) : (
+                <>
+                  <Carousel className="flex flex-col gap-2">
+                    <CarouselContent>
+                      {totalPages[0] !== undefined ? (
+                        totalPages[0].map((item, index) => (
+                          <motion.div
+                            key={index}
+                            initial={{ opacity: 0 }}
+                            animate={{
+                              opacity: currentIndex === index ? 1 : 0,
+                              y: 0,
+                            }}
+                            exit={{ opacity: 0, y: 20 }}
+                            transition={{ duration: 0.3 }}
+                            className={`${
+                              currentIndex === index
+                                ? "block"
+                                : currentIndex !== index
+                                ? "hidden"
+                                : "block"
+                            } pl-4`}
+                          >
+                            Paciente: {item.patient.name} -{" "}
+                            {dayjs(item.date).format("DD/MM/YYYY - HH:mm")}
+                            {dayjs(item.date).diff(dayjs(), "days") === 0 ? (
+                              dayjs(item.date).diff(dayjs(), "hours") === 0 ? (
+                                <p className="text-red-500">
+                                  Quando: Em{" "}
+                                  {dayjs(item.date).diff(dayjs(), "minutes")}{" "}
+                                  minutos
+                                </p>
+                              ) : (
+                                <p className="text-orange-500">
+                                  Quando: Em{" "}
+                                  {dayjs(item.date).diff(dayjs(), "hours")}{" "}
+                                  horas
+                                </p>
+                              )
+                            ) : (
+                              <p className="text-green-500">
+                                Quando: Em{" "}
+                                {dayjs(item.date).diff(dayjs(), "days")} dias
+                              </p>
+                            )}
+                            <Progress value={progressBar} />
+                          </motion.div>
+                        ))
+                      ) : (
+                        <p className="m-4">Sem dados</p>
+                      )}
+                    </CarouselContent>
+                  </Carousel>
+                </>
+              )}
+            </CardContent>
+          </Card>
+          <Card className="flex flex-col justify-center">
+            <CardHeader>
+              <CardTitle className="flex justify-between items-center">
+                Lucro
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <AttachMoneyIcon className="lucro-card" />
+                    </TooltipTrigger>
+                    <TooltipContent
+                      side="bottom"
+                      className="max-w-xs p-2 text-sm"
+                    >
+                      O seu lucro bruto é exibido abaixo. Para fins de
+                      praticidade, o valor é ajustado após a data da consulta
+                      ter sido atingida. Para consultar quanto cada consulta
+                      rendeu, acesse a listagem de consultas. Em breve teremos
+                      uma dashboard financeira detalhada disponivel.
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </CardTitle>
+            </CardHeader>
 
-                <CardContent className="flex justify-between items-center">
-                  <div className="text-4xl font-bold">
-                    {isExibirLucro ? `R$ ${myReceita}` : "R$ *****"}
-                  </div>
+            <CardContent className="flex justify-between items-center">
+              <div className="text-4xl font-bold">
+                {isExibirLucro ? `R$ ${myReceita}` : "R$ *****"}
+              </div>
 
-                  {!isExibirLucro ? (
-                    <VisibilityIcon
-                      onClick={() =>
-                        setIsExibirLucro((prevState) => !prevState)
-                      }
-                    />
-                  ) : (
-                    <VisibilityOffIcon
-                      onClick={() =>
-                        setIsExibirLucro((prevState) => !prevState)
-                      }
-                    />
-                  )}
-                </CardContent>
-              </Card>
-            </>
-          )}
+              {!isExibirLucro ? (
+                <VisibilityIcon
+                  onClick={() => setIsExibirLucro((prevState) => !prevState)}
+                />
+              ) : (
+                <VisibilityOffIcon
+                  onClick={() => setIsExibirLucro((prevState) => !prevState)}
+                />
+              )}
+            </CardContent>
+          </Card>
         </div>
         <div className="grid grid-cols-1 gap-8 mt-8">
-          {isPendingAgendamentos ? (
-            Array.from({ length: 2 }).map((_, index) => (
-              <Card key={index}>
-                <CardHeader>
-                  <Skeleton className="h-6 w-1/2" />
-                </CardHeader>
-                <CardContent>
-                  <Skeleton className="h-32 w-full" />
-                </CardContent>
-              </Card>
-            ))
-          ) : (
-            <>
-              <Card className="consultas-tabela">
-                <CardHeader>
-                  <div className="flex justify-between">
-                    <div>
-                      <CardTitle>Consultas</CardTitle>{" "}
-                      <input
-                        type="text"
-                        className={`${
-                          user.isDarkMode ? "bg-gray-900" : "bg-transparent"
-                        } placeholder-gray-500 text-gray-900 p-2 mt-2 pl-0 rounded-md`}
-                        placeholder="Pesquisar consultas"
-                        onChange={(e) => setSearchConsulta(e.target.value)}
-                      />
-                    </div>
+          <Card className="consultas-tabela">
+            <CardHeader>
+              <div className="flex justify-between">
+                <div>
+                  <CardTitle>Consultas</CardTitle>{" "}
+                  <input
+                    type="text"
+                    className={`${
+                      user.isDarkMode ? "bg-gray-900" : "bg-transparent"
+                    } placeholder-gray-500 text-gray-900 p-2 mt-2 pl-0 rounded-md`}
+                    placeholder="Pesquisar consultas"
+                    onChange={(e) => setSearchConsulta(e.target.value)}
+                  />
+                </div>
 
-                    <div className="min-w-[140px]">
-                      <Select
-                        onValueChange={(value) =>
-                          setItemsPerPage(parseInt(value))
+                <div className="min-w-[140px]">
+                  <Select
+                    onValueChange={(value) => setItemsPerPage(parseInt(value))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Consultas por página" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem
+                        key={5}
+                        value="5"
+                        disabled={
+                          !(
+                            Array.isArray(dataAgendamentos) &&
+                            dataAgendamentos.length >= 5
+                          )
                         }
                       >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Consultas por página" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem
-                            key={5}
-                            value="5"
-                            disabled={
-                              !(
-                                Array.isArray(dataAgendamentos) &&
-                                dataAgendamentos.length >= 5
-                              )
-                            }
-                          >
-                            5
-                          </SelectItem>
-                          <SelectItem
-                            key={7}
-                            value="7"
-                            disabled={
-                              !(
-                                Array.isArray(dataAgendamentos) &&
-                                dataAgendamentos.length >= 7
-                              )
-                            }
-                          >
-                            7
-                          </SelectItem>
-                          <SelectItem
-                            key={10}
-                            value="10"
-                            disabled={
-                              !(
-                                Array.isArray(dataAgendamentos) &&
-                                dataAgendamentos.length >= 10
-                              )
-                            }
-                          >
-                            10
-                          </SelectItem>
-                          <SelectItem
-                            key={20}
-                            value="20"
-                            disabled={
-                              !(
-                                Array.isArray(dataAgendamentos) &&
-                                dataAgendamentos.length >= 20
-                              )
-                            }
-                          >
-                            20
-                          </SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Data</TableHead>
-                        <TableHead>Paciente</TableHead>
-                        <TableHead>Serviço</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Ação</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {(searchConsulta === ""
-                        ? totalPages[currentPage]
-                        : dataAgendamentos
-                      )
-                        ?.filter((value) =>
-                          searchConsulta !== ""
-                            ? value.patient.name
-                                .toLocaleLowerCase()
-                                .includes(searchConsulta.toLocaleLowerCase())
-                            : true
-                        )
-                        .map((item) => (
-                          <TableRow key={item.id}>
-                            <TableCell
-                              onClick={() => navigate(`../listagemAgendamento`)}
-                              className="cursor-pointer"
-                            >
-                              {dayjs(item.date).format("DD/MM/YYYY - HH:mm")}
-                            </TableCell>
-                            <TableCell>{item.patient.name}</TableCell>
-                            <TableCell>
-                              {item.service.title} -{" "}
-                              {parseFloat(item.service.amount).toFixed(2)}
-                            </TableCell>
-                            <TableCell>
-                              {dayjs(item.date).diff(dayjs(), "days") === 0 ? (
-                                dayjs(item.date).diff(dayjs(), "hours") ===
-                                0 ? (
-                                  <p className="text-red-500">
-                                    Em{" "}
-                                    {dayjs(item.date).diff(dayjs(), "minutes")}{" "}
-                                    minutos
-                                  </p>
-                                ) : (
-                                  <p className="text-orange-500">
-                                    Em {dayjs(item.date).diff(dayjs(), "hours")}{" "}
-                                    horas
-                                  </p>
-                                )
-                              ) : (
-                                <p className="text-green-500">
-                                  Em {dayjs(item.date).diff(dayjs(), "days")}{" "}
-                                  dias
-                                </p>
-                              )}
-                            </TableCell>
-                            <TableCell className="flex items-center gap-2">
-                              <TooltipProvider>
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <Button
-                                      variant="outline"
-                                      onClick={() =>
-                                        handleWhatsapp(
-                                          item.patient.guardian_contact,
-                                          "ola"
-                                        )
-                                      }
-                                    >
-                                      <WhatsAppIcon />
-                                    </Button>
-                                  </TooltipTrigger>
-                                  <TooltipContent side="bottom">
-                                    <p>Enviar mensagem</p>
-                                  </TooltipContent>
-                                </Tooltip>
-                              </TooltipProvider>
-
-                              <TooltipProvider>
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <Button
-                                      variant="outline"
-                                      onClick={() => {
-                                        setValuePix(
-                                          parseFloat(item.service.amount)
-                                        );
-                                        setOpenPix((prevState) => !prevState);
-                                      }}
-                                    >
-                                      <PixIcon />
-                                    </Button>
-                                  </TooltipTrigger>
-                                  <TooltipContent side="bottom">
-                                    <p>Pagar com PIX</p>
-                                  </TooltipContent>
-                                </Tooltip>
-                              </TooltipProvider>
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                    </TableBody>
-                  </Table>
-                </CardContent>
-
-                <div className="flex justify-center m-4">
-                  <Pagination>
-                    <PaginationPrevious
-                      onClick={() =>
-                        currentPage !== 0 &&
-                        setCurrentPage((prevState) => prevState - 1)
-                      }
-                    />
-
-                    {totalPages.map((_item, index) => (
-                      <PaginationLink
-                        key={index}
-                        onClick={() => setCurrentPage(index)}
-                        isActive={currentPage === index}
+                        5
+                      </SelectItem>
+                      <SelectItem
+                        key={7}
+                        value="7"
+                        disabled={
+                          !(
+                            Array.isArray(dataAgendamentos) &&
+                            dataAgendamentos.length >= 7
+                          )
+                        }
                       >
-                        {index + 1}
-                      </PaginationLink>
-                    ))}
-
-                    <PaginationNext
-                      onClick={() =>
-                        currentPage !== totalPages[0].length - 1 &&
-                        setCurrentPage((prevState) => prevState + 1)
-                      }
-                    />
-                  </Pagination>
+                        7
+                      </SelectItem>
+                      <SelectItem
+                        key={10}
+                        value="10"
+                        disabled={
+                          !(
+                            Array.isArray(dataAgendamentos) &&
+                            dataAgendamentos.length >= 10
+                          )
+                        }
+                      >
+                        10
+                      </SelectItem>
+                      <SelectItem
+                        key={20}
+                        value="20"
+                        disabled={
+                          !(
+                            Array.isArray(dataAgendamentos) &&
+                            dataAgendamentos.length >= 20
+                          )
+                        }
+                      >
+                        20
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
-              </Card>
-            </>
-          )}
-        </div>
-        <div className="mt-8">
-          {isPendingServices ? (
-            <Card>
-              <CardHeader>
-                <Skeleton className="h-6 w-1/2" />
-              </CardHeader>
-              <CardContent>
-                <Skeleton className="h-8 w-full mb-2" />
-                <Skeleton className="h-8 w-full mb-2" />
-                <Skeleton className="h-8 w-full mb-2" />
-              </CardContent>
-            </Card>
-          ) : (
-            <Card className="mb-12 consultas-service">
-              <CardHeader>
-                <div className="flex justify-between">
-                  <div>
-                    <CardTitle>Serviços disponiveis</CardTitle>
-                    <input
-                      type="text"
-                      className={`${
-                        user.isDarkMode ? "bg-gray-900" : "bg-transparent"
-                      } placeholder-gray-500 text-gray-900 p-2 mt-2 pl-0 rounded-md`}
-                      placeholder="Pesquisar serviços"
-                      onChange={(e) => setSearchServices(e.target.value)}
-                    />
-                  </div>
-
-                  <div className="min-w-[140px]">
-                    <Select
-                      onValueChange={(value) =>
-                        setItemsPerPageServices(parseInt(value))
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Serviços por página" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem
-                          key={5}
-                          value="5"
-                          disabled={
-                            !Array.isArray(services) || services.length < 5
-                          }
-                        >
-                          5
-                        </SelectItem>
-                        <SelectItem
-                          key={7}
-                          value="7"
-                          disabled={
-                            !Array.isArray(services) || services.length < 7
-                          }
-                        >
-                          7
-                        </SelectItem>
-                        <SelectItem
-                          key={10}
-                          value="10"
-                          disabled={
-                            !Array.isArray(services) || services.length < 10
-                          }
-                        >
-                          10
-                        </SelectItem>
-                        <SelectItem
-                          key={20}
-                          value="20"
-                          disabled={
-                            !Array.isArray(services) || services.length < 20
-                          }
-                        >
-                          20
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Titulo</TableHead>
-                      <TableHead>Tipo do serviço</TableHead>
-                      <TableHead>Valor do serviço</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {(searchServices === ""
-                      ? totalPagesService[currentPageServices]
-                      : services?.filter((item) =>
-                          item.title
+              </div>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Data</TableHead>
+                    <TableHead>Paciente</TableHead>
+                    <TableHead>Serviço</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Ação</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {(searchConsulta === ""
+                    ? totalPages[currentPage]
+                    : dataAgendamentos
+                  )
+                    ?.filter((value) =>
+                      searchConsulta !== ""
+                        ? value.patient.name
                             .toLocaleLowerCase()
-                            .includes(searchServices.toLocaleLowerCase())
-                        )
-                    )?.map((item, index) => (
-                      <TableRow key={index}>
+                            .includes(searchConsulta.toLocaleLowerCase())
+                        : true
+                    )
+                    .map((item) => (
+                      <TableRow key={item.id}>
                         <TableCell
-                          onClick={() =>
-                            navigate(`../detailsServico/${item.id}`)
-                          }
+                          onClick={() => navigate(`../listagemAgendamento`)}
                           className="cursor-pointer"
                         >
-                          {item.title}
+                          {dayjs(item.date).format("DD/MM/YYYY - HH:mm")}
                         </TableCell>
-                        <TableCell>{item.type}</TableCell>
+                        <TableCell>{item.patient.name}</TableCell>
                         <TableCell>
-                          {parseFloat(item.amount).toFixed(2)}
+                          {item.service.title} -{" "}
+                          {parseFloat(item.service.amount).toFixed(2)}
+                        </TableCell>
+                        <TableCell>
+                          {dayjs(item.date).diff(dayjs(), "days") === 0 ? (
+                            dayjs(item.date).diff(dayjs(), "hours") === 0 ? (
+                              <p className="text-red-500">
+                                Em {dayjs(item.date).diff(dayjs(), "minutes")}{" "}
+                                minutos
+                              </p>
+                            ) : (
+                              <p className="text-orange-500">
+                                Em {dayjs(item.date).diff(dayjs(), "hours")}{" "}
+                                horas
+                              </p>
+                            )
+                          ) : (
+                            <p className="text-green-500">
+                              Em {dayjs(item.date).diff(dayjs(), "days")} dias
+                            </p>
+                          )}
+                        </TableCell>
+                        <TableCell className="flex items-center gap-2">
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button
+                                  variant="outline"
+                                  onClick={() =>
+                                    handleWhatsapp(
+                                      item.patient.guardian_contact,
+                                      "ola"
+                                    )
+                                  }
+                                >
+                                  <WhatsAppIcon />
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent side="bottom">
+                                <p>Enviar mensagem</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button
+                                  variant="outline"
+                                  onClick={() => {
+                                    setValuePix(
+                                      parseFloat(item.service.amount)
+                                    );
+                                    setOpenPix((prevState) => !prevState);
+                                  }}
+                                >
+                                  <PixIcon />
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent side="bottom">
+                                <p>Pagar com PIX</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
                         </TableCell>
                       </TableRow>
                     ))}
-                  </TableBody>
-                </Table>
-              </CardContent>
-              <div className="flex justify-center m-4">
-                <Pagination>
-                  <PaginationPrevious
-                    onClick={() =>
-                      currentPageServices !== 0 &&
-                      setCurrentPageServices((prevState) => prevState - 1)
-                    }
-                  />
+                </TableBody>
+              </Table>
+            </CardContent>
 
-                  {totalPagesService.map((_item, index) => (
-                    <PaginationLink
-                      key={index}
-                      onClick={() => setCurrentPageServices(index)}
-                      isActive={currentPageServices === index}
-                    >
-                      {index + 1}
-                    </PaginationLink>
-                  ))}
+            <div className="flex justify-center m-4">
+              <Pagination>
+                <PaginationPrevious
+                  onClick={() =>
+                    currentPage !== 0 &&
+                    setCurrentPage((prevState) => prevState - 1)
+                  }
+                />
 
-                  <PaginationNext
-                    onClick={() =>
-                      currentPageServices !== totalPagesService.length - 1 &&
-                      setCurrentPageServices((prevState) => prevState + 1)
-                    }
+                {totalPages.map((_item, index) => (
+                  <PaginationLink
+                    key={index}
+                    onClick={() => setCurrentPage(index)}
+                    isActive={currentPage === index}
+                  >
+                    {index + 1}
+                  </PaginationLink>
+                ))}
+
+                <PaginationNext
+                  onClick={() =>
+                    currentPage !== totalPages[0].length - 1 &&
+                    setCurrentPage((prevState) => prevState + 1)
+                  }
+                />
+              </Pagination>
+            </div>
+          </Card>
+        </div>
+        <div className="mt-8">
+          <Card className="mb-12 consultas-service">
+            <CardHeader>
+              <div className="flex justify-between">
+                <div>
+                  <CardTitle>Serviços disponiveis</CardTitle>
+                  <input
+                    type="text"
+                    className={`${
+                      user.isDarkMode ? "bg-gray-900" : "bg-transparent"
+                    } placeholder-gray-500 text-gray-900 p-2 mt-2 pl-0 rounded-md`}
+                    placeholder="Pesquisar serviços"
+                    onChange={(e) => setSearchServices(e.target.value)}
                   />
-                </Pagination>
+                </div>
+
+                <div className="min-w-[140px]">
+                  <Select
+                    onValueChange={(value) =>
+                      setItemsPerPageServices(parseInt(value))
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Serviços por página" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem
+                        key={5}
+                        value="5"
+                        disabled={
+                          !Array.isArray(services) || services.length < 5
+                        }
+                      >
+                        5
+                      </SelectItem>
+                      <SelectItem
+                        key={7}
+                        value="7"
+                        disabled={
+                          !Array.isArray(services) || services.length < 7
+                        }
+                      >
+                        7
+                      </SelectItem>
+                      <SelectItem
+                        key={10}
+                        value="10"
+                        disabled={
+                          !Array.isArray(services) || services.length < 10
+                        }
+                      >
+                        10
+                      </SelectItem>
+                      <SelectItem
+                        key={20}
+                        value="20"
+                        disabled={
+                          !Array.isArray(services) || services.length < 20
+                        }
+                      >
+                        20
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
-            </Card>
-          )}
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Titulo</TableHead>
+                    <TableHead>Tipo do serviço</TableHead>
+                    <TableHead>Valor do serviço</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {(searchServices === ""
+                    ? totalPagesService[currentPageServices]
+                    : services?.filter((item) =>
+                        item.title
+                          .toLocaleLowerCase()
+                          .includes(searchServices.toLocaleLowerCase())
+                      )
+                  )?.map((item, index) => (
+                    <TableRow key={index}>
+                      <TableCell
+                        onClick={() => navigate(`../detailsServico/${item.id}`)}
+                        className="cursor-pointer"
+                      >
+                        {item.title}
+                      </TableCell>
+                      <TableCell>{item.type}</TableCell>
+                      <TableCell>
+                        {parseFloat(item.amount).toFixed(2)}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+            <div className="flex justify-center m-4">
+              <Pagination>
+                <PaginationPrevious
+                  onClick={() =>
+                    currentPageServices !== 0 &&
+                    setCurrentPageServices((prevState) => prevState - 1)
+                  }
+                />
+
+                {totalPagesService.map((_item, index) => (
+                  <PaginationLink
+                    key={index}
+                    onClick={() => setCurrentPageServices(index)}
+                    isActive={currentPageServices === index}
+                  >
+                    {index + 1}
+                  </PaginationLink>
+                ))}
+
+                <PaginationNext
+                  onClick={() =>
+                    currentPageServices !== totalPagesService.length - 1 &&
+                    setCurrentPageServices((prevState) => prevState + 1)
+                  }
+                />
+              </Pagination>
+            </div>
+          </Card>
         </div>
       </main>
     </section>
