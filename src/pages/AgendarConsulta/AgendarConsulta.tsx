@@ -54,12 +54,12 @@ const AgendarConsulta = ({ mode = "create" }: { mode?: "create" | "edit" }) => {
 
   const { data: pacientes, isLoading: loadingPacientes } = useQuery({
     queryKey: ["PacienteList"],
-    queryFn: () => fetchPacientsList(),
+    queryFn: () => fetchPacientsList(idClinica, user.token),
   });
 
   const { data: services, isLoading: loadingServices } = useQuery({
     queryKey: ["ServicoList"],
-    queryFn: () => fetchServiceList(),
+    queryFn: () => fetchServiceList(idClinica, user.token),
   });
 
   const handleSubmitAgendamento: SubmitHandler<any> = (data) => {
@@ -183,15 +183,7 @@ const AgendarConsulta = ({ mode = "create" }: { mode?: "create" | "edit" }) => {
               Gerencie as informações da sua clínica
             </p>
           </header>
-          {/* <h2 className="text-3xl font-semibold text-primary mb-6 flex items-center">
-            {mode === "create" ? (
-              <PawPrint className="w-6 h-6 mr-2 text-red-500" />
-            ) : (
-              <SquareScissors className="w-6 h-6 mr-2 text-red-500" />
-            )}
-            {mode === "create" ? "Novo" : "Edite seu"} agendamento
-          </h2> */}
-
+     
           <Controller
             name="patient_id"
             control={control}
@@ -255,6 +247,7 @@ const AgendarConsulta = ({ mode = "create" }: { mode?: "create" | "edit" }) => {
                 <PopoverContent className="w-auto p-0">
                   <Calendar
                     mode="single"
+                    disabled={{before: new Date()}}
                     selected={value ? new Date(value) : undefined}
                     onSelect={(selectedDate) => {
                       if (selectedDate) {
