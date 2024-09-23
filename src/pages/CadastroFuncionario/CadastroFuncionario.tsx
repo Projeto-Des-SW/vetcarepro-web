@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import Inputs from "@/components/Inputs/Inputs";
 import { Button } from "@/components/ui/button";
@@ -22,6 +22,14 @@ import { IFuncionario } from "@/interfaces/funcionario";
 import { UserRoundPlus } from "lucide-react";
 import { cadastroFuncionarioSchema } from "@/utils/schemas.utils";
 import { ICrudClinia } from "@/interfaces/agendamento";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 const CadastroFuncionario = ({ mode = "create" }: ICrudClinia) => {
   const { idClinica, id } = useParams();
@@ -118,6 +126,52 @@ const CadastroFuncionario = ({ mode = "create" }: ICrudClinia) => {
 
   return (
     <div className="h-fit">
+      <div className="flex flex-col gap-2 mb-2">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link to="/home">Home</Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link to="/dashboard/listagemClinica">Dashboard</Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link to={`/internalClinica/${idClinica}/dashboard`}>
+                  Minha Clinica
+                </Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link to={`/internalClinica/${idClinica}/listagemFuncionario`}>
+                  Meus Funcionarios
+                </Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>Novo Funcionario</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+        <div className="flex justify-between">
+          <h2
+            className={`scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 ${
+              user.isDarkMode && "text-white "
+            }`}
+          >
+            Seus Funcionarios
+          </h2>
+        </div>
+      </div>
       <Card
         className={`${
           user.isDarkMode ? "dark" : "bg-white/90"

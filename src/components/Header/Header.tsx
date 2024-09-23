@@ -57,6 +57,14 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "../ui/pagination";
+import { HexColorPicker } from "react-colorful";
+import RestoreIcon from "@mui/icons-material/Restore";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -65,6 +73,7 @@ const Header = () => {
   const [openModal, setOpenModal] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
+  const [currentColor, setCurrentColor] = useState("#45BCAD");
 
   const itemsPerPage = 7;
 
@@ -106,13 +115,16 @@ const Header = () => {
   });
 
   const totalPages = splitIntoGroups(user.notifications, itemsPerPage);
-
+  const current = `bg-[${currentColor}]`;
   return (
     <>
       <header
-        className={`bg-[#45BCAD] h-[70px] text-primary-foreground px-10 flex items-center ${
-          user.isDarkMode && "dark bg-[#45BCAD]"
+        className={`h-[70px] text-primary-foreground px-10 flex items-center ${
+          user.isDarkMode && `dark bg-[${currentColor}]`
         }`}
+        style={{
+          backgroundColor: currentColor,
+        }}
       >
         <Dialog
           open={openModal}
@@ -156,6 +168,34 @@ const Header = () => {
                         </label>
                       </div>
                     </div>
+                  </div>
+                  <Separator />
+                  <div className="flex flex-col items-center">
+                    <h1 className="text-lg font-bold text-primary mb-2 flex items-center gap-2">
+                      Customização do header
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              variant="outline"
+                              onClick={() => setCurrentColor("#45BCAD")}
+                            >
+                              <RestoreIcon />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent
+                            side="bottom"
+                            className="max-w-xs p-2 text-sm"
+                          >
+                            <p>Redefinir cor do header para cor padrão</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </h1>
+                    <HexColorPicker
+                      color={currentColor}
+                      onChange={setCurrentColor}
+                    />
                   </div>
 
                   <Button

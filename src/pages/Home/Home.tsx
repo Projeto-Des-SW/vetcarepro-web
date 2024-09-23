@@ -5,7 +5,7 @@ import Recursos from "@/components/Recursos/Recursos";
 
 const Home = () => {
   return (
-    <section className="">
+    <section className="h-screen overflow-y-auto">
       <FrontHome />
       <Recursos />
       <Depoimentos />

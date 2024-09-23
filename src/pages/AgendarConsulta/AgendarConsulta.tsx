@@ -1,7 +1,7 @@
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button } from "@/components/ui/button";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useUserSelector } from "@/store/hooks";
 import axios from "axios";
 import {
@@ -32,6 +32,14 @@ import dogPuto from "../../assets/dogPuto.png";
 import dogTriste from "../../assets/dogTriste.png";
 import { fetchPacientsList, fetchServiceList } from "@/services/getServices";
 import { AgendamentoSchema } from "@/utils/schemas.utils";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 const AgendarConsulta = ({ mode = "create" }: { mode?: "create" | "edit" }) => {
   const { idClinica, id } = useParams();
@@ -162,6 +170,50 @@ const AgendarConsulta = ({ mode = "create" }: { mode?: "create" | "edit" }) => {
 
   return (
     <div className="h-fit">
+      <div className="flex flex-col gap-2 mb-2">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link to="/home">Home</Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link to="/dashboard/listagemClinica">Dashboard</Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link to={`/internalClinica/${idClinica}/dashboard`}>
+                  Minha Clinica
+                </Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <Link to={`/internalClinica/${idClinica}/listagemAgendamento`}>
+                Meus Agendamentos
+              </Link>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>Novo Agendamento</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+        <div className="flex justify-between">
+          <h2
+            className={`scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 ${
+              user.isDarkMode && "text-white "
+            }`}
+          >
+            Seus Funcionarios
+          </h2>
+        </div>
+      </div>
       <Card
         className={`${
           user.isDarkMode ? "dark" : "bg-white/90"
@@ -183,7 +235,7 @@ const AgendarConsulta = ({ mode = "create" }: { mode?: "create" | "edit" }) => {
               Gerencie as informações da sua clínica
             </p>
           </header>
-     
+
           <Controller
             name="patient_id"
             control={control}
@@ -247,7 +299,7 @@ const AgendarConsulta = ({ mode = "create" }: { mode?: "create" | "edit" }) => {
                 <PopoverContent className="w-auto p-0">
                   <Calendar
                     mode="single"
-                    disabled={{before: new Date()}}
+                    disabled={{ before: new Date() }}
                     selected={value ? new Date(value) : undefined}
                     onSelect={(selectedDate) => {
                       if (selectedDate) {

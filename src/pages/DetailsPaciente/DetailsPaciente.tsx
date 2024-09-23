@@ -9,11 +9,18 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useUserSelector } from "@/store/hooks";
 import { Separator } from "@/components/ui/separator";
 import { fetchAgendamentosList } from "@/services/getServices";
 import dayjs from "dayjs";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 const DetailsPaciente = () => {
   const baseUrl = import.meta.env.VITE_URL as string;
@@ -90,13 +97,42 @@ const DetailsPaciente = () => {
                 <div className="">
                   <div className="grid gap-8 ">
                     <div className="flex items-center justify-between">
-                      <h1
-                        className={`text-3xl font-bold  ${
-                          user.isDarkMode && "text-white"
-                        }`}
-                      >
-                        Detalhes do Paciente
-                      </h1>{" "}
+                      <div className="flex flex-col gap-2">
+                        <Breadcrumb>
+                          <BreadcrumbList>
+                            <BreadcrumbItem>
+                              <BreadcrumbLink asChild>
+                                <Link to="/home">Home</Link>
+                              </BreadcrumbLink>
+                            </BreadcrumbItem>
+                            <BreadcrumbSeparator />
+                            <BreadcrumbItem>
+                              <BreadcrumbLink asChild>
+                                <Link to="/dashboard/listagemClinica">
+                                  Dashboard
+                                </Link>
+                              </BreadcrumbLink>
+                            </BreadcrumbItem>
+                            <BreadcrumbSeparator />
+                            <BreadcrumbItem>
+                              <BreadcrumbLink asChild>
+                                <Link
+                                  to={`/internalClinica/${idClinica}/dashboard`}
+                                >
+                                  Minha clinica
+                                </Link>
+                              </BreadcrumbLink>
+                            </BreadcrumbItem>
+                          </BreadcrumbList>
+                        </Breadcrumb>
+                        <h2
+                          className={`scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 ${
+                            user.isDarkMode && "text-white "
+                          }`}
+                        >
+                          Detalhes do Paciente
+                        </h2>
+                      </div>
                       <div className="flex gap-5">
                         <Button
                           variant="outline"

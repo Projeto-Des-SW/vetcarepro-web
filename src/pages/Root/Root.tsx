@@ -11,7 +11,7 @@ const Root = () => {
       </div>
 
       <main
-        className={`flex-grow min-h-0 overflow-y-auto ${
+        className={`flex-grow min-h-0 ${
           user.isDarkMode && "bg-black"
         } `}
       >

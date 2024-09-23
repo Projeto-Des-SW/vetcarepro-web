@@ -1,26 +1,51 @@
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { useUserSelector } from "@/store/hooks";
 import { adoption } from "@/utils/animals.util";
+import { Link } from "react-router-dom";
 
 const Adoption = () => {
   const user = useUserSelector((state) => state.user);
 
   return (
     <section
-      className={`w-full py-12 md:py-24 lg:py-32  ${
+      className={`w-full h-screen overflow-y-auto p-8 ${
         user.isDarkMode ? "dark bg-black" : "bg-white"
       }`}
     >
-      <div className="container px-4 md:px-6">
+      <div className="px-4 md:px-6">
         <div className="grid gap-8">
           <div className="flex items-center justify-between">
-            <h1
-              className={` text-3xl font-bold ${
-                user.isDarkMode && "text-white"
-              }`}
-            >
-              Animais Disponíveis para Adoção
-            </h1>
+            <div className="flex flex-col gap-2">
+              <Breadcrumb>
+                <BreadcrumbList>
+                  <BreadcrumbItem>
+                    <BreadcrumbLink asChild>
+                      <Link to="/home">Home</Link>
+                    </BreadcrumbLink>
+                  </BreadcrumbItem>
+                  <BreadcrumbSeparator />
+                  <BreadcrumbItem>
+                    <BreadcrumbLink asChild>
+                      <Link to="/dashboard/listagemClinica">Dashboard</Link>
+                    </BreadcrumbLink>
+                  </BreadcrumbItem>
+                </BreadcrumbList>
+              </Breadcrumb>
+              <h1
+                className={` text-3xl font-bold ${
+                  user.isDarkMode && "text-white"
+                }`}
+              >
+                Animais Disponíveis para Adoção
+              </h1>
+            </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {adoption.map((pet) => (

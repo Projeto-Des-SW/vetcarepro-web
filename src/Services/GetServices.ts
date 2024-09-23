@@ -119,6 +119,22 @@ export const fetchServiceItemList = async (
   return response.data;
 };
 
+//Obter detalhes da clinica
+export const fetchClinicaDetails = async (
+  idClinica?: string,
+  token?: string
+): Promise<IService> => {
+  const response = await axios.get(
+    `${baseUrl}/clinics/${idClinica}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return response.data;
+};
+
 //Obter detalhes do usuario
 export const fetchDataUser = async (token?: string): Promise<IUser> => {
   const response = await axios.get(`${baseUrl}/me`, {

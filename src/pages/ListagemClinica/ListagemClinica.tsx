@@ -17,10 +17,18 @@ import {
   PaginationNext,
 } from "@/components/ui/pagination";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useUserSelector } from "@/store/hooks";
 import { fetchClinicasList } from "@/services/getServices";
 import { handleDeleteClinic } from "@/services/deleteServices";
+import { PawPrintIcon } from "lucide-react";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 const ListagemClinica = () => {
   const navigate = useNavigate();
@@ -51,16 +59,28 @@ const ListagemClinica = () => {
   });
 
   return (
-    <div className="flex-wrap gap-2 flex-col p-4">
+    <div className="flex-wrap gap-2 flex-col p-4 ml-[-50px]">
       <div className="flex justify-between w-full">
-        <h2
-          className={`scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 ${
-            user.isDarkMode && "text-white"
-          }`}
-        >
-          {" "}
-          Suas clínicas veterinárias
-        </h2>
+        <div className="flex flex-col gap-2">
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link to="/home">Home</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+            </BreadcrumbList>
+          </Breadcrumb>
+          <h2
+            className={`scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 ${
+              user.isDarkMode && "text-white"
+            }`}
+          >
+            Suas clínicas veterinárias
+          </h2>
+        </div>
+
         <Button onClick={() => navigate("/dashboard/cadastrarClinica")}>
           Adicionar clínica
         </Button>
@@ -84,26 +104,13 @@ const ListagemClinica = () => {
             ))
           : currentItems?.map((clinica, index) => (
               <div key={index}>
-                <Card className="h-fit max-h-[300px] max-w-[600px]" key={index * 2}>
+                <Card
+                  className="h-fit max-h-[300px] max-w-[600px]"
+                  key={index * 2}
+                >
                   <CardHeader className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        className="h-8 w-8"
-                      >
-                        <circle cx="11" cy="4" r="2"></circle>
-                        <circle cx="18" cy="8" r="2"></circle>
-                        <circle cx="20" cy="16" r="2"></circle>
-                        <path d="M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-6.84 1.045Q6.52 17.48 4.46 16.84A3.5 3.5 0 0 1 5.5 10Z"></path>
-                      </svg>
+                      <PawPrintIcon />
                       <div className="max-w-[350px]">
                         <h3 className="text-lg font-semibold overflow-hidden whitespace-nowrap text-ellipsis">
                           {clinica.title}
@@ -159,41 +166,42 @@ const ListagemClinica = () => {
                 </Card>
               </div>
             ))}
-      </div>
-      <Pagination>
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious
-              href="#"
-              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-            />
-          </PaginationItem>
-          {Array.from({ length: totalPages }, (_, index) => (
-            <PaginationItem key={index}>
-              <PaginationLink
-                href="#"
-                onClick={() => setCurrentPage(index + 1)}
-                isActive={currentPage === index + 1}
-              >
-                {index + 1}
-              </PaginationLink>
-            </PaginationItem>
-          ))}
-          {totalPages > currentPage + 1 && (
+
+        <Pagination>
+          <PaginationContent>
             <PaginationItem>
-              <PaginationEllipsis />
+              <PaginationPrevious
+                href="#"
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              />
             </PaginationItem>
-          )}
-          <PaginationItem>
-            <PaginationNext
-              href="#"
-              onClick={() =>
-                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-              }
-            />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
+            {Array.from({ length: totalPages }, (_, index) => (
+              <PaginationItem key={index}>
+                <PaginationLink
+                  href="#"
+                  onClick={() => setCurrentPage(index + 1)}
+                  isActive={currentPage === index + 1}
+                >
+                  {index + 1}
+                </PaginationLink>
+              </PaginationItem>
+            ))}
+            {totalPages > currentPage + 1 && (
+              <PaginationItem>
+                <PaginationEllipsis />
+              </PaginationItem>
+            )}
+            <PaginationItem>
+              <PaginationNext
+                href="#"
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                }
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      </div>
     </div>
   );
 };

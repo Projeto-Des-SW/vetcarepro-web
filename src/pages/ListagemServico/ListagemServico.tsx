@@ -1,4 +1,3 @@
-import axios from "axios";
 import {
   Table,
   TableBody,
@@ -9,7 +8,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useUserSelector } from "@/store/hooks";
 import { IService } from "@/interfaces/servico";
 import { useState } from "react";
@@ -22,42 +21,41 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { fetchServiceList } from "@/services/getServices";
 import { splitIntoGroups } from "@/utils/const.utils";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import DeleteIcon from "@mui/icons-material/Delete";
+import InfoIcon from "@mui/icons-material/Info";
+import { handleDeleteService } from "@/services/deleteServices";
 
 const ListagemServico = () => {
   const navigate = useNavigate();
-  const baseUrl = import.meta.env.VITE_URL as string;
   const { idClinica } = useParams();
   const user = useUserSelector((state) => state.user);
+  const queryClient = useQueryClient()
 
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 7;
-
-  const handleDelete = async (idService?: string) => {
-    if (window.confirm("Tem certeza que deseja deletar esta clínica?")) {
-      try {
-        await axios.delete(
-          `${baseUrl}/clinics/${idClinica}/services/${idService}`,
-          {
-            headers: {
-              Authorization: `Bearer ${user.token}`,
-            },
-          }
-        );
-        navigate(`internalClinica/${idClinica}/dashboard`);
-      } catch (error) {
-        console.error("Erro ao deletar a clínica", error);
-      }
-    }
-  };
 
   const { data, error, isPending } = useQuery({
     queryKey: ["ServicoList"],
     queryFn: () => fetchServiceList(idClinica, user.token),
   });
 
+  const mutation = useMutation({
+    mutationFn: (id?: string) => handleDeleteService(idClinica, id, user.token),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["ServicoList"] });
+    },
+  });
+
   console.log(data);
-  if (isPending) return <div>carregando</div>;
   if (error) return <div>Error fetching clinics</div>;
 
   const totalPages = splitIntoGroups(data, itemsPerPage);
@@ -65,18 +63,52 @@ const ListagemServico = () => {
 
   return (
     <section className="flex-wrap gap-2 flex-col w-full">
-      <h2
-        className={`scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 ${
-          user.isDarkMode && "text-white"
-        }`}
-      >
-        {" "}
-        Seus serviços
-      </h2>
+      <div className="flex flex-col gap-2 mb-2">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link to="/home">Home</Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link to="/dashboard/listagemClinica">Dashboard</Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link to={`/internalClinica/${idClinica}/dashboard`}>
+                  Minha Clinica
+                </Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>Meus Serviços</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+        <div className="flex justify-between">
+          <h2
+            className={`scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 ${
+              user.isDarkMode && "text-white "
+            }`}
+          >
+            Seus Serviços
+          </h2>
+
+          <Button onClick={() => navigate("../cadastrarServico")}>
+            Novo serviço
+          </Button>
+        </div>
+      </div>
+
       <div
         className={`flex flex-wrap gap-2 ${user.isDarkMode && "text-white"} `}
       >
-        {" "}
         <Table>
           <TableHeader>
             <TableRow>
@@ -115,20 +147,22 @@ const ListagemServico = () => {
                         {service.title}
                       </TableCell>
                       <TableCell>{service.type}</TableCell>
-                      <TableCell>{parseFloat(service.amount).toFixed(2)}</TableCell>
+                      <TableCell>
+                        {parseFloat(service.amount).toFixed(2)}
+                      </TableCell>
                       <TableCell className="flex justify-end gap-2 ">
                         <Button
                           onClick={() =>
                             navigate(`../detailsServico/${service.id}`)
                           }
                         >
-                          Detalhes
+                          <InfoIcon />
                         </Button>
                         <Button
-                          onClick={() => handleDelete(service.id)}
+                          onClick={() => mutation.mutate(service.id)}
                           variant={"destructive"}
                         >
-                          Apagar
+                          <DeleteIcon />
                         </Button>
                       </TableCell>
                     </TableRow>

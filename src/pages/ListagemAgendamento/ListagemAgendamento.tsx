@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useUserSelector } from "@/store/hooks";
 import { fetchAgendamentosList } from "@/services/getServices";
 import {
@@ -24,6 +24,16 @@ import { handleDeleteAgendamento } from "@/services/deleteServices";
 import { Separator } from "@/components/ui/separator";
 import dayjs from "dayjs";
 import { IAgendamentoGet } from "@/interfaces/agendamento";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 
 const ListagemAgendamento = () => {
   const { idClinica } = useParams();
@@ -55,13 +65,49 @@ const ListagemAgendamento = () => {
 
   return (
     <section className="flex-wrap gap-2 flex-col w-full">
-      <h2
-        className={`scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 ${
-          user.isDarkMode && "text-white"
-        }`}
-      >
-        Seus agendamentos
-      </h2>
+      <div className="flex flex-col gap-2 mb-2">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link to="/home">Home</Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link to="/dashboard/listagemClinica">Dashboard</Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link to={`/internalClinica/${idClinica}/dashboard`}>
+                  Minha Clinica
+                </Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>Meus Agendamentos</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+        <div className="flex justify-between">
+          <h2
+            className={`scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 ${
+              user.isDarkMode && "text-white "
+            }`}
+          >
+            Seus Agendamentos
+          </h2>
+
+          <Button onClick={() => navigate("../agendamento")}>
+            Novo Agendamento
+          </Button>
+        </div>
+      </div>
+
       <div
         className={`flex flex-wrap gap-2 ${user.isDarkMode && "text-white"} `}
       >
@@ -104,7 +150,9 @@ const ListagemAgendamento = () => {
                       </TableCell>
                       <TableCell>{paciente.patient.name}</TableCell>
                       <TableCell>{paciente.service.title}</TableCell>
-                      <TableCell>{parseFloat(paciente.service.amount).toFixed(2)}</TableCell>
+                      <TableCell>
+                        {parseFloat(paciente.service.amount).toFixed(2)}
+                      </TableCell>
                       <TableCell>
                         {!dayjs().isBefore(paciente.date) === false
                           ? "A ser realizado"
@@ -117,13 +165,13 @@ const ListagemAgendamento = () => {
                             navigate(`../editarAgendamento/${paciente.id}`)
                           }
                         >
-                          Editar
+                          <EditIcon />
                         </Button>
                         <Button
                           onClick={() => mutation.mutate(paciente.id)}
                           variant={"destructive"}
                         >
-                          Apagar
+                          <DeleteIcon />
                         </Button>
                       </TableCell>
                     </TableRow>

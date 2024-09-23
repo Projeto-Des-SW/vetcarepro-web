@@ -282,7 +282,7 @@ const Interna = () => {
         <div className="flex flex-col items-start gap-4 px-4 py-5">
           <div
             className={`absolute ${
-              openMenu ? "left-[221px]" : "left-[69px]"
+              openMenu ? "left-[205px]" : "left-[69px]"
             } bg-slate-600 rounded-2xl flex items-center`}
           >
             {openMenu ? (
@@ -358,15 +358,20 @@ const Interna = () => {
 
           <TooltipProvider>
             <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  className="flex items-center pacientes gap-3 rounded-lg px-3 py-2 transition-all text-muted-foreground hover:bg-muted/50"
-                  variant={"ghost"}
-                  onClick={() => setOpenPacientes((prevState) => !prevState)}
+              <TooltipTrigger>
+                <NavLink
+                  to={`listagemPaciente`}
+                  className={({ isActive }) =>
+                    `flex items-center gap-3 rounded-lg px-3 py-2 transition-all finanças ${
+                      isActive
+                        ? "bg-accent text-accent-foreground"
+                        : "text-muted-foreground hover:bg-muted/50"
+                    }`
+                  }
                 >
-                  <PetsIcon />
+                  <PetsIcon className="h-5 w-5" />
                   {openMenu && <span>Meus pacientes</span>}
-                </Button>
+                </NavLink>
               </TooltipTrigger>
               {!openMenu && (
                 <TooltipContent side="right">
@@ -378,15 +383,20 @@ const Interna = () => {
 
           <TooltipProvider>
             <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  className="flex items-center funcionarios gap-3 rounded-lg px-3 py-2 transition-all text-muted-foreground hover:bg-muted/50"
-                  variant={"ghost"}
-                  onClick={() => setOpenServices((prevState) => !prevState)}
+              <TooltipTrigger>
+                <NavLink
+                  to={`listagemServico`}
+                  className={({ isActive }) =>
+                    `flex items-center gap-3 rounded-lg px-3 py-2 transition-all finanças ${
+                      isActive
+                        ? "bg-accent text-accent-foreground"
+                        : "text-muted-foreground hover:bg-muted/50"
+                    }`
+                  }
                 >
-                  <HomeRepairServiceIcon />
-                  {openMenu && <span>Meus Serviços</span>}
-                </Button>
+                  <HomeRepairServiceIcon className="h-5 w-5" />
+                  {openMenu && <span>Meus serviços</span>}
+                </NavLink>
               </TooltipTrigger>
               {!openMenu && (
                 <TooltipContent side="right">
@@ -398,15 +408,20 @@ const Interna = () => {
 
           <TooltipProvider>
             <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  className="flex items-center gap-3 rounded-lg px-3 py-2 transition-all text-muted-foreground hover:bg-muted/50"
-                  variant={"ghost"}
-                  onClick={() => setOpenFuncionarios((prevState) => !prevState)}
+              <TooltipTrigger>
+                <NavLink
+                  to={`listagemFuncionario`}
+                  className={({ isActive }) =>
+                    `flex items-center gap-3 rounded-lg px-3 py-2 transition-all finanças ${
+                      isActive
+                        ? "bg-accent text-accent-foreground"
+                        : "text-muted-foreground hover:bg-muted/50"
+                    }`
+                  }
                 >
-                  <Diversity3Icon />
-                  {openMenu && <span> Meus funcionarios</span>}
-                </Button>
+                  <Diversity3Icon className="h-5 w-5" />
+                  {openMenu && <span>Meus pacientes</span>}
+                </NavLink>
               </TooltipTrigger>
               {!openMenu && (
                 <TooltipContent side="right">
@@ -418,15 +433,20 @@ const Interna = () => {
 
           <TooltipProvider>
             <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  className="flex items-center gap-3 agendamentos rounded-lg px-3 py-2 transition-all text-muted-foreground hover:bg-muted/50"
-                  variant={"ghost"}
-                  onClick={() => setOpenAgendamento((prevState) => !prevState)}
+              <TooltipTrigger>
+                <NavLink
+                  to={`listagemAgendamento`}
+                  className={({ isActive }) =>
+                    `flex items-center gap-3 rounded-lg px-3 py-2 transition-all finanças ${
+                      isActive
+                        ? "bg-accent text-accent-foreground"
+                        : "text-muted-foreground hover:bg-muted/50"
+                    }`
+                  }
                 >
-                  <MedicalServicesIcon />
-                  {openMenu && <span> Meus agendamentos</span>}
-                </Button>
+                  <MedicalServicesIcon className="h-5 w-5" />
+                  {openMenu && <span>Meus pacientes</span>}
+                </NavLink>
               </TooltipTrigger>
               {!openMenu && (
                 <TooltipContent side="right">

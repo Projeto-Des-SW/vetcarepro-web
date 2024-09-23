@@ -11,11 +11,12 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
 import "dayjs/locale/es";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useUserSelector } from "@/store/hooks";
 import dayjs from "dayjs";
 import {
   fetchAgendamentosList,
+  fetchClinicaDetails,
   fetchPacientsList,
   fetchServiceList,
 } from "@/services/getServices";
@@ -62,6 +63,14 @@ import {
 import PIX from "react-qrcode-pix";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import PixIcon from "@mui/icons-material/Pix";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 const DashboardClinica = () => {
   const [searchConsulta, setSearchConsulta] = useState("");
@@ -173,6 +182,12 @@ const DashboardClinica = () => {
     queryFn: () => fetchServiceList(idClinica, user.token),
   });
 
+  const { data: dataDetailsClinica, isPending: isPendingDetailsClinica } =
+    useQuery({
+      queryKey: ["ClinicDetails"],
+      queryFn: () => fetchClinicaDetails(idClinica, user.token),
+    });
+
   if (isPendingAgendamentos || isPendingServices || isPendingPacientes) {
     return (
       <div className="flex flex-col w-full gap-4">
@@ -213,20 +228,18 @@ const DashboardClinica = () => {
       </div>
     );
   }
-  const totalPages =
-    Array.isArray(dataAgendamentos) && dataAgendamentos.length > 5
-      ? splitIntoGroups(
-          (dataAgendamentos ?? [])
-            .sort(
-              (a, b) =>
-                dayjs(a.date).diff(dayjs()) - dayjs(b.date).diff(dayjs())
-            )
-            .filter((value) => !dayjs(value.date).isBefore(dayjs())),
-          itemsPerPage
-        )
-      : dataAgendamentos
-      ? [dataAgendamentos]
-      : [];
+  const totalPages = Array.isArray(dataAgendamentos)
+    ? splitIntoGroups(
+        (dataAgendamentos ?? [])
+          .sort(
+            (a, b) => dayjs(a.date).diff(dayjs()) - dayjs(b.date).diff(dayjs())
+          )
+          .filter((value) => !dayjs(value.date).isBefore(dayjs())),
+        itemsPerPage
+      )
+    : dataAgendamentos
+    ? [dataAgendamentos]
+    : [];
 
   const totalPagesService = splitIntoGroups(
     services as any,
@@ -274,6 +287,40 @@ const DashboardClinica = () => {
         callback={handleJoyrideCallback}
       />
       <main className="flex-1 flex flex-col">
+        <div className="flex flex-col gap-2">
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link to="/home">Home</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link to="/dashboard/listagemClinica">Dashboard</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage>
+                  {!isPendingDetailsClinica ? (
+                    dataDetailsClinica.title
+                  ) : (
+                    <Skeleton className="h-3 w-32" />
+                  )}
+                </BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+          <h2
+            className={`scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 ${
+              user.isDarkMode && "text-white"
+            }`}
+          >
+            Sua clinica veterinária
+          </h2>
+        </div>
         <div className="grid grid-cols-3 gap-8">
           <Card className="flex flex-col justify-center total-pacientes-card ">
             <CardHeader>

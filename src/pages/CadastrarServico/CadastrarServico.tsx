@@ -3,7 +3,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { IService } from "@/interfaces/servico";
 import { useUserSelector } from "@/store/hooks";
 import axios from "axios";
@@ -26,6 +26,14 @@ import { Label } from "@/components/ui/label";
 import { Hospital } from "lucide-react";
 import { serviceSchema } from "../../utils/schemas.utils";
 import { ICrudClinia } from "../../interfaces/agendamento";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 const CadastrarServico = ({ mode = "create" }: ICrudClinia) => {
   const { idClinica, id } = useParams();
@@ -64,7 +72,7 @@ const CadastrarServico = ({ mode = "create" }: ICrudClinia) => {
   }, [mode, reset, user.token, baseUrl, setValue, idClinica, id]);
 
   const errorCount = Object.keys(errors).length;
-  console.log(errors)
+  console.log(errors);
   const handleSubmitClinica: SubmitHandler<IService> = (data) => {
     const url =
       mode === "create"
@@ -129,6 +137,51 @@ const CadastrarServico = ({ mode = "create" }: ICrudClinia) => {
 
   return (
     <div className="h-fit">
+      <div className="flex flex-col gap-2">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link to="/home">Home</Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link to="/dashboard/listagemClinica">Dashboard</Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link to={`/internalClinica/${idClinica}/dashboard`}>
+                  Minha Clinica
+                </Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link to={`/internalClinica/${idClinica}/listagemServico`}>
+                  Meus serviços
+                </Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>Novo Serviço</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+        <h2
+          className={`scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 ${
+            user.isDarkMode && "text-white "
+          }`}
+        >
+          Seus Serviços
+        </h2>
+      </div>
+
       <Card
         className={`${
           user.isDarkMode ? "dark" : "bg-white/90"

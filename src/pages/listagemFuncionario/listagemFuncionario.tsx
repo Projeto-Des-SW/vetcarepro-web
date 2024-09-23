@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useUserSelector } from "@/store/hooks";
 import { useState } from "react";
 import {
@@ -23,6 +23,16 @@ import { splitIntoGroups } from "@/utils/const.utils";
 import { useQuery } from "@tanstack/react-query";
 import { IFuncionario } from "@/interfaces/funcionario";
 import { fetchFuncionariosList } from "@/services/getServices";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 
 const ListagemFuncionario = () => {
   const navigate = useNavigate();
@@ -65,14 +75,49 @@ const ListagemFuncionario = () => {
 
   return (
     <section className="flex-wrap gap-2 flex-col w-full">
-      <h2
-        className={`scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 ${
-          user.isDarkMode && "text-white"
-        }`}
-      >
-        {" "}
-        Seus serviços
-      </h2>
+      <div className="flex flex-col gap-2 mb-2">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link to="/home">Home</Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link to="/dashboard/listagemClinica">Dashboard</Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link to={`/internalClinica/${idClinica}/dashboard`}>
+                  Minha Clinica
+                </Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>Meus Funcionarios</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+        <div className="flex justify-between">
+          <h2
+            className={`scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 ${
+              user.isDarkMode && "text-white "
+            }`}
+          >
+            Seus Funcionarios
+          </h2>
+
+          <Button onClick={() => navigate("../cadastrarFuncionario")}>
+            Novo funcionario
+          </Button>
+        </div>
+      </div>
+
       <div
         className={`flex flex-wrap gap-2 ${user.isDarkMode && "text-white"} `}
       >
@@ -120,13 +165,13 @@ const ListagemFuncionario = () => {
                           navigate(`../editarFuncionario/${service.id}`)
                         }
                       >
-                        Editar
+                        <EditIcon />
                       </Button>
                       <Button
                         onClick={() => handleDelete(service.id)}
                         variant={"destructive"}
                       >
-                        Apagar
+                        <DeleteIcon />
                       </Button>
                     </TableCell>
                   </TableRow>

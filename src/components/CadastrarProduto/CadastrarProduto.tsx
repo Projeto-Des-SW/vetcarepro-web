@@ -97,7 +97,7 @@ const CadastrarProduto = ({ mode = "create", id }: ICrudClinia) => {
       data: requestData,
     })
       .then((response) => {
-        const successMessage = `Serviço - ${response.statusText}`;
+        const successMessage = `Produto - ${response.statusText}`;
         const successDescription = `Data: ${formattedDate}, Hora: ${formattedTime}`;
 
         toast(`${capitalizeFirstLetter(mode)} realizado com sucesso`, {

@@ -35,7 +35,7 @@ import {
 import { useRef, useState } from "react";
 import PIX from "react-qrcode-pix";
 import { useDispatch } from "react-redux";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import PixIcon from "@mui/icons-material/Pix";
 import { toast } from "sonner";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
@@ -47,6 +47,15 @@ import {
 } from "@/components/ui/tooltip";
 import { motion } from "framer-motion";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { Badge } from "@/components/ui/badge";
 
 const ListagemProdutos = () => {
   const user = useUserSelector((state) => state.user);
@@ -85,7 +94,6 @@ const ListagemProdutos = () => {
 
   const handleClick = () => {
     if (!isDragging) {
-      console.log("Botão clicado!");
       setOpenCart(true);
     }
   };
@@ -127,11 +135,10 @@ const ListagemProdutos = () => {
     },
   });
 
-  if (isPending || isPendingPaciente) return <div>carrgando</div>;
-
   let total = 0;
   if (user.cart.length > 0) {
     total = user.cart.reduce((total, produto) => {
+      console.log(produto.amount);
       return total + parseFloat(produto.amount) * produto.quantity;
     }, 0);
 
@@ -273,21 +280,50 @@ const ListagemProdutos = () => {
       </Dialog>
 
       <header className="flex justify-between pb-4">
-        <h2
-          className={`scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 ${
-            user.isDarkMode && "text-white "
-          }`}
-        >
-          Seus produtos
-        </h2>
+        <div className="flex flex-col gap-2">
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link to="/home">Home</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link to="/dashboard/listagemClinica">Dashboard</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link to={`/internalClinica/${idClinica}/dashboard`}>
+                    Minha Clinica
+                  </Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage>Meus Produtos</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+          <h2
+            className={`scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 ${
+              user.isDarkMode && "text-white "
+            }`}
+          >
+            Seus Produtos
+          </h2>
+        </div>
 
         <Button onClick={() => handleChangeMode(true)}>
-          Adicionar produto
+          Novo produto
         </Button>
       </header>
 
       <div className="grid grid-cols-4 gap-8">
-        {isPending
+        {isPending || isPendingPaciente
           ? Array.from({ length: 8 }).map((_, index) => (
               <Card key={index} className="bg-background shadow-lg">
                 <CardHeader className="flex">
@@ -305,9 +341,6 @@ const ListagemProdutos = () => {
               const currentProduct = user.cart.filter(
                 (productC) => productC.id === product.id
               );
-
-              console.log(currentProduct);
-              console.log(product);
               return (
                 <Card key={product.id} className="bg-background shadow-lg">
                   <CardHeader className="flex">
@@ -315,10 +348,15 @@ const ListagemProdutos = () => {
                       <div>
                         <TooltipProvider>
                           <Tooltip>
-                            <TooltipTrigger>
+                            <TooltipTrigger className="flex justify-between items-center">
                               <h3 className="text-lg font-semibold text-ellipsis w-full overflow-hidden whitespace-nowrap max-w-[150px]">
                                 {product.title}
                               </h3>
+                              {product.quantity === 0 && (
+                                <Badge variant="destructive" className="ml-2">
+                                  Esgotado
+                                </Badge>
+                              )}
                             </TooltipTrigger>
                             <TooltipContent>{product.title} </TooltipContent>
                           </Tooltip>
@@ -362,14 +400,11 @@ const ListagemProdutos = () => {
                     <Button
                       onClick={() => handleChangeMode(false, product.id)}
                       variant="outline"
-                      // className="w-full"
                     >
                       <Pencil />
                     </Button>
                     <Button
                       variant="destructive"
-                      // className="w-full"
-
                       onClick={() => mutation.mutate(product.id)}
                     >
                       <Trash2 />
