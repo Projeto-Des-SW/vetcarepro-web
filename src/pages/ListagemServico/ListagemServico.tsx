@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useUserSelector } from "@/store/hooks";
 import { IService } from "@/interfaces/servico";
 import { useState } from "react";
@@ -22,23 +22,16 @@ import { Separator } from "@/components/ui/separator";
 import { fetchServiceList } from "@/services/getServices";
 import { splitIntoGroups } from "@/utils/const.utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
 import DeleteIcon from "@mui/icons-material/Delete";
 import InfoIcon from "@mui/icons-material/Info";
 import { handleDeleteService } from "@/services/deleteServices";
+import BreadcrumbContainer from "@/components/BreadcrumbContainer/BreadcrumbContainer";
 
 const ListagemServico = () => {
   const navigate = useNavigate();
   const { idClinica } = useParams();
   const user = useUserSelector((state) => state.user);
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
 
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 7;
@@ -63,48 +56,20 @@ const ListagemServico = () => {
 
   return (
     <section className="flex-wrap gap-2 flex-col w-full">
-      <div className="flex flex-col gap-2 mb-2">
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link to="/home">Home</Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link to="/dashboard/listagemClinica">Dashboard</Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link to={`/internalClinica/${idClinica}/dashboard`}>
-                  Minha Clinica
-                </Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>Meus Serviços</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-        <div className="flex justify-between">
-          <h2
-            className={`scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 ${
-              user.isDarkMode && "text-white "
-            }`}
-          >
-            Seus Serviços
-          </h2>
-
-          <Button onClick={() => navigate("../cadastrarServico")}>
-            Novo serviço
-          </Button>
-        </div>
-      </div>
+      <BreadcrumbContainer
+        bcItems={[
+          { path: "/home", title: "Home" },
+          { path: "/dashboard/listagemClinica", title: "Dashboard" },
+          {
+            path: `/internalClinica/${idClinica}/dashboard`,
+            title: "Minha Clinica",
+          },
+        ]}
+        page="Meus Serviços"
+        title="Seus Serviços"
+        buttonName="Novo Serviço"
+        clickFn={() => navigate("../cadastrarServico")}
+      />
 
       <div
         className={`flex flex-wrap gap-2 ${user.isDarkMode && "text-white"} `}

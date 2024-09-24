@@ -35,7 +35,7 @@ import {
 import { useRef, useState } from "react";
 import PIX from "react-qrcode-pix";
 import { useDispatch } from "react-redux";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import PixIcon from "@mui/icons-material/Pix";
 import { toast } from "sonner";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
@@ -47,15 +47,8 @@ import {
 } from "@/components/ui/tooltip";
 import { motion } from "framer-motion";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
 import { Badge } from "@/components/ui/badge";
+import BreadcrumbContainer from "@/components/BreadcrumbContainer/BreadcrumbContainer";
 
 const ListagemProdutos = () => {
   const user = useUserSelector((state) => state.user);
@@ -279,48 +272,20 @@ const ListagemProdutos = () => {
         </DialogContent>
       </Dialog>
 
-      <header className="flex justify-between pb-4">
-        <div className="flex flex-col gap-2">
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link to="/home">Home</Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link to="/dashboard/listagemClinica">Dashboard</Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link to={`/internalClinica/${idClinica}/dashboard`}>
-                    Minha Clinica
-                  </Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbPage>Meus Produtos</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
-          <h2
-            className={`scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 ${
-              user.isDarkMode && "text-white "
-            }`}
-          >
-            Seus Produtos
-          </h2>
-        </div>
-
-        <Button onClick={() => handleChangeMode(true)}>
-          Novo produto
-        </Button>
-      </header>
+      <BreadcrumbContainer
+        bcItems={[
+          { path: "/home", title: "Home" },
+          { path: "/dashboard/listagemClinica", title: "Dashboard" },
+          {
+            path: `/internalClinica/${idClinica}/dashboard`,
+            title: "Minha Clinica",
+          },
+        ]}
+        page="Meus Produtos"
+        title="Seus Produtos"
+        buttonName="Novo produto"
+        clickFn={() => handleChangeMode(true)}
+      />
 
       <div className="grid grid-cols-4 gap-8">
         {isPending || isPendingPaciente

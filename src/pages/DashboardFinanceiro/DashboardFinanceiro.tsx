@@ -14,7 +14,7 @@ import { fetchFuncionariosList } from "@/services/getServices";
 import { useUserSelector } from "@/store/hooks";
 import { useQuery } from "@tanstack/react-query";
 import { BarChart, PieChart } from "lucide-react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import {
   Dialog,
   DialogContent,
@@ -28,14 +28,7 @@ import { Input } from "@/components/ui/input";
 import { useDispatch } from "react-redux";
 import { setChavePix } from "@/store/user-slice";
 import { toast } from "sonner";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+import BreadcrumbContainer from "@/components/BreadcrumbContainer/BreadcrumbContainer";
 
 const DashboardFinanceiro = () => {
   const { idClinica } = useParams();
@@ -50,8 +43,6 @@ const DashboardFinanceiro = () => {
   const user = useUserSelector((state) => state.user);
 
   const [currentChavePix, setCurrentChavePix] = useState(user.chavePix || "");
-
-  // const navigate = useNavigate();
 
   const { data, isPending } = useQuery({
     queryKey: ["FuncionariosList"],
@@ -95,44 +86,14 @@ const DashboardFinanceiro = () => {
       <section className="w-full pb-14">
         <div className="">
           <div className="grid gap-8 ">
-            <div className="flex items-center justify-between">
-              <div className="flex flex-col gap-2">
-                <Breadcrumb>
-                  <BreadcrumbList>
-                    <BreadcrumbItem>
-                      <BreadcrumbLink asChild>
-                        <Link to="/home">Home</Link>
-                      </BreadcrumbLink>
-                    </BreadcrumbItem>
-                    <BreadcrumbSeparator />
-                    <BreadcrumbItem>
-                      <BreadcrumbLink asChild>
-                        <Link to="/dashboard/listagemClinica">Dashboard</Link>
-                      </BreadcrumbLink>
-                    </BreadcrumbItem>
-                    <BreadcrumbSeparator />
-                    <BreadcrumbItem>
-                      <BreadcrumbLink asChild>
-                        <Link to={`/internalClinica/${idClinica}/dashboard`}>
-                          Minha Clinica
-                        </Link>
-                      </BreadcrumbLink>
-                    </BreadcrumbItem>
-                    <BreadcrumbSeparator />
-                    <BreadcrumbItem>
-                      <BreadcrumbPage>Minhas Finanças</BreadcrumbPage>
-                    </BreadcrumbItem>
-                  </BreadcrumbList>
-                </Breadcrumb>
-                <h1
-                  className={`scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 ${
-                    user.isDarkMode && "text-white"
-                  }`}
-                >
-                  Painel Financeiro
-                </h1>
-              </div>
-            </div>
+            <BreadcrumbContainer
+              bcItems={[
+                { path: "/home", title: "Home" },
+                { path: "/dashboard/listagemClinica", title: "Dashboard" },
+              ]}
+              page="Minhas Finanças"
+              title="Painel Financeiro"
+            />
 
             <div className="grid grid-cols-1 w-full sm:grid-cols-2 lg:grid-cols-3 gap-8">
               <Card className="bg-background shadow-lg">

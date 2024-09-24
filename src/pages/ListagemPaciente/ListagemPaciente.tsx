@@ -2,7 +2,7 @@ import { IPet } from "@/interfaces/paciente";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useUserSelector } from "@/store/hooks";
 import { fetchPacientsList } from "@/services/getServices";
 import {
@@ -23,17 +23,9 @@ import {
 } from "@/components/ui/table";
 import { handleDeletePacient } from "@/services/deleteServices";
 import { Separator } from "@/components/ui/separator";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import DeleteIcon from '@mui/icons-material/Delete';
-import InfoIcon from '@mui/icons-material/Info';
-
+import DeleteIcon from "@mui/icons-material/Delete";
+import InfoIcon from "@mui/icons-material/Info";
+import BreadcrumbContainer from "@/components/BreadcrumbContainer/BreadcrumbContainer";
 
 const ListagemPaciente = () => {
   const navigate = useNavigate();
@@ -62,48 +54,20 @@ const ListagemPaciente = () => {
 
   return (
     <section className="flex-wrap gap-2 flex-col w-full">
-      <div className="flex flex-col gap-2 mb-2">
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link to="/home">Home</Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link to="/dashboard/listagemClinica">Dashboard</Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link to={`/internalClinica/${idClinica}/dashboard`}>
-                  Minha Clinica
-                </Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>Meus Pacientes</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-        <div className="flex justify-between">
-          <h2
-            className={`scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 ${
-              user.isDarkMode && "text-white "
-            }`}
-          >
-            Seus Pacientes
-          </h2>
-
-          <Button onClick={() => navigate("../cadastrarPaciente")}>
-            Novo paciente
-          </Button>
-        </div>
-      </div>
+      <BreadcrumbContainer
+        bcItems={[
+          { path: "/home", title: "Home" },
+          { path: "/dashboard/listagemClinica", title: "Dashboard" },
+          {
+            path: `/internalClinica/${idClinica}/dashboard`,
+            title: "Minha Clinica",
+          },
+        ]}
+        page="Meus Pacientes"
+        title="Seus Pacientes"
+        buttonName="Novo paciente"
+        clickFn={() => navigate("../cadastrarPaciente")}
+      />
 
       <div
         className={`flex flex-wrap gap-2 ${user.isDarkMode && "text-white"} `}
