@@ -86,7 +86,7 @@ const Assinatura = () => {
           <Card
             className={`bg-background shadow-lg max-w-[440px] ${
               user.isDarkMode && "dark"
-            } ${plano.tier === user.tier ? "animate-rotate-shadow" : ""}`}
+            } ${plano.tier === user.tier ? "animate-rotate-shadow z-10" : ""}`}
             style={{
               animation:
                 plano.tier === user.tier
@@ -106,7 +106,7 @@ const Assinatura = () => {
                 </p>
               </div>
               <div className="text-3xl font-bold text-primary">
-                ${plano.value}
+                R${plano.value}
               </div>
             </CardHeader>
             <CardContent className="p-6 border-t min-h-[350px]">
