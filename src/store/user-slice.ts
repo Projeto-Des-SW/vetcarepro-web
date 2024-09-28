@@ -9,6 +9,7 @@ export interface UserDataProps {
   isDarkMode: boolean;
   cart: IProduct[];
   rememberMe: boolean;
+  tier: "free" | "standard" | "enterprise" | null;
   notifications: INotifications[];
 }
 
@@ -26,6 +27,7 @@ const userInicialState: UserDataProps = {
   rememberMe: false,
   chavePix: "81998436108",
   notifications: [{ title: "", description: "" }],
+  tier: null,
   cart: [],
   isDarkMode: false,
 };
@@ -37,14 +39,15 @@ const userSlice = createSlice({
     setCurrentUser(state, action: PayloadAction<UserDataProps>) {
       state.email = action.payload.email;
       state.token = action.payload.token;
-      state.rememberMe = action.payload.rememberMe; // Atualiza o valor de rememberMe
+      state.rememberMe = action.payload.rememberMe;
       state.notifications = [{ title: "", description: "" }];
       state.isDarkMode = false;
     },
     logoutUser(state) {
       state.email = "";
       state.token = "";
-      state.rememberMe = false; // Zera o rememberMe ao fazer logout
+      state.rememberMe = false;
+      state.tier = null;
     },
     addNotification(state, action: PayloadAction<INotifications>) {
       state.notifications.push(action.payload);
@@ -68,7 +71,6 @@ const userSlice = createSlice({
         state.cart.push({ ...action.payload, cartQuantity: 1 });
       }
     },
-
     setIncrementItemCart(state, action: PayloadAction<string>) {
       const existingProduct = state.cart.find(
         (item) => item.id === action.payload
@@ -97,6 +99,12 @@ const userSlice = createSlice({
     setClearCart(state) {
       state.cart = [];
     },
+    setTierAccount(
+      state,
+      action: PayloadAction<"free" | "standard" | "enterprise" | null>
+    ) {
+      state.tier = action.payload;
+    },
   },
 });
 
@@ -113,4 +121,5 @@ export const {
   setIncrementItemCart,
   setDecrementItemCart,
   setRemoveItemCart,
+  setTierAccount,
 } = userSlice.actions;

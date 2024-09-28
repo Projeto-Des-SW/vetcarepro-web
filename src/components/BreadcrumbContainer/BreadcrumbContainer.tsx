@@ -15,6 +15,7 @@ interface IBreadcrumb {
   page?: any;
   title?: string;
   clickFn?: () => void;
+  size?: number;
   buttonName?: string;
 }
 
@@ -28,6 +29,7 @@ const BreadcrumbContainer = ({
   title,
   page,
   clickFn,
+  size,
   buttonName,
 }: IBreadcrumb) => {
   const user = useUserSelector((state) => state.user);
@@ -59,7 +61,9 @@ const BreadcrumbContainer = ({
         </h2>
 
         {buttonName !== undefined && (
-          <Button onClick={clickFn}>{buttonName}</Button>
+          <Button onClick={clickFn} disabled={user.tier === "free" && size >= 5}>
+            {buttonName}
+          </Button>
         )}
       </div>
     </div>

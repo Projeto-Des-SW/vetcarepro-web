@@ -23,6 +23,7 @@ import ListagemAgendamento from "@/pages/ListagemAgendamento/ListagemAgendamento
 import DashboardFinanceiro from "@/pages/DashboardFinanceiro/DashboardFinanceiro";
 import Adoption from "@/pages/Adoption/Adoption";
 import ListagemProdutos from "@/pages/ListagemProdutos/ListagemProdutos";
+import Assinatura from "@/pages/Assinatura/Assinatura";
 
 const AppRoutes = () => {
   const user = useUserSelector((state) => state.user);
@@ -34,7 +35,8 @@ const AppRoutes = () => {
         <Route path="home" element={<Home />} />
         <Route path="pricing" element={<Pricing />} />
         <Route path="adoption" element={<Adoption />} />
-        {user.email ? (
+        <Route path="assinatura" element={<Assinatura />} />
+        {user.email && user.tier !== null ? (
           <>
             <Route path="dashboard" element={<Dashboard />}>
               <Route path="profile" element={<Me />} />

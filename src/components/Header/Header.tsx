@@ -136,7 +136,7 @@ const Header = () => {
                 Minhas informações
               </DialogTitle>
               <DialogDescription>
-                <div className="  rounded-lg flex flex-col items-center p-4 gap-6">
+                <div className="rounded-lg flex flex-col items-center p-4 gap-6">
                   <picture className="flex items-center flex-col gap-2">
                     <Avatar className="w-[100px] h-[100px] ">
                       <AvatarFallback className="bg-[#4EBA9D] text-2xl text-white">
@@ -145,7 +145,7 @@ const Header = () => {
                     </Avatar>
                     <div className="flex flex-col items-end">
                       <Badge variant="secondary" className="">
-                        Enterprise
+                        {user.tier}
                       </Badge>
                     </div>
                   </picture>
@@ -153,20 +153,20 @@ const Header = () => {
                   <div className="flex gap-4 ">
                     <Input readOnly value={data?.name} />
                     <Input readOnly value={data?.email} />
-                    <div className=" items-center flex space-x-2">
-                      <Checkbox
-                        id="terms1"
-                        checked={isChecked}
-                        onCheckedChange={handleCheckboxChange}
-                      />
-                      <div className="grid gap-1.5 leading-none">
-                        <label
-                          htmlFor="terms1"
-                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                        >
-                          Ver tutorial novamente
-                        </label>
-                      </div>
+                  </div>
+                  <div className=" items-center flex space-x-2">
+                    <Checkbox
+                      id="terms1"
+                      checked={isChecked}
+                      onCheckedChange={handleCheckboxChange}
+                    />
+                    <div className="grid gap-1.5 leading-none">
+                      <label
+                        htmlFor="terms1"
+                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        Ver tutorial novamente
+                      </label>
                     </div>
                   </div>
                   <Separator />
@@ -216,9 +216,9 @@ const Header = () => {
             className="flex items-end flex-col justify-center font-bold text-3xl gap-1"
           >
             VetCare
-            {user.email && (
+            {user.email && user.tier && (
               <Badge variant="secondary" className="mt-[-8px] text-xs">
-                Enterprise
+                {user.tier}
               </Badge>
             )}
           </Link>
@@ -393,6 +393,13 @@ const Header = () => {
                             >
                               Dashboard
                             </NavigationMenuLink>
+                            <NavigationMenuLink
+                              onClick={() => navigate("/assinatura")}
+                              className="cursor-pointer"
+                            >
+                              Assinaturas
+                            </NavigationMenuLink>
+
                             <NavigationMenuLink
                               onClick={() =>
                                 setOpenModal((prevState) => !prevState)

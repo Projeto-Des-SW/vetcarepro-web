@@ -38,6 +38,7 @@ import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import Joyride, { CallBackProps, STATUS, Step } from "react-joyride";
 import PetsIcon from "@mui/icons-material/Pets";
 import { Skeleton } from "@nextui-org/react";
+import LockIcon from "@mui/icons-material/Lock";
 
 const Interna = () => {
   const [openPacientes, setOpenPacientes] = useState(false);
@@ -100,6 +101,9 @@ const Interna = () => {
       setTourRunning(false);
     }
   };
+
+  const leftMenu = user.tier === "enterprise" ? "left-[221px]" : "left-[236px]";
+
   return (
     <div className={`flex h-screen ${user.isDarkMode && "dark"}`}>
       <Joyride
@@ -282,7 +286,7 @@ const Interna = () => {
         <div className="flex flex-col items-start gap-4 px-4 py-5">
           <div
             className={`absolute ${
-              openMenu ? "left-[205px]" : "left-[69px]"
+              openMenu ? leftMenu : "left-[69px]"
             } bg-slate-600 rounded-2xl flex items-center`}
           >
             {openMenu ? (
@@ -299,7 +303,6 @@ const Interna = () => {
               />
             )}
           </div>
-
           <NavLink
             to="/dashboard/listagemClinica"
             className={({ isActive }) =>
@@ -313,7 +316,6 @@ const Interna = () => {
             <HomeWorkIcon />
             {openMenu && <span>Minhas clinicas</span>}
           </NavLink>
-
           <NavLink
             to={`/internalClinica/${idClinica}/dashboard`}
             className={({ isActive }) =>
@@ -328,33 +330,97 @@ const Interna = () => {
             {openMenu && <span>Dashboard</span>}
           </NavLink>
 
-          <NavLink
-            to={`listagemProdutos`}
-            className={({ isActive }) =>
-              `flex items-center gap-3 rounded-lg px-3 py-2 transition-all dashboard ${
-                isActive
-                  ? "bg-accent text-accent-foreground"
-                  : "text-muted-foreground hover:bg-muted/50"
-              }`
-            }
-          >
-            <ShoppingCartIcon className="h-5 w-5" />
-            {openMenu && <span>Meus produtos</span>}
-          </NavLink>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <NavLink
+                  to={
+                    user.tier === "free" || user.tier === "standard"
+                      ? "#"
+                      : `listagemProdutos`
+                  }
+                  className={({ isActive }) =>
+                    `flex items-center gap-3 rounded-lg px-3 py-2 transition-all finanças ${
+                      user.tier === "free" || user.tier === "standard"
+                        ? `cursor-not-allowed opacity-50 ${
+                            user.isDarkMode && "text-white"
+                          }`
+                        : isActive
+                        ? "bg-accent text-accent-foreground"
+                        : "text-muted-foreground hover:bg-muted/50"
+                    }`
+                  }
+                  onClick={(e) => {
+                    if (user.tier === "free" || user.tier === "standard") {
+                      e.preventDefault();
+                    }
+                  }}
+                >
+                  <ShoppingCartIcon className="h-5 w-5" />
+                  {openMenu && (
+                    <div>
+                      <span>Meus produtos</span>
+                      {(user.tier === "free" || user.tier === "standard") && (
+                        <LockIcon
+                          sx={{ fontSize: "15px", marginBottom: "20px" }}
+                        />
+                      )}
+                    </div>
+                  )}
+                </NavLink>
+              </TooltipTrigger>
 
-          <NavLink
-            to={`/internalClinica/${idClinica}/dashboardFinanceiro`}
-            className={({ isActive }) =>
-              `flex items-center gap-3 rounded-lg px-3 py-2 transition-all finanças ${
-                isActive
-                  ? "bg-accent text-accent-foreground"
-                  : "text-muted-foreground hover:bg-muted/50"
-              }`
-            }
-          >
-            <AccountBalanceIcon className="h-5 w-5" />
-            {openMenu && <span>Minhas finanças</span>}
-          </NavLink>
+              <TooltipContent side="right">
+                <p>Disponivel em outro nivel de assinatura</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <NavLink
+                  to={
+                    user.tier === "free" || user.tier === "standard"
+                      ? "#"
+                      : `/internalClinica/${idClinica}/dashboardFinanceiro`
+                  }
+                  className={({ isActive }) =>
+                    `flex items-center gap-3 rounded-lg px-3 py-2 transition-all finanças ${
+                      user.tier === "free" || user.tier === "standard"
+                        ? `cursor-not-allowed opacity-50 ${
+                            user.isDarkMode && "text-white"
+                          }`
+                        : isActive
+                        ? "bg-accent text-accent-foreground"
+                        : "text-muted-foreground hover:bg-muted/50"
+                    }`
+                  }
+                  onClick={(e) => {
+                    if (user.tier === "free" || user.tier === "standard") {
+                      e.preventDefault();
+                    }
+                  }}
+                >
+                  <AccountBalanceIcon className="h-5 w-5" />
+                  {openMenu && (
+                    <div>
+                      <span>Minhas finanças</span>
+                      {(user.tier === "free" || user.tier === "standard") && (
+                        <LockIcon
+                          sx={{ fontSize: "15px", marginBottom: "20px" }}
+                        />
+                      )}
+                    </div>
+                  )}
+                </NavLink>
+              </TooltipTrigger>
+
+              <TooltipContent side="right">
+                <p>Disponivel em outro nivel de assinatura</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
 
           <TooltipProvider>
             <Tooltip>
@@ -380,7 +446,6 @@ const Interna = () => {
               )}
             </Tooltip>
           </TooltipProvider>
-
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
@@ -410,6 +475,52 @@ const Interna = () => {
             <Tooltip>
               <TooltipTrigger>
                 <NavLink
+                  to={
+                    user.tier === "free" || user.tier === "standard"
+                      ? "#"
+                      : `listagemFuncionario`
+                  }
+                  className={({ isActive }) =>
+                    `flex items-center gap-3 rounded-lg px-3 py-2 transition-all finanças ${
+                      user.tier === "free" || user.tier === "standard"
+                        ? `cursor-not-allowed opacity-50 ${
+                            user.isDarkMode && "text-white"
+                          }`
+                        : isActive
+                        ? "bg-accent text-accent-foreground"
+                        : "text-muted-foreground hover:bg-muted/50"
+                    }`
+                  }
+                  onClick={(e) => {
+                    if (user.tier === "free" || user.tier === "standard") {
+                      e.preventDefault();
+                    }
+                  }}
+                >
+                  <Diversity3Icon className="h-5 w-5" />
+                  {openMenu && (
+                    <div>
+                      <span>Meus funcionarios</span>
+                      {(user.tier === "free" || user.tier === "standard") && (
+                        <LockIcon
+                          sx={{ fontSize: "15px", marginBottom: "20px" }}
+                        />
+                      )}
+                    </div>
+                  )}
+                </NavLink>
+              </TooltipTrigger>
+
+              <TooltipContent side="right">
+                <p>Disponivel em outro nivel de assinatura</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
+          {/* <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <NavLink
                   to={`listagemFuncionario`}
                   className={({ isActive }) =>
                     `flex items-center gap-3 rounded-lg px-3 py-2 transition-all finanças ${
@@ -420,7 +531,7 @@ const Interna = () => {
                   }
                 >
                   <Diversity3Icon className="h-5 w-5" />
-                  {openMenu && <span>Meus pacientes</span>}
+                  {openMenu && <span>Meus funcionarios</span>}
                 </NavLink>
               </TooltipTrigger>
               {!openMenu && (
@@ -429,7 +540,7 @@ const Interna = () => {
                 </TooltipContent>
               )}
             </Tooltip>
-          </TooltipProvider>
+          </TooltipProvider> */}
 
           <TooltipProvider>
             <Tooltip>
@@ -445,12 +556,12 @@ const Interna = () => {
                   }
                 >
                   <MedicalServicesIcon className="h-5 w-5" />
-                  {openMenu && <span>Meus pacientes</span>}
+                  {openMenu && <span>Minhas consultas</span>}
                 </NavLink>
               </TooltipTrigger>
               {!openMenu && (
                 <TooltipContent side="right">
-                  <p>Meus agendamentos</p>
+                  <p>Minhas consultas</p>
                 </TooltipContent>
               )}
             </Tooltip>

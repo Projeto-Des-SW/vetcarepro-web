@@ -98,12 +98,13 @@ const Login = () => {
               token: data.token,
               notifications: [],
               isDarkMode: false,
+              tier: null,
               rememberMe: switchState,
               cart: [],
             })
           );
 
-          navigate("/dashboard/listagemClinica");
+          navigate("/assinatura");
         } else {
           console.log(data);
           throw new Error("Failed to submit form");
