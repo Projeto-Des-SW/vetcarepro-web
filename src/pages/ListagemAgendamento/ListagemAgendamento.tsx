@@ -69,7 +69,7 @@ const ListagemAgendamento = () => {
         ]}
         page="Meus Agendamentos"
         title="Seus Agendamentos"
-        size={data.length}
+        size={isPending ? 0 : data.length}
         buttonName="Novo Agendamento"
         clickFn={() => navigate("../agendamento")}
       />
@@ -150,6 +150,7 @@ const ListagemAgendamento = () => {
       <div className="flex justify-center mt-4">
         <Pagination>
           <PaginationPrevious
+            className={`${user.isDarkMode && "text-white"}`}
             onClick={() =>
               currentPage !== 0 && setCurrentPage((prevState) => prevState - 1)
             }
@@ -157,6 +158,7 @@ const ListagemAgendamento = () => {
 
           {totalPages.map((_item, index) => (
             <PaginationLink
+              className={`${user.isDarkMode && "text-white"}`}
               key={index}
               onClick={() => setCurrentPage(index)}
               isActive={currentPage === index}
@@ -166,6 +168,7 @@ const ListagemAgendamento = () => {
           ))}
 
           <PaginationNext
+            className={`${user.isDarkMode && "text-white"}`}
             onClick={() =>
               currentPage !== totalPages.length - 1 &&
               setCurrentPage((prevState) => prevState + 1)

@@ -67,7 +67,7 @@ const ListagemServico = () => {
         ]}
         page="Meus Serviços"
         title="Seus Serviços"
-        size={data.length}
+        size={isPending ? 0 : data.length}
         buttonName="Novo Serviço"
         clickFn={() => navigate("../cadastrarServico")}
       />
@@ -141,6 +141,7 @@ const ListagemServico = () => {
       <div className="flex justify-center mt-4">
         <Pagination>
           <PaginationPrevious
+            className={`${user.isDarkMode && "text-white"}`}
             onClick={() =>
               currentPage !== 0 && setCurrentPage((prevState) => prevState - 1)
             }
@@ -149,6 +150,7 @@ const ListagemServico = () => {
           {totalPages.map((_item, index) => (
             <PaginationLink
               key={index}
+              className={`${user.isDarkMode && "text-white"}`}
               onClick={() => setCurrentPage(index)}
               isActive={currentPage === index}
             >
@@ -157,6 +159,7 @@ const ListagemServico = () => {
           ))}
 
           <PaginationNext
+            className={`${user.isDarkMode && "text-white"}`}
             onClick={() =>
               currentPage !== totalPages.length - 1 &&
               setCurrentPage((prevState) => prevState + 1)

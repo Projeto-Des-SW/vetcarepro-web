@@ -17,18 +17,12 @@ import {
   PaginationNext,
 } from "@/components/ui/pagination";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useUserSelector } from "@/store/hooks";
 import { fetchClinicasList } from "@/services/getServices";
 import { handleDeleteClinic } from "@/services/deleteServices";
 import { PawPrintIcon } from "lucide-react";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+import BreadcrumbContainer from "@/components/BreadcrumbContainer/BreadcrumbContainer";
 
 const ListagemClinica = () => {
   const navigate = useNavigate();
@@ -37,7 +31,7 @@ const ListagemClinica = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
 
-  const { data, error, isLoading } = useQuery({
+  const { data, error, isPending } = useQuery({
     queryKey: ["ClinicaListagem"],
     queryFn: () => fetchClinicasList(user.token),
   });
@@ -60,33 +54,15 @@ const ListagemClinica = () => {
 
   return (
     <div className="flex-wrap gap-2 flex-col p-4 ml-[-50px]">
-      <div className="flex justify-between w-full">
-        <div className="flex flex-col gap-2">
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link to="/home">Home</Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-            </BreadcrumbList>
-          </Breadcrumb>
-          <h2
-            className={`scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 ${
-              user.isDarkMode && "text-white"
-            }`}
-          >
-            Suas clínicas veterinárias
-          </h2>
-        </div>
-
-        <Button onClick={() => navigate("/dashboard/cadastrarClinica")}>
-          Adicionar clínica
-        </Button>
-      </div>
+      <BreadcrumbContainer
+        bcItems={[{ path: "/home", title: "Home" }]}
+        title="Suas clínicas veterinárias"
+        size={isPending ? 0 : data.length}
+        buttonName="Novo paciente"
+        clickFn={() => navigate("/dashboard/cadastrarClinica")}
+      />
       <div className="flex flex-wrap w-[80vw] h-[80vh] gap-4">
-        {isLoading
+        {isPending
           ? Array.from({ length: itemsPerPage }).map((_, index) => (
               <Card key={index} className="w-[30%]">
                 <CardHeader>
@@ -173,12 +149,14 @@ const ListagemClinica = () => {
               <PaginationPrevious
                 href="#"
                 onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                className={`${user.isDarkMode && 'text-white'}`}
               />
             </PaginationItem>
             {Array.from({ length: totalPages }, (_, index) => (
               <PaginationItem key={index}>
                 <PaginationLink
                   href="#"
+                  className={`${user.isDarkMode && 'text-white'}`}
                   onClick={() => setCurrentPage(index + 1)}
                   isActive={currentPage === index + 1}
                 >
@@ -194,6 +172,7 @@ const ListagemClinica = () => {
             <PaginationItem>
               <PaginationNext
                 href="#"
+                className={`${user.isDarkMode && 'text-white'}`}
                 onClick={() =>
                   setCurrentPage((prev) => Math.min(prev + 1, totalPages))
                 }

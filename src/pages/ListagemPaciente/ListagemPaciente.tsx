@@ -65,7 +65,7 @@ const ListagemPaciente = () => {
         ]}
         page="Meus Pacientes"
         title="Seus Pacientes"
-        size={data.length}
+        size={isPending ? 0 : data.length}
         buttonName="Novo paciente"
         clickFn={() => navigate("../cadastrarPaciente")}
       />
@@ -137,6 +137,7 @@ const ListagemPaciente = () => {
       <div className="flex justify-center mt-4">
         <Pagination>
           <PaginationPrevious
+            className={`${user.isDarkMode && "text-white"}`}
             onClick={() =>
               currentPage !== 0 && setCurrentPage((prevState) => prevState - 1)
             }
@@ -144,6 +145,7 @@ const ListagemPaciente = () => {
 
           {totalPages.map((_item, index) => (
             <PaginationLink
+              className={`${user.isDarkMode && "text-white"}`}
               key={index}
               onClick={() => setCurrentPage(index)}
               isActive={currentPage === index}
@@ -153,6 +155,7 @@ const ListagemPaciente = () => {
           ))}
 
           <PaginationNext
+            className={`${user.isDarkMode && "text-white"}`}
             onClick={() =>
               currentPage !== totalPages.length - 1 &&
               setCurrentPage((prevState) => prevState + 1)

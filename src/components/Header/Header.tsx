@@ -50,7 +50,7 @@ import {
 } from "../ui/dropdown-menu";
 import NightsStayIcon from "@mui/icons-material/NightsStay";
 import LightModeIcon from "@mui/icons-material/LightMode";
-import { splitIntoGroups } from "@/utils/const.utils";
+import { capitalizeFirstLetter, splitIntoGroups } from "@/utils/const.utils";
 import {
   Pagination,
   PaginationLink,
@@ -218,7 +218,7 @@ const Header = () => {
             VetCare
             {user.email && user.tier && (
               <Badge variant="secondary" className="mt-[-8px] text-xs">
-                {user.tier}
+                {capitalizeFirstLetter(user.tier)}
               </Badge>
             )}
           </Link>
@@ -226,6 +226,9 @@ const Header = () => {
 
         <nav className="ml-auto flex gap-2 items-center">
           <Toaster />
+          <Button onClick={handleSetDarkMode} variant="ghost">
+            {!user.isDarkMode ? <NightsStayIcon /> : <LightModeIcon />}
+          </Button>
           {user.email === "" ? (
             <>
               <Link
@@ -250,7 +253,7 @@ const Header = () => {
               <Button
                 onClick={() => navigate("/login")}
                 variant={"outline"}
-                className="text-black"
+                className="text-black dark:text-white"
               >
                 Login
               </Button>
@@ -264,10 +267,6 @@ const Header = () => {
                 </>
               ) : (
                 <div className="flex gap-4 items-center">
-                  <Button onClick={handleSetDarkMode} variant="ghost">
-                    {!user.isDarkMode ? <NightsStayIcon /> : <LightModeIcon />}
-                  </Button>
-
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost">
@@ -286,7 +285,9 @@ const Header = () => {
                         )}
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-[360px] p-4">
+                    <DropdownMenuContent
+                      className={`w-[360px] p-4 ${user.isDarkMode && "dark"}`}
+                    >
                       <div className="flex items-center justify-between mb-4">
                         <h3 className="text-lg font-semibold">Notificações</h3>
                       </div>
@@ -294,7 +295,7 @@ const Header = () => {
                         <div className="flex items-start gap-4">
                           <ul
                             className={`flex flex-col justify-center gap-3  ${
-                              user.isDarkMode && "dark bg-black text-white"
+                              user.isDarkMode && "dark text-white"
                             }`}
                           >
                             {totalPages[currentPage]?.map(
@@ -302,7 +303,7 @@ const Header = () => {
                                 <div key={index}>
                                   {index > 0 && (
                                     <li
-                                      className="flex items-start gap-4"
+                                      className="flex items-start jus gap-4"
                                       key={index}
                                     >
                                       <div className="flex items-center justify-center rounded-full bg-primary text-primary-foreground w-8 h-8">
@@ -312,7 +313,7 @@ const Header = () => {
                                         <h4 className="text-sm font-medium">
                                           {notification.title}
                                         </h4>
-                                        <p className="text-sm text-muted-foreground">
+                                        <p className="text-sm text-muted-foreground max-w-[250px] truncate">
                                           {notification.description}
                                         </p>
                                       </div>
@@ -382,7 +383,7 @@ const Header = () => {
                         <NavigationMenuContent className="flex flex-col w-full">
                           <ul
                             className={`flex flex-col w-[200px] gap-3 p-4 ${
-                              user.isDarkMode && "dark bg-black text-white"
+                              user.isDarkMode && "dark text-white"
                             }`}
                           >
                             <NavigationMenuLink

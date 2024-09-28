@@ -5,16 +5,16 @@ import { Outlet } from "react-router-dom";
 const Root = () => {
   const user = useUserSelector((state) => state.user);
   return (
-    <div className="flex flex-col h-screen overflow-hidden">
+    <div
+      className={`flex flex-col h-screen overflow-hidden ${
+        user.isDarkMode && "dark"
+      }`}
+    >
       <div>
         <Header />
       </div>
 
-      <main
-        className={`flex-grow min-h-0 ${
-          user.isDarkMode && "bg-black"
-        } `}
-      >
+      <main className={`flex-grow min-h-0 dark:bg-slate-950`}>
         <Outlet />
       </main>
     </div>

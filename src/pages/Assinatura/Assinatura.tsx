@@ -13,8 +13,13 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useUserSelector } from "@/store/hooks";
 import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 
-const Assinatura = () => {
+interface IType {
+  mode: boolean;
+}
+
+const Assinatura = ({ mode = true }: IType) => {
   const user = useUserSelector((state) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -30,7 +35,7 @@ const Assinatura = () => {
         "Cadastre serviços*",
         "Agende consultas*",
       ],
-      details: "Cadastros e agendamentos limitados*",
+      details: "Cadastros/agendamentos limitados a 10 itens*",
       tier: "free",
     },
     {
@@ -71,16 +76,22 @@ const Assinatura = () => {
 
   return (
     <section className="flex items-center flex-col justify-center gap-8 mt-11 overflow-y-auto">
-      <motion.h1
-        className={`text-3xl font-bold ${user.isDarkMode && "text-white"}`}
-        initial={{ opacity: 0, y: -100 }}
-        animate={{ opacity: 1, x: 0, y: 0 }}
-        transition={{ duration: 1.5, ease: "easeOut" }}
-      >
-        Olá, estamos felizes que você está aqui. Vamos começar uma nova
-        experiência no seu negócio.
-      </motion.h1>
-
+      {mode && (
+        <>
+          <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl dark:text-white">
+            Escolha o plano ideal para sua clínica
+          </h1>
+          <motion.h2
+            className={`text-3xl font-bold dark:text-white`}
+            initial={{ opacity: 0, y: -100 }}
+            animate={{ opacity: 1, x: 0, y: 0 }}
+            transition={{ duration: 1.5, ease: "easeOut" }}
+          >
+            Vamos começar uma nova experiência no seu negócio.
+          </motion.h2>
+        </>
+      )}
+      <Separator />
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:h-full p-2 pb-20">
         {planos.map((plano) => (
           <Card
@@ -120,20 +131,22 @@ const Assinatura = () => {
               </div>
             </CardContent>
 
-            <CardFooter className="flex flex-col">
-              <p className="text-xs mt-3">{plano.details}</p>
-              <Button
-                variant="outline"
-                className={`w-full relative bottom-0 ${
-                  !plano.details && "mt-4"
-                }`}
-                onClick={() => {
-                  dispatch(setTierAccount(plano.tier));
-                  navigate("/dashboard/listagemClinica");
-                }}
-              >
-                Assinar
-              </Button>
+            <CardFooter className="flex flex-col items-start">
+              <p className="text-xs mb-3">{plano.details}</p>
+              {mode && (
+                <Button
+                  variant="outline"
+                  className={`w-full relative bottom-0 ${
+                    !plano.details && "mt-4"
+                  }`}
+                  onClick={() => {
+                    dispatch(setTierAccount(plano.tier));
+                    navigate("/dashboard/listagemClinica");
+                  }}
+                >
+                  Assinar
+                </Button>
+              )}
             </CardFooter>
           </Card>
         ))}

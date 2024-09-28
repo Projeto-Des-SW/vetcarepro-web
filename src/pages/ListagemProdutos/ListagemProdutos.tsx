@@ -49,6 +49,13 @@ import { motion } from "framer-motion";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import BreadcrumbContainer from "@/components/BreadcrumbContainer/BreadcrumbContainer";
+import {
+  Pagination,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+import { splitIntoGroups } from "@/utils/const.utils";
 
 const ListagemProdutos = () => {
   const user = useUserSelector((state) => state.user);
@@ -61,6 +68,8 @@ const ListagemProdutos = () => {
   const [showPix, setShowPix] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const constraintsRef = useRef(null);
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 8;
 
   const dispatch = useDispatch();
   const baseUrl = import.meta.env.VITE_URL as string;
@@ -74,6 +83,7 @@ const ListagemProdutos = () => {
     queryKey: ["PacienteList"],
     queryFn: () => fetchPacientsList(idClinica, user.token),
   });
+
 
   const handleChangeMode = (mode: boolean, id?: string) => {
     setOpenNewProduct(true);
@@ -134,10 +144,10 @@ const ListagemProdutos = () => {
       console.log(produto.amount);
       return total + parseFloat(produto.amount) * produto.quantity;
     }, 0);
-
-    console.log(total);
   }
 
+  if (isPending) return <div>carregando</div>;
+  const totalPages = splitIntoGroups(data, itemsPerPage);
   return (
     <div className="w-full h-full" ref={constraintsRef}>
       <Dialog
@@ -302,7 +312,7 @@ const ListagemProdutos = () => {
                 </CardContent>
               </Card>
             ))
-          : data.map((product) => {
+          : totalPages[currentPage].map((product) => {
               const currentProduct = user.cart.filter(
                 (productC) => productC.id === product.id
               );
@@ -380,7 +390,35 @@ const ListagemProdutos = () => {
               );
             })}
       </div>
+      <div className="flex justify-center mt-4">
+        <Pagination>
+          <PaginationPrevious
+            className={`${user.isDarkMode && "text-white"}`}
+            onClick={() =>
+              currentPage !== 0 && setCurrentPage((prevState) => prevState - 1)
+            }
+          />
 
+          {totalPages.map((_item, index) => (
+            <PaginationLink
+              className={`${user.isDarkMode && "text-white"}`}
+              key={index}
+              onClick={() => setCurrentPage(index)}
+              isActive={currentPage === index}
+            >
+              {index + 1}
+            </PaginationLink>
+          ))}
+
+          <PaginationNext
+            className={`${user.isDarkMode && "text-white"}`}
+            onClick={() =>
+              currentPage !== totalPages.length - 1 &&
+              setCurrentPage((prevState) => prevState + 1)
+            }
+          />
+        </Pagination>
+      </div>
       <motion.div
         drag
         dragConstraints={constraintsRef}

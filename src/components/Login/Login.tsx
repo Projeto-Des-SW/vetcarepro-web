@@ -22,6 +22,7 @@ import { setCurrentUser } from "@/store/user-slice";
 import { toast } from "sonner";
 import { formattedDate, formattedTime } from "@/utils/const.utils";
 import { persistor } from "@/store/store";
+import { useUserSelector } from "@/store/hooks";
 
 interface IFormInput {
   email?: string;
@@ -52,7 +53,7 @@ const Login = () => {
     resolver: yupResolver(loginSchema),
   });
 
-  // const user = useUserSelector((state) => state.user);
+  const user = useUserSelector((state) => state.user);
   const dispatch = useDispatch();
 
   const handleSwitchChange = (checked: boolean) => {
@@ -97,8 +98,8 @@ const Login = () => {
               email: myEmail,
               token: data.token,
               notifications: [],
-              isDarkMode: false,
-              tier: null,
+              isDarkMode: user.isDarkMode,
+              tier: 'free',
               rememberMe: switchState,
               cart: [],
             })
@@ -119,11 +120,11 @@ const Login = () => {
 
   return (
     <motion.section
-      className="flex items-center justify-center"
+      className={`flex items-center justify-center ${user.isDarkMode && 'dark'}`}
       animate={{ x: 0 }}
       transition={{ ease: "easeOut", duration: 1 }}
     >
-      <Card className="w-full border-none">
+      <Card className={`w-full border-none ${user.isDarkMode && 'dark'}`}>
         <CardHeader>
           <CardTitle>Bem vindo de volta</CardTitle>
           <CardDescription>

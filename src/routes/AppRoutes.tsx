@@ -35,9 +35,10 @@ const AppRoutes = () => {
         <Route path="home" element={<Home />} />
         <Route path="pricing" element={<Pricing />} />
         <Route path="adoption" element={<Adoption />} />
-        <Route path="assinatura" element={<Assinatura />} />
+
         {user.email && user.tier !== null ? (
           <>
+            <Route path="assinatura" element={<Assinatura mode />} />
             <Route path="dashboard" element={<Dashboard />}>
               <Route path="profile" element={<Me />} />
               <Route path="cadastrarClinica" element={<CadastroClinica />} />

@@ -27,7 +27,7 @@ const userInicialState: UserDataProps = {
   rememberMe: false,
   chavePix: "81998436108",
   notifications: [{ title: "", description: "" }],
-  tier: null,
+  tier: 'free',
   cart: [],
   isDarkMode: false,
 };
@@ -41,7 +41,7 @@ const userSlice = createSlice({
       state.token = action.payload.token;
       state.rememberMe = action.payload.rememberMe;
       state.notifications = [{ title: "", description: "" }];
-      state.isDarkMode = false;
+      state.isDarkMode = action.payload.isDarkMode;
     },
     logoutUser(state) {
       state.email = "";

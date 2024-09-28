@@ -23,8 +23,8 @@ import { splitIntoGroups } from "@/utils/const.utils";
 import { useQuery } from "@tanstack/react-query";
 import { IFuncionario } from "@/interfaces/funcionario";
 import { fetchFuncionariosList } from "@/services/getServices";
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import BreadcrumbContainer from "@/components/BreadcrumbContainer/BreadcrumbContainer";
 
 const ListagemFuncionario = () => {
@@ -148,6 +148,7 @@ const ListagemFuncionario = () => {
       <div className="flex justify-center mt-4">
         <Pagination>
           <PaginationPrevious
+            className={`${user.isDarkMode && "text-white"}`}
             onClick={() =>
               currentPage !== 0 && setCurrentPage((prevState) => prevState - 1)
             }
@@ -155,6 +156,7 @@ const ListagemFuncionario = () => {
 
           {totalPages.map((_item, index) => (
             <PaginationLink
+              className={`${user.isDarkMode && "text-white"}`}
               key={index}
               onClick={() => setCurrentPage(index)}
               isActive={currentPage === index}
@@ -164,6 +166,7 @@ const ListagemFuncionario = () => {
           ))}
 
           <PaginationNext
+            className={`${user.isDarkMode && "text-white"}`}
             onClick={() =>
               currentPage !== totalPages.length - 1 &&
               setCurrentPage((prevState) => prevState + 1)

@@ -4,10 +4,16 @@ import { motion } from "framer-motion";
 import Cadastro from "@/components/Cadastro/Cadastro";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import husky from "../../assets/hunkyTransparente.png";
+import { useUserSelector } from "@/store/hooks";
 
 const LoginArea = () => {
+  const user = useUserSelector((state) => state.user);
   return (
-    <section className="w-full h-[85vh] flex justify-center items-center">
+    <section
+      className={`w-full h-[85vh] flex justify-center items-center ${
+        user.isDarkMode && "dark"
+      }`}
+    >
       <Card className=" flex justify-center items-center w- h-fit">
         <CardHeader
           className="w-[600px] h-[600px] bg-[#4EBA9D]  rounded-lg p-7 flex flex-col justify-between bg-cover bg-center bg-no-repeat"
