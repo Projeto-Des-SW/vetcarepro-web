@@ -81,12 +81,16 @@ const Assinatura = () => {
         experiência no seu negócio.
       </motion.h1>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:h-full">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:h-full p-2 pb-10">
         {planos.map((plano) => (
           <Card
             className={`bg-background shadow-lg max-w-[440px] ${
               user.isDarkMode && "dark"
             } `}
+            style={{
+              boxShadow:
+                plano.tier === user.tier && "0 4px 30px rgba(78, 186, 157, 1)",
+            }}
           >
             <CardHeader className="flex flex-col items-start justify-between p-6">
               <div className="flex flex-col  gap-2">
