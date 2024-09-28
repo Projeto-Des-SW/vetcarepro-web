@@ -476,13 +476,13 @@ const Interna = () => {
               <TooltipTrigger>
                 <NavLink
                   to={
-                    user.tier === "free" || user.tier === "standard"
+                    user.tier === "free"
                       ? "#"
                       : `listagemFuncionario`
                   }
                   className={({ isActive }) =>
                     `flex items-center gap-3 rounded-lg px-3 py-2 transition-all finanças ${
-                      user.tier === "free" || user.tier === "standard"
+                      user.tier === "free"
                         ? `cursor-not-allowed opacity-50 ${
                             user.isDarkMode && "text-white"
                           }`
@@ -492,7 +492,7 @@ const Interna = () => {
                     }`
                   }
                   onClick={(e) => {
-                    if (user.tier === "free" || user.tier === "standard") {
+                    if (user.tier === "free") {
                       e.preventDefault();
                     }
                   }}
@@ -501,7 +501,7 @@ const Interna = () => {
                   {openMenu && (
                     <div>
                       <span>Meus funcionarios</span>
-                      {(user.tier === "free" || user.tier === "standard") && (
+                      {(user.tier === "free") && (
                         <LockIcon
                           sx={{ fontSize: "15px", marginBottom: "20px" }}
                         />
