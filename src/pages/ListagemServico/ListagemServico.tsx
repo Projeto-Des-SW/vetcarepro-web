@@ -67,6 +67,7 @@ const ListagemServico = () => {
         ]}
         page="Meus Serviços"
         title="Seus Serviços"
+        size={data.length}
         buttonName="Novo Serviço"
         clickFn={() => navigate("../cadastrarServico")}
       />

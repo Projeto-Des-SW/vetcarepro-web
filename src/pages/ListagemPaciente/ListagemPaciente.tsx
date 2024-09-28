@@ -65,6 +65,7 @@ const ListagemPaciente = () => {
         ]}
         page="Meus Pacientes"
         title="Seus Pacientes"
+        size={data.length}
         buttonName="Novo paciente"
         clickFn={() => navigate("../cadastrarPaciente")}
       />

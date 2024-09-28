@@ -69,6 +69,7 @@ const ListagemAgendamento = () => {
         ]}
         page="Meus Agendamentos"
         title="Seus Agendamentos"
+        size={data.length}
         buttonName="Novo Agendamento"
         clickFn={() => navigate("../agendamento")}
       />
