@@ -84,7 +84,6 @@ const ListagemProdutos = () => {
     queryFn: () => fetchPacientsList(idClinica, user.token),
   });
 
-
   const handleChangeMode = (mode: boolean, id?: string) => {
     setOpenNewProduct(true);
     setMode(mode ? true : false);
@@ -423,15 +422,17 @@ const ListagemProdutos = () => {
         drag
         dragConstraints={constraintsRef}
         dragMomentum={false}
-        className="bottom-[0px] absolute right-0 p-8"
+        className="bottom-[30px] absolute right-0 p-8"
       >
         <Fab
-          color="primary"
           aria-label="add"
+          variant="extended"
+          className="flex gap-2 items-center"
           onDragStart={() => setIsDragging(true)}
           onDragEnd={() => setIsDragging(false)}
         >
-          <ShoppingCart onClick={handleClick} />
+          <ShoppingCart />
+          <p onClick={handleClick}> Carrinho ({user.cart.length})</p>
         </Fab>
       </motion.div>
     </div>

@@ -249,7 +249,6 @@ const Header = () => {
               >
                 Team
               </Link>
-              <Button onClick={() => navigate("/login")}>Teste gratis</Button>
               <Button
                 onClick={() => navigate("/login")}
                 variant={"outline"}

@@ -36,7 +36,7 @@ const AppRoutes = () => {
         <Route path="pricing" element={<Pricing />} />
         <Route path="adoption" element={<Adoption />} />
 
-        {user.email && user.tier !== null ? (
+        {user.email ? (
           <>
             <Route path="assinatura" element={<Assinatura mode />} />
             <Route path="dashboard" element={<Dashboard />}>
