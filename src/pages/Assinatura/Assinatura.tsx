@@ -75,22 +75,22 @@ const Assinatura = ({ mode = true }: IType) => {
   ];
 
   return (
-    <main className="h-screen overflow-y-auto pb-10">
-      <section className="flex items-center flex-col justify-center gap-8 mt-11 overflow-y-auto">
+    <main className="h-screen overflow-y-auto pb-10 ">
+      <section className="flex items-center flex-col justify-center gap-4 px-10 overflow-y-auto">
         {mode && (
-          <>
+          <div className="m-4 flex flex-col gap-4 items-center">
             <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl dark:text-white">
               Escolha o plano ideal para sua clínica
             </h1>
             <motion.h2
-              className={`text-3xl font-bold dark:text-white`}
+              className={`text-2xl font-bold dark:text-white`}
               initial={{ opacity: 0, y: -100 }}
               animate={{ opacity: 1, x: 0, y: 0 }}
               transition={{ duration: 1.5, ease: "easeOut" }}
             >
               Vamos começar uma nova experiência no seu negócio.
             </motion.h2>
-          </>
+          </div>
         )}
         <Separator />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:h-full p-2 pb-20">
