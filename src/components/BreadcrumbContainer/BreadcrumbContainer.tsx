@@ -38,15 +38,15 @@ const BreadcrumbContainer = ({
     <div className="flex flex-col gap-2 mb-2">
       <Breadcrumb>
         <BreadcrumbList>
-          {bcItems.map((bc, _index) => (
-            <>
+          {bcItems.map((bc, index) => (
+            <div key={index} className="flex items-center gap-2">
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
                   <Link to={bc.path}>{bc.title}</Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
-            </>
+            </div>
           ))}
           <BreadcrumbPage>{page}</BreadcrumbPage>
         </BreadcrumbList>
