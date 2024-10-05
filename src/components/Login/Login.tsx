@@ -43,7 +43,6 @@ const Login = () => {
   const [switchState, setSwitchState] = useState(false);
 
   const navigate = useNavigate();
-  console.log(switchState);
 
   const {
     register,
