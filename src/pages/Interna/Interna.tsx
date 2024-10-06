@@ -102,8 +102,6 @@ const Interna = () => {
     }
   };
 
-  const leftMenu = user.tier === "enterprise" ? "left-[221px]" : "left-[236px]";
-
   return (
     <div className={`flex h-screen ${user.isDarkMode && "dark"}`}>
       <Joyride
@@ -286,7 +284,7 @@ const Interna = () => {
         <div className="flex flex-col items-start gap-4 px-4 py-5">
           <div
             className={`absolute ${
-              openMenu ? leftMenu : "left-[69px]"
+              openMenu ? "left-[221px]" : "left-[69px]"
             } bg-slate-600 rounded-2xl flex items-center`}
           >
             {openMenu ? (
@@ -356,15 +354,15 @@ const Interna = () => {
                     }
                   }}
                 >
-                  <ShoppingCartIcon className="h-5 w-5" />
+                  {user.tier === "free" || user.tier === "standard" ? (
+                    <LockIcon />
+                  ) : (
+                    <ShoppingCartIcon className="h-5 w-5" />
+                  )}
+
                   {openMenu && (
                     <div>
                       <span>Meus produtos</span>
-                      {(user.tier === "free" || user.tier === "standard") && (
-                        <LockIcon
-                          sx={{ fontSize: "15px", marginBottom: "20px" }}
-                        />
-                      )}
                     </div>
                   )}
                 </NavLink>
@@ -402,15 +400,14 @@ const Interna = () => {
                     }
                   }}
                 >
-                  <AccountBalanceIcon className="h-5 w-5" />
+                  {user.tier === "free" || user.tier === "standard" ? (
+                    <LockIcon />
+                  ) : (
+                    <AccountBalanceIcon className="h-5 w-5" />
+                  )}
                   {openMenu && (
                     <div>
                       <span>Minhas finanças</span>
-                      {(user.tier === "free" || user.tier === "standard") && (
-                        <LockIcon
-                          sx={{ fontSize: "15px", marginBottom: "20px" }}
-                        />
-                      )}
                     </div>
                   )}
                 </NavLink>
@@ -475,11 +472,7 @@ const Interna = () => {
             <Tooltip>
               <TooltipTrigger>
                 <NavLink
-                  to={
-                    user.tier === "free"
-                      ? "#"
-                      : `listagemFuncionario`
-                  }
+                  to={user.tier === "free" ? "#" : `listagemFuncionario`}
                   className={({ isActive }) =>
                     `flex items-center gap-3 rounded-lg px-3 py-2 transition-all finanças ${
                       user.tier === "free"
@@ -497,15 +490,14 @@ const Interna = () => {
                     }
                   }}
                 >
-                  <Diversity3Icon className="h-5 w-5" />
+                  {user.tier === "free" ? (
+                    <LockIcon />
+                  ) : (
+                    <Diversity3Icon className="h-5 w-5" />
+                  )}
                   {openMenu && (
                     <div>
                       <span>Meus funcionarios</span>
-                      {(user.tier === "free") && (
-                        <LockIcon
-                          sx={{ fontSize: "15px", marginBottom: "20px" }}
-                        />
-                      )}
                     </div>
                   )}
                 </NavLink>
