@@ -244,7 +244,7 @@ const Header = () => {
                 Preços
               </Link>
               <Link
-                to=""
+                to="/team"
                 className="text-sm font-medium hover:underline underline-offset-4"
               >
                 Team
@@ -272,13 +272,15 @@ const Header = () => {
                         {user.notifications.length <= 1 ? (
                           <NotificationsNoneIcon
                             className={`${
-                              user.isDarkMode && "dark  text-black"
+                              user.isDarkMode &&
+                              "dark text-dark hover:text-white"
                             } cursor-pointer`}
                           />
                         ) : (
                           <NotificationsActiveIcon
                             className={`${
-                              user.isDarkMode && "dark  text-black"
+                              user.isDarkMode &&
+                              "dark text-black hover:text-white"
                             } cursor-pointer`}
                           />
                         )}

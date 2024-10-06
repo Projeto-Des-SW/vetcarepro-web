@@ -1,7 +1,7 @@
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button } from "@/components/ui/button";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useUserSelector } from "@/store/hooks";
 import axios from "axios";
 import {
@@ -32,14 +32,7 @@ import dogPuto from "../../assets/dogPuto.png";
 import dogTriste from "../../assets/dogTriste.png";
 import { fetchPacientsList, fetchServiceList } from "@/services/getServices";
 import { AgendamentoSchema } from "@/utils/schemas.utils";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+import BreadcrumbContainer from "@/components/BreadcrumbContainer/BreadcrumbContainer";
 
 const AgendarConsulta = ({ mode = "create" }: { mode?: "create" | "edit" }) => {
   const { idClinica, id } = useParams();
@@ -80,7 +73,9 @@ const AgendarConsulta = ({ mode = "create" }: { mode?: "create" | "edit" }) => {
     selectedDate.setMinutes(Number(minutes));
 
     const formattedData = {
-      ...data,
+      patient_id: data.patient_id,
+      service_id: data.service_id,
+      clinic_id: data.clinic_id,
       date: format(selectedDate, "yyyy-MM-dd HH:mm:ss"),
     };
 
@@ -170,50 +165,23 @@ const AgendarConsulta = ({ mode = "create" }: { mode?: "create" | "edit" }) => {
 
   return (
     <div className="h-fit">
-      <div className="flex flex-col gap-2 mb-2">
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link to="/home">Home</Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link to="/dashboard/listagemClinica">Dashboard</Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link to={`/internalClinica/${idClinica}/dashboard`}>
-                  Minha Clinica
-                </Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <Link to={`/internalClinica/${idClinica}/listagemAgendamento`}>
-                Meus Agendamentos
-              </Link>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>Novo Agendamento</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-        <div className="flex justify-between">
-          <h2
-            className={`scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 ${
-              user.isDarkMode && "text-white "
-            }`}
-          >
-            Seus Funcionarios
-          </h2>
-        </div>
-      </div>
+      <BreadcrumbContainer
+        bcItems={[
+          { path: "/home", title: "Home" },
+          { path: "/dashboard/listagemClinica", title: "Dashboard" },
+          {
+            path: `/internalClinica/${idClinica}/dashboard`,
+            title: "Minha Clinica",
+          },
+          {
+            path: `/internalClinica/${idClinica}/listagemAgendamento`,
+            title: "Meus Agendamentos",
+          },
+        ]}
+        page="Novo Agendamento"
+        title="Novo agendamento"
+        size={services.length}
+      />
       <Card
         className={`${
           user.isDarkMode ? "dark" : "bg-white/90"

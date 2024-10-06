@@ -12,6 +12,7 @@ const Recursos = () => {
             <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
               Tudo o que você precisa para gerenciar sua clínica
             </h2>
+  
             <p className="text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed w-[70%]">
               O VETCARE oferece uma ampla gama de recursos para facilitar o
               atendimento aos seus pacientes e a administração do seu negócio,
