@@ -114,6 +114,8 @@ const Header = () => {
     queryFn: () => fetchDataUser(user.token),
   });
 
+  console.log(data)
+
   const totalPages = splitIntoGroups(user.notifications, itemsPerPage);
   const current = `bg-[${currentColor}]`;
   return (

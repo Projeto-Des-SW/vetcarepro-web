@@ -25,7 +25,6 @@ import Adoption from "@/pages/Adoption/Adoption";
 import ListagemProdutos from "@/pages/ListagemProdutos/ListagemProdutos";
 import Assinatura from "@/pages/Assinatura/Assinatura";
 import Team from "@/pages/Team/Team";
-import Roadmap from "@/pages/Roadmap/Roadmap";
 
 const AppRoutes = () => {
   const user = useUserSelector((state) => state.user);
@@ -38,7 +37,6 @@ const AppRoutes = () => {
         <Route path="pricing" element={<Pricing />} />
         <Route path="team" element={<Team />} />
         <Route path="adoption" element={<Adoption />} />
-        <Route path="roadmap" element={<Roadmap />} />
 
         {user.email ? (
           <>
