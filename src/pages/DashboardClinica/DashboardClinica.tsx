@@ -442,7 +442,7 @@ const DashboardClinica = () => {
                     type="text"
                     className={`${
                       user.isDarkMode ? "bg-gray-900" : "bg-transparent"
-                    } placeholder-gray-500 text-gray-900 p-2 mt-2 pl-0 rounded-md`}
+                    } placeholder-gray-500 text-gray-900 p-2 mt-2 rounded-md dark:text-white`}
                     placeholder="Pesquisar consultas"
                     onChange={(e) => setSearchConsulta(e.target.value)}
                   />
@@ -652,7 +652,7 @@ const DashboardClinica = () => {
                     type="text"
                     className={`${
                       user.isDarkMode ? "bg-gray-900" : "bg-transparent"
-                    } placeholder-gray-500 text-gray-900 p-2 mt-2 pl-0 rounded-md`}
+                    } placeholder-gray-500 text-gray-900 p-2 mt-2 rounded-md dark:text-white` }
                     placeholder="Pesquisar serviços"
                     onChange={(e) => setSearchServices(e.target.value)}
                   />
