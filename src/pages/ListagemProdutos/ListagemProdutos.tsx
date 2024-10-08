@@ -445,7 +445,7 @@ const ListagemProdutos = () => {
         drag
         dragConstraints={constraintsRef}
         dragMomentum={false}
-        className="bottom-[30px] absolute right-0 p-8"
+        className="bottom-[30px] absolute p-8"
       >
         <Fab
           aria-label="add"

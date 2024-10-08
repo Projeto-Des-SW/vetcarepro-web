@@ -169,7 +169,7 @@ const AgendarConsulta = ({ mode = "create" }: { mode?: "create" | "edit" }) => {
     }
   }, [mode, id, reset, user.token, baseUrl]);
 
-  if (loadingPacientes && loadingServices) {
+  if (loadingPacientes && loadingServices && loadingFuncionario) {
     return <p>Carregando...</p>;
   }
 
