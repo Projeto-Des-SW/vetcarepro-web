@@ -8,7 +8,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import CreditScoreIcon from "@mui/icons-material/CreditScore";
 import { handleDeleteProduct } from "@/services/deleteServices";
 import { fetchPacientsList, fetchProductList } from "@/services/getServices";
 import { useUserSelector } from "@/store/hooks";
@@ -32,7 +31,7 @@ import {
   Trash2,
   XIcon,
 } from "lucide-react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import PIX from "react-qrcode-pix";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -56,10 +55,12 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { splitIntoGroups } from "@/utils/const.utils";
+import ShoppingCartCheckoutIcon from '@mui/icons-material/ShoppingCartCheckout';
 
 const ListagemProdutos = () => {
   const user = useUserSelector((state) => state.user);
   const { idClinica } = useParams();
+  const [total, setTotal] = useState(0);
   const [openNewProduct, setOpenNewProduct] = useState(false);
   const [openCart, setOpenCart] = useState(false);
   const [mode, setMode] = useState(false);
@@ -78,6 +79,8 @@ const ListagemProdutos = () => {
     queryKey: ["ProductList"],
     queryFn: () => fetchProductList(idClinica, user.token),
   });
+
+  console.log("produtos", data);
 
   const { data: dataPaciente, isPending: isPendingPaciente } = useQuery({
     queryKey: ["PacienteList"],
@@ -137,13 +140,24 @@ const ListagemProdutos = () => {
     },
   });
 
-  let total = 0;
-  if (user.cart.length > 0) {
-    total = user.cart.reduce((total, produto) => {
-      console.log(produto.amount);
-      return total + parseFloat(produto.amount) * produto.quantity;
-    }, 0);
-  }
+  // let total = 0;
+  // if (user.cart.length > 0) {
+  //   total = user.cart.reduce((total, produto) => {
+  //     console.log(produto.amount);
+  //     return total + parseFloat(produto.amount) * produto.quantity;
+  //   }, 0);
+  // }
+
+  useEffect(() => {
+    if (user.cart.length > 0) {
+      const newTotal = user.cart.reduce((acc, produto) => {
+        return acc + parseFloat(produto.amount) * produto.cartQuantity;
+      }, 0);
+      setTotal(newTotal);
+    } else {
+      setTotal(0);
+    }
+  }, [user.cart]); // Recalcula quando o carrinho mudar
 
   if (isPending) return <div>carregando</div>;
   const totalPages = splitIntoGroups(data, itemsPerPage);
@@ -245,17 +259,19 @@ const ListagemProdutos = () => {
                 <div className="flex gap-2 mt-4 justify-end">
                   <Button
                     variant="outline"
+                    className="flex gap-2"
                     onClick={() => setShowPix((prevState) => !prevState)}
                   >
-                    <PixIcon />
+                    <PixIcon /> Pagar com pix
                   </Button>
                   <Button
                     onClick={() => {
                       mutationCart.mutate();
                       setOpenCart(false);
                     }}
+                     className="flex gap-2"
                   >
-                    <CreditScoreIcon />
+                    <ShoppingCartCheckoutIcon /> Finalizar compra
                   </Button>
                 </div>
               </div>
@@ -297,98 +313,105 @@ const ListagemProdutos = () => {
       />
 
       <div className="grid grid-cols-4 gap-8">
-        {isPending || isPendingPaciente
-          ? Array.from({ length: 8 }).map((_, index) => (
-              <Card key={index} className="bg-background shadow-lg">
+        {isPending || isPendingPaciente ? (
+          Array.from({ length: 8 }).map((_, index) => (
+            <Card key={index} className="bg-background shadow-lg">
+              <CardHeader className="flex">
+                <Skeleton className="h-6 w-full mb-2" />
+                <Skeleton className="h-8 w-1/2" />
+              </CardHeader>
+              <CardContent className="p-6 border-t flex gap-2 w-full flex-wrap relative bottom-0">
+                <Skeleton className="h-10 w-12" />
+                <Skeleton className="h-10 w-12" />
+                <Skeleton className="h-10 w-12" />
+              </CardContent>
+            </Card>
+          ))
+        ) : data.length === 0 ? (
+          <div className="col-span-4 text-center text-muted-foreground">
+            Nenhum produto encontrado.
+          </div>
+        ) : (
+          totalPages[currentPage].map((product) => {
+            const currentProduct = user.cart.filter(
+              (productC) => productC.id === product.id
+            );
+            return (
+              <Card key={product.id} className="bg-background shadow-lg">
                 <CardHeader className="flex">
-                  <Skeleton className="h-6 w-full mb-2" />
-                  <Skeleton className="h-8 w-1/2" />
-                </CardHeader>
-                <CardContent className="p-6 border-t flex gap-2 w-full flex-wrap relative bottom-0">
-                  <Skeleton className="h-10 w-12" />
-                  <Skeleton className="h-10 w-12" />
-                  <Skeleton className="h-10 w-12" />
-                </CardContent>
-              </Card>
-            ))
-          : totalPages[currentPage].map((product) => {
-              const currentProduct = user.cart.filter(
-                (productC) => productC.id === product.id
-              );
-              return (
-                <Card key={product.id} className="bg-background shadow-lg">
-                  <CardHeader className="flex">
-                    <div className="flex justify-between">
-                      <div>
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger className="flex justify-between items-center">
-                              <h3 className="text-lg font-semibold text-ellipsis w-full overflow-hidden whitespace-nowrap max-w-[150px]">
-                                {product.title}
-                              </h3>
-                              {product.quantity === 0 && (
-                                <Badge variant="destructive" className="ml-2">
-                                  Esgotado
-                                </Badge>
-                              )}
-                            </TooltipTrigger>
-                            <TooltipContent>{product.title} </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
+                  <div className="flex justify-between">
+                    <div>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger className="flex justify-between items-center">
+                            <h3 className="text-lg font-semibold text-ellipsis w-full overflow-hidden whitespace-nowrap max-w-[150px]">
+                              {product.title}
+                            </h3>
+                            {product.quantity === 0 && (
+                              <Badge variant="destructive" className="ml-2">
+                                Esgotado
+                              </Badge>
+                            )}
+                          </TooltipTrigger>
+                          <TooltipContent>{product.title} </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
 
-                        <div className="text-3xl font-bold text-primary">
-                          ${parseFloat(product.amount).toFixed(2)}
-                        </div>
+                      <div className="text-3xl font-bold text-primary">
+                        ${parseFloat(product.amount).toFixed(2)}
                       </div>
                     </div>
+                  </div>
 
-                    <p className="text-sm text-muted-foreground">
-                      Quantidade disponível: {product.quantity}
-                    </p>
-                  </CardHeader>
+                  <p className="text-sm text-muted-foreground">
+                    Quantidade disponível: {product.quantity}
+                  </p>
+                </CardHeader>
 
-                  <CardContent className="p-6 border-t flex gap-2 w-full relative bottom-0">
-                    <Button
-                      className="w-full"
-                      disabled={
-                        (currentProduct[0]?.cartQuantity || 0) + 1 >
-                        product.quantity
-                      }
-                      onClick={() => {
-                        dispatch(setItemCart(product));
+                <CardContent className="p-6 border-t flex gap-2 w-full relative bottom-0">
+                  <Button
+                    className="w-full"
+                    disabled={
+                      (currentProduct[0]?.cartQuantity || 0) + 1 >
+                      product.quantity
+                    }
+                    onClick={() => {
+                      dispatch(setItemCart(product));
 
-                        toast(`Produto adicionado ao carrinho com sucesso`, {
+                      toast(`Produto adicionado ao carrinho com sucesso`, {
+                        description: product.title,
+                      });
+
+                      dispatch(
+                        addNotification({
+                          title: "Produto adicionado ao carrinho com sucesso",
                           description: product.title,
-                        });
-
-                        dispatch(
-                          addNotification({
-                            title: "Produto adicionado ao carrinho com sucesso",
-                            description: product.title,
-                          })
-                        );
-                      }}
-                    >
-                      <AddShoppingCartIcon />
-                    </Button>
-                    <Button
-                      onClick={() => handleChangeMode(false, product.id)}
-                      variant="outline"
-                    >
-                      <Pencil />
-                    </Button>
-                    <Button
-                      variant="destructive"
-                      onClick={() => mutation.mutate(product.id)}
-                    >
-                      <Trash2 />
-                    </Button>
-                    <div className="flex "></div>
-                  </CardContent>
-                </Card>
-              );
-            })}
+                        })
+                      );
+                    }}
+                  >
+                    <AddShoppingCartIcon />
+                  </Button>
+                  <Button
+                    onClick={() => handleChangeMode(false, product.id)}
+                    variant="outline"
+                  >
+                    <Pencil />
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    onClick={() => mutation.mutate(product.id)}
+                  >
+                    <Trash2 />
+                  </Button>
+                  <div className="flex "></div>
+                </CardContent>
+              </Card>
+            );
+          })
+        )}
       </div>
+
       <div className="flex justify-center mt-4">
         <Pagination>
           <PaginationPrevious
