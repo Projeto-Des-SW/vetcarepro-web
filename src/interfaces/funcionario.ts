@@ -5,5 +5,6 @@ export interface IFuncionario {
   password?: string;
   salary?: string;
   position?: string;
+  role?: string;
   last_payment_date?: string;
 }

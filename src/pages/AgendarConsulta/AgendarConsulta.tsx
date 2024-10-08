@@ -30,7 +30,11 @@ import { Newspaper } from "lucide-react";
 import dogHappy from "../../assets/dogHappy.png";
 import dogPuto from "../../assets/dogPuto.png";
 import dogTriste from "../../assets/dogTriste.png";
-import { fetchPacientsList, fetchServiceList } from "@/services/getServices";
+import {
+  fetchFuncionariosList,
+  fetchPacientsList,
+  fetchServiceList,
+} from "@/services/getServices";
 import { AgendamentoSchema } from "@/utils/schemas.utils";
 import BreadcrumbContainer from "@/components/BreadcrumbContainer/BreadcrumbContainer";
 
@@ -63,6 +67,11 @@ const AgendarConsulta = ({ mode = "create" }: { mode?: "create" | "edit" }) => {
     queryFn: () => fetchServiceList(idClinica, user.token),
   });
 
+  const { data: funcionario, isLoading: loadingFuncionario } = useQuery({
+    queryKey: ["FuncionarioList"],
+    queryFn: () => fetchFuncionariosList(idClinica, user.token),
+  });
+
   const handleSubmitAgendamento: SubmitHandler<any> = (data) => {
     console.log(data);
 
@@ -76,6 +85,7 @@ const AgendarConsulta = ({ mode = "create" }: { mode?: "create" | "edit" }) => {
       patient_id: data.patient_id,
       service_id: data.service_id,
       clinic_id: data.clinic_id,
+      employee_id: data.employee_id,
       date: format(selectedDate, "yyyy-MM-dd HH:mm:ss"),
     };
 
@@ -204,82 +214,106 @@ const AgendarConsulta = ({ mode = "create" }: { mode?: "create" | "edit" }) => {
             </p>
           </header>
 
-          <Controller
-            name="patient_id"
-            control={control}
-            render={({ field }) => (
-              <Select onValueChange={field.onChange} value={field.value}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecione um paciente" />
-                </SelectTrigger>
-                <SelectContent>
-                  {pacientes?.map((paciente) => (
-                    <SelectItem key={paciente.id} value={paciente.id || ""}>
-                      {paciente.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            )}
-          />
-          {errors.patient_id && <p>{errors.patient_id.message}</p>}
+          <div className="flex gap-2">
+            <Controller
+              name="patient_id"
+              control={control}
+              render={({ field }) => (
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione um paciente" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {pacientes?.map((paciente) => (
+                      <SelectItem key={paciente.id} value={paciente.id || ""}>
+                        {paciente.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            />
+            {errors.patient_id && <p>{errors.patient_id.message}</p>}
 
-          <Controller
-            name="service_id"
-            control={control}
-            render={({ field }) => (
-              <Select onValueChange={field.onChange} value={field.value}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecione o serviço a ser prestado" />
-                </SelectTrigger>
-                <SelectContent>
-                  {services?.map((service) => (
-                    <SelectItem key={service.id} value={service.id || ""}>
-                      {service.title}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            )}
-          />
-          {errors.service_id && <p>{errors.service_id.message}</p>}
+            <Controller
+              name="service_id"
+              control={control}
+              render={({ field }) => (
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione o serviço a ser prestado" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {services?.map((service) => (
+                      <SelectItem key={service.id} value={service.id || ""}>
+                        {service.title}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            />
+            {errors.service_id && <p>{errors.service_id.message}</p>}
+          </div>
 
-          <Controller
-            name="date"
-            control={control}
-            render={({ field: { onChange, value } }) => (
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant={"outline"}
-                    className={
-                      "justify-start text-left font-normal" +
-                      (!value && " text-muted-foreground")
-                    }
-                  >
-                    {value ? (
-                      format(new Date(value), "PPP")
-                    ) : (
-                      <span>Selecione a data da consulta</span>
-                    )}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0">
-                  <Calendar
-                    mode="single"
-                    disabled={{ before: new Date() }}
-                    selected={value ? new Date(value) : undefined}
-                    onSelect={(selectedDate) => {
-                      if (selectedDate) {
-                        onChange(selectedDate);
+          <div className="flex gap-2">
+            <Controller
+              name="employee_id"
+              control={control}
+              render={({ field }) => (
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione o funcionario" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {funcionario?.map((service) => (
+                      <SelectItem key={service.id} value={service.id || ""}>
+                        {service.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            />
+            {errors.service_id && <p>{errors.service_id.message}</p>}
+
+            <Controller
+              name="date"
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant={"outline"}
+                      className={
+                        "justify-start text-left font-normal w-full min-w-[100px]" +
+                        (!value && " text-muted-foreground")
                       }
-                    }}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
-            )}
-          />
+                    >
+                      {value ? (
+                        format(new Date(value), "PPP")
+                      ) : (
+                        <span>Selecione a data da consulta</span>
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0">
+                    <Calendar
+                      mode="single"
+                      disabled={{ before: new Date() }}
+                      selected={value ? new Date(value) : undefined}
+                      onSelect={(selectedDate) => {
+                        if (selectedDate) {
+                          onChange(selectedDate);
+                        }
+                      }}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+              )}
+            />
+          </div>
 
           <Controller
             name="horario"

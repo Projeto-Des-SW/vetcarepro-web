@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
@@ -17,19 +17,21 @@ import {
   capitalizeFirstLetter,
   formattedDate,
   formattedTime,
+  roles,
 } from "@/utils/const.utils";
 import { IFuncionario } from "@/interfaces/funcionario";
 import { UserRoundPlus } from "lucide-react";
 import { cadastroFuncionarioSchema } from "@/utils/schemas.utils";
 import { ICrudClinia } from "@/interfaces/agendamento";
+import BreadcrumbContainer from "@/components/BreadcrumbContainer/BreadcrumbContainer";
 import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Label } from "@radix-ui/react-label";
 
 const CadastroFuncionario = ({ mode = "create" }: ICrudClinia) => {
   const { idClinica, id } = useParams();
@@ -42,6 +44,7 @@ const CadastroFuncionario = ({ mode = "create" }: ICrudClinia) => {
     register,
     handleSubmit,
     formState: { errors },
+    control,
     reset,
   } = useForm<IFuncionario>({
     resolver: yupResolver(cadastroFuncionarioSchema),
@@ -126,52 +129,23 @@ const CadastroFuncionario = ({ mode = "create" }: ICrudClinia) => {
 
   return (
     <div className="h-fit">
-      <div className="flex flex-col gap-2 mb-2">
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link to="/home">Home</Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link to="/dashboard/listagemClinica">Dashboard</Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link to={`/internalClinica/${idClinica}/dashboard`}>
-                  Minha Clinica
-                </Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link to={`/internalClinica/${idClinica}/listagemFuncionario`}>
-                  Meus Funcionarios
-                </Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>Novo Funcionario</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-        <div className="flex justify-between">
-          <h2
-            className={`scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 ${
-              user.isDarkMode && "text-white "
-            }`}
-          >
-            Seus Funcionarios
-          </h2>
-        </div>
-      </div>
+      <BreadcrumbContainer
+        bcItems={[
+          { path: "/home", title: "Home" },
+          { path: "/dashboard/listagemClinica", title: "Dashboard" },
+          {
+            path: `/internalClinica/${idClinica}/dashboard`,
+            title: "Minha Clinica",
+          },
+          {
+            path: `/internalClinica/${idClinica}/listagemFuncionario`,
+            title: "Meus Funcionarios",
+          },
+        ]}
+        page="Novo Funcionario"
+        title="Seus Funcionarios"
+      />
+
       <Card
         className={`${
           user.isDarkMode ? "dark" : "bg-white/90"
@@ -222,7 +196,7 @@ const CadastroFuncionario = ({ mode = "create" }: ICrudClinia) => {
               error={errors}
             />
             <Inputs
-              label="Cargo"
+              label="Função"
               name="position"
               placeholder="Digite o cargo do funcionario"
               register={register}
@@ -230,13 +204,37 @@ const CadastroFuncionario = ({ mode = "create" }: ICrudClinia) => {
             />
           </div>
 
-          <Inputs
-            label="Salario"
-            name="salary"
-            placeholder="Digite o salario do funcionario"
-            register={register}
-            error={errors}
-          />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Inputs
+              label="Salario"
+              name="salary"
+              placeholder="Digite o salario do funcionario"
+              register={register}
+              error={errors}
+            />
+
+            <Controller
+              name="role"
+              control={control}
+              render={({ field }) => (
+                <div>
+                  <Label>Cargo</Label>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione a role do funcionario" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {roles?.map((role, index) => (
+                        <SelectItem key={index} value={role}>
+                          {role}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+            />
+          </div>
 
           <Button type="submit">
             {mode === "create" ? "Criar" : "Salvar alterações"}

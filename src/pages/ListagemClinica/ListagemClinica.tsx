@@ -58,7 +58,7 @@ const ListagemClinica = () => {
         bcItems={[{ path: "/home", title: "Home" }]}
         title="Suas clínicas veterinárias"
         size={isPending ? 0 : data.length}
-        buttonName="Novo paciente"
+        buttonName="Nova clinica"
         clickFn={() => navigate("/dashboard/cadastrarClinica")}
       />
       <div className="flex flex-wrap w-[80vw] h-[80vh] gap-4">

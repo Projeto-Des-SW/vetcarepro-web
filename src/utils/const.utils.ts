@@ -24,3 +24,5 @@ export const PROGRESS_INCREMENT = 100 / (INTERVAL_TIME / 100);
 export function capitalizeFirstLetter(texto: string) {
   return texto.charAt(0).toUpperCase() + texto.slice(1);
 }
+
+export const roles = ['MANAGER', 'VETERINARY', 'SECRETARY']

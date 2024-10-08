@@ -5,6 +5,7 @@ export const AgendamentoSchema = yup
     clinic_id: yup.string(),
     patient_id: yup.string().required("Patient ID is required"),
     service_id: yup.string().required("Service ID is required"),
+    employee_id: yup.string().required("Funcionario ID is required"),
     date: yup.date().required("Date is required"),
     horario: yup.string().required(),
   })
@@ -25,6 +26,7 @@ export const cadastroFuncionarioSchema = yup
     password: yup.string().required(),
     position: yup.string().required(),
     salary: yup.string().required(),
+    role: yup.string().required()
   })
   .required();
 

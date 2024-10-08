@@ -94,13 +94,14 @@ const Assinatura = ({ mode = true }: IType) => {
         )}
         <Separator />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:h-full p-2 pb-20">
-          {planos.map((plano) => (
+          {planos.map((plano, index) => (
             <Card
               className={`bg-background shadow-lg max-w-[440px] ${
                 user.isDarkMode && "dark"
               } ${
                 plano.tier === user.tier ? "animate-rotate-shadow z-10" : ""
               }`}
+              key={index}
               style={{
                 animation:
                   plano.tier === user.tier
