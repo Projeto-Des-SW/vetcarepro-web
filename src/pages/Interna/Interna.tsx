@@ -39,7 +39,6 @@ import Joyride, { CallBackProps, STATUS, Step } from "react-joyride";
 import PetsIcon from "@mui/icons-material/Pets";
 import { Skeleton } from "@nextui-org/react";
 import LockIcon from "@mui/icons-material/Lock";
-import { motion } from "framer-motion";
 
 const Interna = () => {
   const [openPacientes, setOpenPacientes] = useState(false);
@@ -283,7 +282,7 @@ const Interna = () => {
         }`}
       >
         <div className="flex flex-col items-start gap-4 px-4 py-5">
-        <div
+          <div
             className={`absolute ${
               openMenu ? "left-[221px]" : "left-[69px]"
             } bg-slate-600 rounded-2xl flex items-center`}
@@ -336,13 +335,13 @@ const Interna = () => {
                 <TooltipTrigger>
                   <NavLink
                     to={
-                      user.tier === "free" || user.tier === "standard"
+                      user.tier === "TIER_ONE" || user.tier === "TIER_TWO"
                         ? "#"
                         : `listagemProdutos`
                     }
                     className={({ isActive }) =>
                       `flex items-center gap-3 rounded-lg px-3 py-2 transition-all finanças ${
-                        user.tier === "free" || user.tier === "standard"
+                        user.tier === "TIER_ONE" || user.tier === "TIER_TWO"
                           ? `cursor-not-allowed opacity-50 ${
                               user.isDarkMode && "text-white"
                             }`
@@ -352,12 +351,15 @@ const Interna = () => {
                       }`
                     }
                     onClick={(e) => {
-                      if (user.tier === "free" || user.tier === "standard") {
+                      if (
+                        user.tier === "TIER_ONE" ||
+                        user.tier === "TIER_TWO"
+                      ) {
                         e.preventDefault();
                       }
                     }}
                   >
-                    {user.tier === "free" || user.tier === "standard" ? (
+                    {user.tier === "TIER_ONE" || user.tier === "TIER_TWO" ? (
                       <LockIcon />
                     ) : (
                       <ShoppingCartIcon className="h-5 w-5" />
@@ -378,52 +380,56 @@ const Interna = () => {
             </TooltipProvider>
           )}
 
-          {user.role === "MANAGER" && (
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger>
-                  <NavLink
-                    to={
-                      user.tier === "free" || user.tier === "standard"
-                        ? "#"
-                        : `/internalClinica/${idClinica}/dashboardFinanceiro`
-                    }
-                    className={({ isActive }) =>
-                      `flex items-center gap-3 rounded-lg px-3 py-2 transition-all finanças ${
-                        user.tier === "free" || user.tier === "standard"
-                          ? `cursor-not-allowed opacity-50 ${
-                              user.isDarkMode && "text-white"
-                            }`
-                          : isActive
-                          ? "bg-accent text-accent-foreground"
-                          : "text-muted-foreground hover:bg-muted/50"
-                      }`
-                    }
-                    onClick={(e) => {
-                      if (user.tier === "free" || user.tier === "standard") {
-                        e.preventDefault();
+          {user.role === "MANAGER" ||
+            (user.role === "DONO" && (
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <NavLink
+                      to={
+                        user.tier === "TIER_ONE" || user.tier === "TIER_TWO"
+                          ? "#"
+                          : `/internalClinica/${idClinica}/dashboardFinanceiro`
                       }
-                    }}
-                  >
-                    {user.tier === "free" || user.tier === "standard" ? (
-                      <LockIcon />
-                    ) : (
-                      <AccountBalanceIcon className="h-5 w-5" />
-                    )}
-                    {openMenu && (
-                      <div>
-                        <span>Minhas finanças</span>
-                      </div>
-                    )}
-                  </NavLink>
-                </TooltipTrigger>
+                      className={({ isActive }) =>
+                        `flex items-center gap-3 rounded-lg px-3 py-2 transition-all finanças ${
+                          user.tier === "TIER_ONE" || user.tier === "TIER_TWO"
+                            ? `cursor-not-allowed opacity-50 ${
+                                user.isDarkMode && "text-white"
+                              }`
+                            : isActive
+                            ? "bg-accent text-accent-foreground"
+                            : "text-muted-foreground hover:bg-muted/50"
+                        }`
+                      }
+                      onClick={(e) => {
+                        if (
+                          user.tier === "TIER_ONE" ||
+                          user.tier === "TIER_TWO"
+                        ) {
+                          e.preventDefault();
+                        }
+                      }}
+                    >
+                      {user.tier === "TIER_ONE" || user.tier === "TIER_TWO" ? (
+                        <LockIcon />
+                      ) : (
+                        <AccountBalanceIcon className="h-5 w-5" />
+                      )}
+                      {openMenu && (
+                        <div>
+                          <span>Minhas finanças</span>
+                        </div>
+                      )}
+                    </NavLink>
+                  </TooltipTrigger>
 
-                <TooltipContent side="right">
-                  <p>Disponivel em outro nivel de assinatura</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          )}
+                  <TooltipContent side="right">
+                    <p>Disponivel em outro nivel de assinatura</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            ))}
 
           <TooltipProvider>
             <Tooltip>
@@ -477,48 +483,51 @@ const Interna = () => {
             </TooltipProvider>
           )}
 
-          {user.role === "MANAGER" && (
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger>
-                  <NavLink
-                    to={user.tier === "free" ? "#" : `listagemFuncionario`}
-                    className={({ isActive }) =>
-                      `flex items-center gap-3 rounded-lg px-3 py-2 transition-all finanças ${
-                        user.tier === "free"
-                          ? `cursor-not-allowed opacity-50 ${
-                              user.isDarkMode && "text-white"
-                            }`
-                          : isActive
-                          ? "bg-accent text-accent-foreground"
-                          : "text-muted-foreground hover:bg-muted/50"
-                      }`
-                    }
-                    onClick={(e) => {
-                      if (user.tier === "free") {
-                        e.preventDefault();
+          {user.role === "MANAGER" ||
+            (user.role === "DONO" && (
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <NavLink
+                      to={
+                        user.tier === "TIER_ONE" ? "#" : `listagemFuncionario`
                       }
-                    }}
-                  >
-                    {user.tier === "free" ? (
-                      <LockIcon />
-                    ) : (
-                      <Diversity3Icon className="h-5 w-5" />
-                    )}
-                    {openMenu && (
-                      <div>
-                        <span>Meus funcionarios</span>
-                      </div>
-                    )}
-                  </NavLink>
-                </TooltipTrigger>
+                      className={({ isActive }) =>
+                        `flex items-center gap-3 rounded-lg px-3 py-2 transition-all finanças ${
+                          user.tier === "TIER_ONE"
+                            ? `cursor-not-allowed opacity-50 ${
+                                user.isDarkMode && "text-white"
+                              }`
+                            : isActive
+                            ? "bg-accent text-accent-foreground"
+                            : "text-muted-foreground hover:bg-muted/50"
+                        }`
+                      }
+                      onClick={(e) => {
+                        if (user.tier === "TIER_ONE") {
+                          e.preventDefault();
+                        }
+                      }}
+                    >
+                      {user.tier === "TIER_ONE" ? (
+                        <LockIcon />
+                      ) : (
+                        <Diversity3Icon className="h-5 w-5" />
+                      )}
+                      {openMenu && (
+                        <div>
+                          <span>Meus funcionarios</span>
+                        </div>
+                      )}
+                    </NavLink>
+                  </TooltipTrigger>
 
-                <TooltipContent side="right">
-                  <p>Disponivel em outro nivel de assinatura</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          )}
+                  <TooltipContent side="right">
+                    <p>Disponivel em outro nivel de assinatura</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            ))}
 
           {/* <TooltipProvider>
             <Tooltip>

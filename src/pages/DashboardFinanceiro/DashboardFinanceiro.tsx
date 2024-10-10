@@ -10,10 +10,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { IFuncionario } from "@/interfaces/funcionario";
-import { fetchFuncionariosList } from "@/services/getServices";
+import { fetchFinanceiro, fetchFuncionariosList } from "@/services/getServices";
 import { useUserSelector } from "@/store/hooks";
 import { useQuery } from "@tanstack/react-query";
-import { BarChart, PieChart } from "lucide-react";
+import { BarChart, DollarSignIcon, PieChart } from "lucide-react";
 import { useParams } from "react-router-dom";
 import {
   Dialog,
@@ -49,6 +49,11 @@ const DashboardFinanceiro = () => {
     queryFn: () => fetchFuncionariosList(idClinica, user.token),
   });
 
+  const { data: financas, isPending: pendingFinancas } = useQuery({
+    queryKey: ["financeiro"],
+    queryFn: () => fetchFinanceiro(idClinica, user.token),
+  });
+
   const handleCadastrarChavePix = () => {
     toast(`Chave pix cadastrada com sucesso com sucesso`, {
       description: "Sua chave pix foi alterada!",
@@ -56,6 +61,16 @@ const DashboardFinanceiro = () => {
 
     dispatch(setChavePix(currentChavePix));
   };
+
+  const myCards = [
+    { title: "Vendas", value: financas.totalValueSales.toFixed(2) },
+    { title: "Consultas", value: financas.totalValueSchedulesFinished.toFixed(2) },
+    { title: "Valor a receber", value: financas.totalValueSchedulesPending.toFixed(2) },
+    {
+      title: "Receita Total",
+      value: (financas.totalValueSales + financas.totalValueSchedulesFinished).toFixed(2),
+    },
+  ];
 
   return (
     <main className="flex-1">
@@ -95,75 +110,22 @@ const DashboardFinanceiro = () => {
               title="Painel Financeiro"
             />
 
-            <div className="grid grid-cols-1 w-full sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              <Card className="bg-background shadow-lg">
-                <CardHeader className="flex flex-col items-start justify-between p-6">
-                  <div className="flex items-center gap-4">
-                    {/* <DollarSignIcon className="h-8 w-8 text-primary" /> */}
-                    <div>
-                      <h3 className="text-lg font-semibold">Receita Total</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Últimos 30 dias
-                      </p>
+            <div className="grid grid-cols-1 w-full sm:grid-cols-2 lg:grid-cols-4 gap-8">
+              {myCards.map((card, index) => (
+                <Card className="bg-background shadow-lg" key={index}>
+                  <CardHeader className="flex flex-col items-start justify-between p-6">
+                    <div className="flex items-center gap-4">
+                      <DollarSignIcon className="h-8 w-8 text-primary" />
+                      <div>
+                        <h3 className="text-lg font-semibold">{card.title}</h3>
+                      </div>
                     </div>
-                  </div>
-                  <div className="text-3xl font-bold text-primary">
-                    R$ 125.000,00
-                  </div>
-                </CardHeader>
-                <CardContent className="p-6 border-t">
-                  <div className="flex items-center justify-between">
-                    <span className="font-medium">Variação:</span>
-                    <span className="text-green-500 font-medium">+12%</span>
-                  </div>
-                </CardContent>
-              </Card>
-              <Card className="bg-background shadow-lg">
-                <CardHeader className="flex flex-col items-start justify-between p-6">
-                  <div className="flex items-center gap-4">
-                    {/* <CreditCardIcon className="h-8 w-8 text-primary" /> */}
-                    <div>
-                      <h3 className="text-lg font-semibold">
-                        Contas a Receber
-                      </h3>
-                      <p className="text-sm text-muted-foreground">
-                        Últimos 30 dias
-                      </p>
+                    <div className="text-3xl font-bold text-primary">
+                      R$ {card.value}
                     </div>
-                  </div>
-                  <div className="text-3xl font-bold text-primary">
-                    R$ 32.500,00
-                  </div>
-                </CardHeader>
-                <CardContent className="p-6 border-t">
-                  <div className="flex items-center justify-between">
-                    <span className="font-medium">Variação:</span>
-                    <span className="text-red-500 font-medium">-5%</span>
-                  </div>
-                </CardContent>
-              </Card>
-              <Card className="bg-background shadow-lg">
-                <CardHeader className="flex flex-col items-start justify-between p-6">
-                  <div className="flex items-center gap-4">
-                    {/* <WalletIcon className="h-8 w-8 text-primary" /> */}
-                    <div>
-                      <h3 className="text-lg font-semibold">Contas a Pagar</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Últimos 30 dias
-                      </p>
-                    </div>
-                  </div>
-                  <div className="text-3xl font-bold text-primary">
-                    R$ 18.200,00
-                  </div>
-                </CardHeader>
-                <CardContent className="p-6 border-t">
-                  <div className="flex items-center justify-between">
-                    <span className="font-medium">Variação:</span>
-                    <span className="text-green-500 font-medium">+3%</span>
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardHeader>
+                </Card>
+              ))}
             </div>
 
             <div className="">
@@ -178,9 +140,6 @@ const DashboardFinanceiro = () => {
                       </p>
                     </div>
                   </div>
-                  {/* <Button variant="outline" size="sm" className="text-primary">
-                    Ver Detalhes
-                  </Button> */}
                 </CardHeader>
                 <CardContent className="p-6">
                   <Table>
@@ -216,7 +175,8 @@ const DashboardFinanceiro = () => {
                                 {service.name}
                               </TableCell>
                               <TableCell>{service.email}</TableCell>
-                              {/* <TableCell>{service.amount}</TableCell> */}
+                              <TableCell>{service.position}</TableCell>
+                              <TableCell>{service.salary}</TableCell>
                               <TableCell className="flex justify-end gap-2 ">
                                 <Button
                                   variant={"secondary"}
@@ -242,9 +202,8 @@ const DashboardFinanceiro = () => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
               <Card className="bg-background shadow-lg">
-                <CardHeader className="flex items-center justify-between p-6">
+                <CardHeader>
                   <div className="flex items-center gap-4">
-                    {/* <BarChartIcon className="h-8 w-8 text-primary" /> */}
                     <div>
                       <h3 className="text-lg font-semibold">Chave pix</h3>
                       <p className="text-sm text-muted-foreground">
@@ -262,7 +221,6 @@ const DashboardFinanceiro = () => {
                     <Button
                       variant="outline"
                       size="sm"
-                      className="text-primary w-fit h-auto flex text-wrap"
                       onClick={handleCadastrarChavePix}
                     >
                       Cadastrar chave

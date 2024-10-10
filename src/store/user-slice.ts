@@ -9,9 +9,9 @@ export interface UserDataProps {
   isDarkMode: boolean;
   cart: IProduct[];
   rememberMe: boolean;
-  tier: "TIER_ONE" | "TIER_TWO" | "TIER_THREE" | null;
+  tier: "TIER_ONE" | "TIER_TWO" | "TIER_THREE" ;
   notifications: INotifications[];
-  role?: "MANAGER" | "VETERINARY" | "SECRETARY";
+  role?: "MANAGER" | "VETERINARY" | "SECRETARY" | 'DONO';
 }
 
 interface INotifications {
@@ -30,7 +30,7 @@ const userInicialState: UserDataProps = {
   tier: "TIER_ONE",
   cart: [],
   isDarkMode: false,
-  role: null,
+  role: 'DONO',
 };
 
 const userSlice = createSlice({

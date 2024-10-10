@@ -99,7 +99,7 @@ const Header = () => {
     if (data?.role) {
       dispatch(setCurrentRoleEmployee(data.role));
     } else {
-      dispatch(setCurrentRoleEmployee("MANAGER"));
+      dispatch(setCurrentRoleEmployee("DONO"));
     }
 
     dispatch(setTierAccount(data?.tier));
@@ -107,7 +107,6 @@ const Header = () => {
 
   const handleCheckboxChange = (checked: boolean) => {
     setIsChecked(checked);
-    console.log(checked);
   };
 
   const handleSetDarkMode = () => {
@@ -413,12 +412,14 @@ const Header = () => {
                             >
                               Dashboard
                             </NavigationMenuLink>
-                            <NavigationMenuLink
-                              onClick={() => navigate("/assinatura")}
-                              className="cursor-pointer"
-                            >
-                              Assinaturas
-                            </NavigationMenuLink>
+                            {user.role === "DONO" && (
+                              <NavigationMenuLink
+                                onClick={() => navigate("/assinatura")}
+                                className="cursor-pointer"
+                              >
+                                Assinaturas
+                              </NavigationMenuLink>
+                            )}
 
                             <NavigationMenuLink
                               onClick={() =>

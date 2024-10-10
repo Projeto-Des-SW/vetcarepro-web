@@ -76,6 +76,19 @@ export const fetchFuncionariosList = async (
   return response.data;
 };
 
+//Obter as finanças
+export const fetchFinanceiro = async (
+  idClinica?: string,
+  token?: string
+): Promise<any> => {
+  const response = await axios.get(`${baseUrl}/clinics/${idClinica}/finances`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};
+
 //Obter a lista de agendamentos
 export const fetchAgendamentosList = async (
   idClinica?: string,
@@ -124,14 +137,11 @@ export const fetchClinicaDetails = async (
   idClinica?: string,
   token?: string
 ): Promise<IService> => {
-  const response = await axios.get(
-    `${baseUrl}/clinics/${idClinica}`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+  const response = await axios.get(`${baseUrl}/clinics/${idClinica}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
   return response.data;
 };
 

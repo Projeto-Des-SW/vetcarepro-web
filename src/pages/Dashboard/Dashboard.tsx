@@ -16,7 +16,6 @@ const Dashboard = () => {
     dispatch(logoutUser());
     navigate("/home");
   };
-  console.log(user);
 
   return (
     <section className={`flex gap-4 h-full ${user.isDarkMode && "dark"}`}>
@@ -35,7 +34,7 @@ const Dashboard = () => {
             <HomeWorkIcon />
             <span>Minhas clinicas</span>
           </NavLink>
-          {user.role === "MANAGER" && (
+          {user.role === "MANAGER" || user.role === "DONO"  && (
             <NavLink
               to="cadastrarClinica"
               className={({ isActive }) =>

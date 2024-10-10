@@ -80,8 +80,6 @@ const ListagemProdutos = () => {
     queryFn: () => fetchProductList(idClinica, user.token),
   });
 
-  console.log("produtos", data);
-
   const { data: dataPaciente, isPending: isPendingPaciente } = useQuery({
     queryKey: ["PacienteList"],
     queryFn: () => fetchPacientsList(idClinica, user.token),
@@ -139,7 +137,7 @@ const ListagemProdutos = () => {
       console.error("Erro:", error);
     },
   });
-  
+
   useEffect(() => {
     if (user.cart.length > 0) {
       const newTotal = user.cart.reduce((acc, produto) => {

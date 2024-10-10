@@ -90,6 +90,7 @@ const Assinatura = ({ mode = true }: IType) => {
     },
     onSuccess: (data) => {
       console.log("Dados recebidos:", data);
+      navigate("/dashboard/listagemClinica");
     },
     onError: (error) => {
       console.error("Erro:", error);
@@ -168,7 +169,7 @@ const Assinatura = ({ mode = true }: IType) => {
                     onClick={() => {
                       dispatch(setTierAccount(plano.tier));
                       mutationCart.mutate()
-                      navigate("/dashboard/listagemClinica");
+                
                     }}
                   >
                     Assinar
