@@ -40,22 +40,43 @@ const AppRoutes = () => {
 
         {user.email ? (
           <>
-            <Route path="assinatura" element={<Assinatura mode />} />
             <Route path="dashboard" element={<Dashboard />}>
               <Route path="profile" element={<Me />} />
-              <Route path="cadastrarClinica" element={<CadastroClinica />} />
+              {user.role === "MANAGER" && (
+                <>
+                  <Route
+                    path="cadastrarClinica"
+                    element={<CadastroClinica />}
+                  />
+                  <Route
+                    path="editarClinica/:id"
+                    element={<CadastroClinica mode="edit" />}
+                  />{" "}
+                  <Route path="assinatura" element={<Assinatura mode />} />
+                </>
+              )}
+
               <Route path="listagemClinica" element={<ListagemClinica />} />
-              <Route
-                path="editarClinica/:id"
-                element={<CadastroClinica mode="edit" />}
-              />
             </Route>
 
             <Route path="internalClinica/:idClinica" element={<Interna />}>
-              <Route
-                path="dashboardFinanceiro"
-                element={<DashboardFinanceiro />}
-              />
+              {user.role === "MANAGER" && (
+                <>
+                  <Route
+                    path="dashboardFinanceiro"
+                    element={<DashboardFinanceiro />}
+                  />
+                  <Route
+                    path="cadastrarFuncionario"
+                    element={<CadastroFuncionario />}
+                  />
+                  <Route
+                    path="editarFuncionario/:id"
+                    element={<CadastroFuncionario mode="edit" />}
+                  />
+                </>
+              )}
+
               <Route path="detailsPaciente/:id" element={<DetailsPaciente />} />
               <Route path="detailsServico/:id" element={<DetailsServico />} />
 
@@ -72,10 +93,7 @@ const AppRoutes = () => {
 
               <Route path="cadastrarPaciente" element={<CadastrarPaciente />} />
               <Route path="cadastrarServico" element={<CadastrarServico />} />
-              <Route
-                path="cadastrarFuncionario"
-                element={<CadastroFuncionario />}
-              />
+
               <Route path="agendamento" element={<AgendarConsulta />} />
               <Route path="dashboard" element={<DashboardClinica />} />
 
@@ -83,10 +101,7 @@ const AppRoutes = () => {
                 path="editarPaciente/:id"
                 element={<CadastrarPaciente mode="edit" />}
               />
-              <Route
-                path="editarFuncionario/:id"
-                element={<CadastroFuncionario mode="edit" />}
-              />
+
               <Route
                 path="editarServico/:id"
                 element={<CadastrarServico mode="edit" />}
@@ -96,7 +111,9 @@ const AppRoutes = () => {
                 element={<AgendarConsulta mode="edit" />}
               />
 
-              <Route path="listagemProdutos" element={<ListagemProdutos />} />
+              {user.role !== "VETERINARY" && (
+                <Route path="listagemProdutos" element={<ListagemProdutos />} />
+              )}
             </Route>
 
             {/* <Route path="*" element={<Navigate to="/dashboard" />} /> */}
