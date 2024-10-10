@@ -29,7 +29,7 @@ import { formattedDate, formattedTime } from "@/utils/const.utils";
 
 interface IFormCadastro {
   // repassword: string;
-  // username: string;
+  tier?: string;
   name?: string;
   email?: string;
   password?: string;
@@ -45,6 +45,7 @@ const cadastroSchema = yup
     //   .required("Confirmação de senha é obrigatória"),
     // username: yup.string().required("Username é obrigatório"),
     name: yup.string().required("Nome é obrigatório"),
+    tier: yup.string(),
   })
   .required();
 
@@ -53,13 +54,17 @@ const Cadastro = () => {
   const [openSucessCadastro, setOpenSucessCadastro] = useState(false);
 
   const onSubmit: SubmitHandler<IFormCadastro> = (data) => {
-  
+    const myForm = {
+      ...data,
+      tier: "TIER_ONE",
+    };
     fetch(`${baseUrl}/users`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(data),
+
+      body: JSON.stringify(myForm),
     })
       .then((response) => {
         console.log(response);

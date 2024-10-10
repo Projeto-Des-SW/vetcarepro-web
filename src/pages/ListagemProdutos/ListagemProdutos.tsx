@@ -139,15 +139,7 @@ const ListagemProdutos = () => {
       console.error("Erro:", error);
     },
   });
-
-  // let total = 0;
-  // if (user.cart.length > 0) {
-  //   total = user.cart.reduce((total, produto) => {
-  //     console.log(produto.amount);
-  //     return total + parseFloat(produto.amount) * produto.quantity;
-  //   }, 0);
-  // }
-
+  
   useEffect(() => {
     if (user.cart.length > 0) {
       const newTotal = user.cart.reduce((acc, produto) => {

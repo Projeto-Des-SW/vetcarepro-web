@@ -4,5 +4,5 @@ export interface IAssinatura {
   value: string;
   items: string[];
   details?: string;
-  tier: "free" | "standard" | "enterprise" | null;
+  tier: "TIER_ONE" | "TIER_TWO" | "TIER_THREE" | null;
 }

@@ -9,7 +9,7 @@ export interface UserDataProps {
   isDarkMode: boolean;
   cart: IProduct[];
   rememberMe: boolean;
-  tier: "free" | "standard" | "enterprise" | null;
+  tier: "TIER_ONE" | "TIER_TWO" | "TIER_THREE" | null;
   notifications: INotifications[];
   role?: "MANAGER" | "VETERINARY" | "SECRETARY";
 }
@@ -27,7 +27,7 @@ const userInicialState: UserDataProps = {
   rememberMe: false,
   chavePix: "81998436108",
   notifications: [{ title: "", description: "" }],
-  tier: "free",
+  tier: "TIER_ONE",
   cart: [],
   isDarkMode: false,
   role: null,
@@ -109,7 +109,7 @@ const userSlice = createSlice({
     },
     setTierAccount(
       state,
-      action: PayloadAction<"free" | "standard" | "enterprise" | null>
+      action: PayloadAction<"TIER_ONE" | "TIER_TWO" | "TIER_THREE" | null>
     ) {
       state.tier = action.payload;
     },

@@ -24,6 +24,7 @@ import {
   logoutUser,
   setCurrentRoleEmployee,
   setDarkMode,
+  setTierAccount,
 } from "@/store/user-slice";
 
 import { useQuery } from "@tanstack/react-query";
@@ -81,7 +82,7 @@ const Header = () => {
   const { data, isPending } = useQuery({
     queryKey: ["userData"],
     queryFn: () => fetchDataUser(user.token),
-    enabled: Boolean(user.email)
+    enabled: Boolean(user.email),
   });
 
   useEffect(() => {
@@ -97,9 +98,11 @@ const Header = () => {
     }
     if (data?.role) {
       dispatch(setCurrentRoleEmployee(data.role));
-    }else{
-      dispatch(setCurrentRoleEmployee('MANAGER'));
+    } else {
+      dispatch(setCurrentRoleEmployee("MANAGER"));
     }
+
+    dispatch(setTierAccount(data?.tier));
   }, [data]);
 
   const handleCheckboxChange = (checked: boolean) => {
@@ -121,6 +124,11 @@ const Header = () => {
     dispatch(clearNotifications());
   };
 
+  const tiermap = [
+    { tier: "TIER_ONE", title: "Free" },
+    { tier: "TIER_TWO", title: "Standard" },
+    { tier: "TIER_THREE", title: "Enterprise" },
+  ];
   console.log(data);
 
   const totalPages = splitIntoGroups(user.notifications, itemsPerPage);
@@ -154,7 +162,7 @@ const Header = () => {
                     </Avatar>
                     <div className="flex flex-col items-end">
                       <Badge variant="secondary" className="">
-                        {user.tier}
+                        Acesso - {user.role}
                       </Badge>
                     </div>
                   </picture>
@@ -227,7 +235,8 @@ const Header = () => {
             VetCare
             {user.email && user.tier && (
               <Badge variant="secondary" className="mt-[-8px] text-xs">
-                {capitalizeFirstLetter(user.tier)}
+                {tiermap.find((tier) => tier.tier === user.tier)?.title ||
+                  "N/A"}
               </Badge>
             )}
           </Link>

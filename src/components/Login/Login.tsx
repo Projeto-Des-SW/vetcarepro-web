@@ -97,7 +97,7 @@ const Login = () => {
               token: data.token,
               notifications: [],
               isDarkMode: user.isDarkMode,
-              tier: 'free',
+              tier: 'TIER_ONE',
               rememberMe: switchState,
               cart: [],
             })

@@ -14,6 +14,8 @@ import { motion } from "framer-motion";
 import { useUserSelector } from "@/store/hooks";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 
 interface IType {
   mode: boolean;
@@ -23,6 +25,7 @@ const Assinatura = ({ mode = true }: IType) => {
   const user = useUserSelector((state) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const baseUrl = import.meta.env.VITE_URL as string;
   const planos: IAssinatura[] = [
     {
       title: "Plano Free",
@@ -36,7 +39,7 @@ const Assinatura = ({ mode = true }: IType) => {
         "Agende consultas*",
       ],
       details: "Cadastros/agendamentos limitados a 10 itens*",
-      tier: "free",
+      tier: "TIER_ONE",
     },
     {
       title: "Plano Standard",
@@ -51,7 +54,7 @@ const Assinatura = ({ mode = true }: IType) => {
         "Agende consultas",
         "Multiplos usuarios",
       ],
-      tier: "standard",
+      tier: "TIER_TWO",
     },
 
     {
@@ -70,9 +73,28 @@ const Assinatura = ({ mode = true }: IType) => {
         "Gerenciamento de estoque",
         "Gerenciamento de vendas",
       ],
-      tier: "enterprise",
+      tier: "TIER_THREE",
     },
   ];
+
+  const mutationCart = useMutation({
+    mutationFn: async () => {
+      const mydata = { tier: user.tier };
+
+      const response = await axios.put(`${baseUrl}/tiers`, mydata, {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
+      return response.data;
+    },
+    onSuccess: (data) => {
+      console.log("Dados recebidos:", data);
+    },
+    onError: (error) => {
+      console.error("Erro:", error);
+    },
+  });
 
   return (
     <main className="h-screen overflow-y-auto pb-10 ">
@@ -126,8 +148,8 @@ const Assinatura = ({ mode = true }: IType) => {
               </CardHeader>
               <CardContent className="p-6 border-t min-h-[350px]">
                 <div className="grid gap-2">
-                  {plano.items.map((item) => (
-                    <div className="flex items-center gap-2">
+                  {plano.items.map((item, index) => (
+                    <div className="flex items-center gap-2" key={index}>
                       <CheckIcon className="h-4 w-4 text-primary" />
                       <span>{item}</span>
                     </div>
@@ -145,6 +167,7 @@ const Assinatura = ({ mode = true }: IType) => {
                     }`}
                     onClick={() => {
                       dispatch(setTierAccount(plano.tier));
+                      mutationCart.mutate()
                       navigate("/dashboard/listagemClinica");
                     }}
                   >
