@@ -40,6 +40,9 @@ const AppRoutes = () => {
 
         {user.email ? (
           <>
+            {user.role === "MANAGER" && (
+              <Route path="assinatura" element={<Assinatura mode />} />
+            )}
             <Route path="dashboard" element={<Dashboard />}>
               <Route path="profile" element={<Me />} />
               {user.role === "MANAGER" && (
@@ -51,8 +54,7 @@ const AppRoutes = () => {
                   <Route
                     path="editarClinica/:id"
                     element={<CadastroClinica mode="edit" />}
-                  />{" "}
-                  <Route path="assinatura" element={<Assinatura mode />} />
+                  />
                 </>
               )}
 
