@@ -35,19 +35,22 @@ const Dashboard = () => {
             <HomeWorkIcon />
             <span>Minhas clinicas</span>
           </NavLink>
-          <NavLink
-            to="cadastrarClinica"
-            className={({ isActive }) =>
-              `flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
-                isActive
-                  ? "bg-accent text-accent-foreground"
-                  : "text-muted-foreground hover:bg-muted/50"
-              }`
-            }
-          >
-            <HomeWorkIcon />
-            <span>Cadastrar Clinicas</span>
-          </NavLink>
+          {user.role === "MANAGER" && (
+            <NavLink
+              to="cadastrarClinica"
+              className={({ isActive }) =>
+                `flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
+                  isActive
+                    ? "bg-accent text-accent-foreground"
+                    : "text-muted-foreground hover:bg-muted/50"
+                }`
+              }
+            >
+              <HomeWorkIcon />
+              <span>Cadastrar Clinicas</span>
+            </NavLink>
+          )}
+
           <NavLink
             to="/adoption"
             className={({ isActive }) =>
@@ -60,7 +63,8 @@ const Dashboard = () => {
           >
             <PawPrint />
             <span className="flex flex-col w-fit items-start gap-1">
-              Adoções <br></br><Badge className="mt-[-8px] text-xs">Novo</Badge>
+              Adoções <br></br>
+              <Badge className="mt-[-8px] text-xs">Novo</Badge>
             </span>
           </NavLink>
         </div>

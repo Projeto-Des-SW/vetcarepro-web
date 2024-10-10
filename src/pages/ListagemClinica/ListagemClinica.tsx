@@ -58,7 +58,7 @@ const ListagemClinica = () => {
         bcItems={[{ path: "/home", title: "Home" }]}
         title="Suas clínicas veterinárias"
         size={isPending ? 0 : data.length}
-        buttonName="Nova clinica"
+        buttonName={user.role !== "MANAGER" ? undefined : "Nova clinica"}
         clickFn={() => navigate("/dashboard/cadastrarClinica")}
       />
       <div className="flex flex-wrap w-[80vw] h-[80vh] gap-4">
@@ -149,14 +149,14 @@ const ListagemClinica = () => {
               <PaginationPrevious
                 href="#"
                 onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                className={`${user.isDarkMode && 'text-white'}`}
+                className={`${user.isDarkMode && "text-white"}`}
               />
             </PaginationItem>
             {Array.from({ length: totalPages }, (_, index) => (
               <PaginationItem key={index}>
                 <PaginationLink
                   href="#"
-                  className={`${user.isDarkMode && 'text-white'}`}
+                  className={`${user.isDarkMode && "text-white"}`}
                   onClick={() => setCurrentPage(index + 1)}
                   isActive={currentPage === index + 1}
                 >
@@ -172,7 +172,7 @@ const ListagemClinica = () => {
             <PaginationItem>
               <PaginationNext
                 href="#"
-                className={`${user.isDarkMode && 'text-white'}`}
+                className={`${user.isDarkMode && "text-white"}`}
                 onClick={() =>
                   setCurrentPage((prev) => Math.min(prev + 1, totalPages))
                 }
