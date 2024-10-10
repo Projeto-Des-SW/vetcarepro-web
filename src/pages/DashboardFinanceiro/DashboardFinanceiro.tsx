@@ -62,13 +62,23 @@ const DashboardFinanceiro = () => {
     dispatch(setChavePix(currentChavePix));
   };
 
+  if (pendingFinancas || isPending) return <div>Loading</div>;
+  
   const myCards = [
     { title: "Vendas", value: financas.totalValueSales.toFixed(2) },
-    { title: "Consultas", value: financas.totalValueSchedulesFinished.toFixed(2) },
-    { title: "Valor a receber", value: financas.totalValueSchedulesPending.toFixed(2) },
+    {
+      title: "Consultas",
+      value: financas.totalValueSchedulesFinished.toFixed(2),
+    },
+    {
+      title: "Valor a receber",
+      value: financas.totalValueSchedulesPending.toFixed(2),
+    },
     {
       title: "Receita Total",
-      value: (financas.totalValueSales + financas.totalValueSchedulesFinished).toFixed(2),
+      value: (
+        financas.totalValueSales + financas.totalValueSchedulesFinished
+      ).toFixed(2),
     },
   ];
 

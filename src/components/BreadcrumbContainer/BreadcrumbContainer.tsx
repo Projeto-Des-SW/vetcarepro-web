@@ -61,7 +61,7 @@ const BreadcrumbContainer = ({
         </h2>
 
         {buttonName !== undefined && (
-          <Button onClick={clickFn} disabled={user.tier === "free" && size >= 10}>
+          <Button onClick={clickFn} disabled={user.tier === "TIER_ONE" && size >= 10}>
             {buttonName}
           </Button>
         )}
