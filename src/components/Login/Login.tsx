@@ -70,7 +70,6 @@ const Login = () => {
       body: JSON.stringify(data),
     })
       .then((response) => {
-        console.log(response);
         const successDescription = `Data: ${formattedDate}, Hora: ${formattedTime}`;
         let title = "Cadastrado com sucesso!";
         if (response.status === 200 || response.status === 201) {
@@ -104,7 +103,7 @@ const Login = () => {
             })
           );
 
-          navigate("/assinatura");
+          navigate("/dashboard/listagemClinica");
         } else {
           console.log(data);
           throw new Error("Failed to submit form");

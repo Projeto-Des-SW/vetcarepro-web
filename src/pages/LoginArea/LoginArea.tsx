@@ -5,6 +5,7 @@ import Cadastro from "@/components/Cadastro/Cadastro";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import husky from "../../assets/hunkyTransparente.png";
 import { useUserSelector } from "@/store/hooks";
+import { PawPrintIcon } from "lucide-react";
 
 const LoginArea = () => {
   const user = useUserSelector((state) => state.user);
@@ -22,23 +23,7 @@ const LoginArea = () => {
           }}
         >
           <div className="flex items-center gap-4">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              className="h-8 w-8"
-            >
-              <circle cx="11" cy="4" r="2"></circle>
-              <circle cx="18" cy="8" r="2"></circle>
-              <circle cx="20" cy="16" r="2"></circle>
-              <path d="M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-6.84 1.045Q6.52 17.48 4.46 16.84A3.5 3.5 0 0 1 5.5 10Z"></path>
-            </svg>
+            <PawPrintIcon size="35"/>
             <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-4xl">
               VetCarePro
             </h1>

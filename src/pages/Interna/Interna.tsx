@@ -39,6 +39,7 @@ import Joyride, { CallBackProps, STATUS, Step } from "react-joyride";
 import PetsIcon from "@mui/icons-material/Pets";
 import { Skeleton } from "@nextui-org/react";
 import LockIcon from "@mui/icons-material/Lock";
+import { motion } from "framer-motion";
 
 const Interna = () => {
   const [openPacientes, setOpenPacientes] = useState(false);
@@ -282,7 +283,7 @@ const Interna = () => {
         }`}
       >
         <div className="flex flex-col items-start gap-4 px-4 py-5">
-          <div
+        <div
             className={`absolute ${
               openMenu ? "left-[221px]" : "left-[69px]"
             } bg-slate-600 rounded-2xl flex items-center`}
@@ -301,6 +302,7 @@ const Interna = () => {
               />
             )}
           </div>
+
           <NavLink
             to="/dashboard/listagemClinica"
             className={({ isActive }) =>
@@ -328,96 +330,100 @@ const Interna = () => {
             {openMenu && <span>Dashboard</span>}
           </NavLink>
 
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger>
-                <NavLink
-                  to={
-                    user.tier === "free" || user.tier === "standard"
-                      ? "#"
-                      : `listagemProdutos`
-                  }
-                  className={({ isActive }) =>
-                    `flex items-center gap-3 rounded-lg px-3 py-2 transition-all finanças ${
+          {user.role !== "VETERINARY" && (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <NavLink
+                    to={
                       user.tier === "free" || user.tier === "standard"
-                        ? `cursor-not-allowed opacity-50 ${
-                            user.isDarkMode && "text-white"
-                          }`
-                        : isActive
-                        ? "bg-accent text-accent-foreground"
-                        : "text-muted-foreground hover:bg-muted/50"
-                    }`
-                  }
-                  onClick={(e) => {
-                    if (user.tier === "free" || user.tier === "standard") {
-                      e.preventDefault();
+                        ? "#"
+                        : `listagemProdutos`
                     }
-                  }}
-                >
-                  {user.tier === "free" || user.tier === "standard" ? (
-                    <LockIcon />
-                  ) : (
-                    <ShoppingCartIcon className="h-5 w-5" />
-                  )}
+                    className={({ isActive }) =>
+                      `flex items-center gap-3 rounded-lg px-3 py-2 transition-all finanças ${
+                        user.tier === "free" || user.tier === "standard"
+                          ? `cursor-not-allowed opacity-50 ${
+                              user.isDarkMode && "text-white"
+                            }`
+                          : isActive
+                          ? "bg-accent text-accent-foreground"
+                          : "text-muted-foreground hover:bg-muted/50"
+                      }`
+                    }
+                    onClick={(e) => {
+                      if (user.tier === "free" || user.tier === "standard") {
+                        e.preventDefault();
+                      }
+                    }}
+                  >
+                    {user.tier === "free" || user.tier === "standard" ? (
+                      <LockIcon />
+                    ) : (
+                      <ShoppingCartIcon className="h-5 w-5" />
+                    )}
 
-                  {openMenu && (
-                    <div>
-                      <span>Meus produtos</span>
-                    </div>
-                  )}
-                </NavLink>
-              </TooltipTrigger>
+                    {openMenu && (
+                      <div>
+                        <span>Meus produtos</span>
+                      </div>
+                    )}
+                  </NavLink>
+                </TooltipTrigger>
 
-              <TooltipContent side="right">
-                <p>Disponivel em outro nivel de assinatura</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+                <TooltipContent side="right">
+                  <p>Disponivel em outro nivel de assinatura</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
 
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger>
-                <NavLink
-                  to={
-                    user.tier === "free" || user.tier === "standard"
-                      ? "#"
-                      : `/internalClinica/${idClinica}/dashboardFinanceiro`
-                  }
-                  className={({ isActive }) =>
-                    `flex items-center gap-3 rounded-lg px-3 py-2 transition-all finanças ${
+          {user.role === "MANAGER" && (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <NavLink
+                    to={
                       user.tier === "free" || user.tier === "standard"
-                        ? `cursor-not-allowed opacity-50 ${
-                            user.isDarkMode && "text-white"
-                          }`
-                        : isActive
-                        ? "bg-accent text-accent-foreground"
-                        : "text-muted-foreground hover:bg-muted/50"
-                    }`
-                  }
-                  onClick={(e) => {
-                    if (user.tier === "free" || user.tier === "standard") {
-                      e.preventDefault();
+                        ? "#"
+                        : `/internalClinica/${idClinica}/dashboardFinanceiro`
                     }
-                  }}
-                >
-                  {user.tier === "free" || user.tier === "standard" ? (
-                    <LockIcon />
-                  ) : (
-                    <AccountBalanceIcon className="h-5 w-5" />
-                  )}
-                  {openMenu && (
-                    <div>
-                      <span>Minhas finanças</span>
-                    </div>
-                  )}
-                </NavLink>
-              </TooltipTrigger>
+                    className={({ isActive }) =>
+                      `flex items-center gap-3 rounded-lg px-3 py-2 transition-all finanças ${
+                        user.tier === "free" || user.tier === "standard"
+                          ? `cursor-not-allowed opacity-50 ${
+                              user.isDarkMode && "text-white"
+                            }`
+                          : isActive
+                          ? "bg-accent text-accent-foreground"
+                          : "text-muted-foreground hover:bg-muted/50"
+                      }`
+                    }
+                    onClick={(e) => {
+                      if (user.tier === "free" || user.tier === "standard") {
+                        e.preventDefault();
+                      }
+                    }}
+                  >
+                    {user.tier === "free" || user.tier === "standard" ? (
+                      <LockIcon />
+                    ) : (
+                      <AccountBalanceIcon className="h-5 w-5" />
+                    )}
+                    {openMenu && (
+                      <div>
+                        <span>Minhas finanças</span>
+                      </div>
+                    )}
+                  </NavLink>
+                </TooltipTrigger>
 
-              <TooltipContent side="right">
-                <p>Disponivel em outro nivel de assinatura</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+                <TooltipContent side="right">
+                  <p>Disponivel em outro nivel de assinatura</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
 
           <TooltipProvider>
             <Tooltip>
@@ -443,71 +449,76 @@ const Interna = () => {
               )}
             </Tooltip>
           </TooltipProvider>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger>
-                <NavLink
-                  to={`listagemServico`}
-                  className={({ isActive }) =>
-                    `flex items-center gap-3 rounded-lg px-3 py-2 transition-all finanças ${
-                      isActive
-                        ? "bg-accent text-accent-foreground"
-                        : "text-muted-foreground hover:bg-muted/50"
-                    }`
-                  }
-                >
-                  <HomeRepairServiceIcon className="h-5 w-5" />
-                  {openMenu && <span>Meus serviços</span>}
-                </NavLink>
-              </TooltipTrigger>
-              {!openMenu && (
-                <TooltipContent side="right">
-                  <p>Meus serviços</p>
-                </TooltipContent>
-              )}
-            </Tooltip>
-          </TooltipProvider>
 
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger>
-                <NavLink
-                  to={user.tier === "free" ? "#" : `listagemFuncionario`}
-                  className={({ isActive }) =>
-                    `flex items-center gap-3 rounded-lg px-3 py-2 transition-all finanças ${
-                      user.tier === "free"
-                        ? `cursor-not-allowed opacity-50 ${
-                            user.isDarkMode && "text-white"
-                          }`
-                        : isActive
-                        ? "bg-accent text-accent-foreground"
-                        : "text-muted-foreground hover:bg-muted/50"
-                    }`
-                  }
-                  onClick={(e) => {
-                    if (user.tier === "free") {
-                      e.preventDefault();
+          {user.role !== "VETERINARY" && (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <NavLink
+                    to={`listagemServico`}
+                    className={({ isActive }) =>
+                      `flex items-center gap-3 rounded-lg px-3 py-2 transition-all finanças ${
+                        isActive
+                          ? "bg-accent text-accent-foreground"
+                          : "text-muted-foreground hover:bg-muted/50"
+                      }`
                     }
-                  }}
-                >
-                  {user.tier === "free" ? (
-                    <LockIcon />
-                  ) : (
-                    <Diversity3Icon className="h-5 w-5" />
-                  )}
-                  {openMenu && (
-                    <div>
-                      <span>Meus funcionarios</span>
-                    </div>
-                  )}
-                </NavLink>
-              </TooltipTrigger>
+                  >
+                    <HomeRepairServiceIcon className="h-5 w-5" />
+                    {openMenu && <span>Meus serviços</span>}
+                  </NavLink>
+                </TooltipTrigger>
+                {!openMenu && (
+                  <TooltipContent side="right">
+                    <p>Meus serviços</p>
+                  </TooltipContent>
+                )}
+              </Tooltip>
+            </TooltipProvider>
+          )}
 
-              <TooltipContent side="right">
-                <p>Disponivel em outro nivel de assinatura</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          {user.role === "MANAGER" && (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <NavLink
+                    to={user.tier === "free" ? "#" : `listagemFuncionario`}
+                    className={({ isActive }) =>
+                      `flex items-center gap-3 rounded-lg px-3 py-2 transition-all finanças ${
+                        user.tier === "free"
+                          ? `cursor-not-allowed opacity-50 ${
+                              user.isDarkMode && "text-white"
+                            }`
+                          : isActive
+                          ? "bg-accent text-accent-foreground"
+                          : "text-muted-foreground hover:bg-muted/50"
+                      }`
+                    }
+                    onClick={(e) => {
+                      if (user.tier === "free") {
+                        e.preventDefault();
+                      }
+                    }}
+                  >
+                    {user.tier === "free" ? (
+                      <LockIcon />
+                    ) : (
+                      <Diversity3Icon className="h-5 w-5" />
+                    )}
+                    {openMenu && (
+                      <div>
+                        <span>Meus funcionarios</span>
+                      </div>
+                    )}
+                  </NavLink>
+                </TooltipTrigger>
+
+                <TooltipContent side="right">
+                  <p>Disponivel em outro nivel de assinatura</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
 
           {/* <TooltipProvider>
             <Tooltip>

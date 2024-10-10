@@ -22,6 +22,7 @@ import { useDispatch } from "react-redux";
 import {
   clearNotifications,
   logoutUser,
+  setCurrentRoleEmployee,
   setDarkMode,
 } from "@/store/user-slice";
 
@@ -77,6 +78,12 @@ const Header = () => {
 
   const itemsPerPage = 7;
 
+  const { data, isPending } = useQuery({
+    queryKey: ["userData"],
+    queryFn: () => fetchDataUser(user.token),
+    enabled: Boolean(user.email)
+  });
+
   useEffect(() => {
     if (isChecked) {
       localStorage.removeItem("joyrideMenu");
@@ -88,7 +95,12 @@ const Header = () => {
     if (!localStorage.getItem("joyride")) {
       setIsChecked(true);
     }
-  }, []);
+    if (data?.role) {
+      dispatch(setCurrentRoleEmployee(data.role));
+    }else{
+      dispatch(setCurrentRoleEmployee('MANAGER'));
+    }
+  }, [data]);
 
   const handleCheckboxChange = (checked: boolean) => {
     setIsChecked(checked);
@@ -109,12 +121,7 @@ const Header = () => {
     dispatch(clearNotifications());
   };
 
-  const { data, isPending } = useQuery({
-    queryKey: ["userData"],
-    queryFn: () => fetchDataUser(user.token),
-  });
-
-  console.log(data)
+  console.log(data);
 
   const totalPages = splitIntoGroups(user.notifications, itemsPerPage);
   const current = `bg-[${currentColor}]`;

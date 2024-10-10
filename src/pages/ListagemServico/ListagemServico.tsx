@@ -68,7 +68,7 @@ const ListagemServico = () => {
         page="Meus Serviços"
         title="Seus Serviços"
         size={isPending ? 0 : data.length}
-        buttonName="Novo Serviço"
+        buttonName={user.role === "SECRETARY" ? undefined : "Novo Serviço"}
         clickFn={() => navigate("../cadastrarServico")}
       />
 
@@ -124,12 +124,14 @@ const ListagemServico = () => {
                         >
                           <InfoIcon />
                         </Button>
-                        <Button
-                          onClick={() => mutation.mutate(service.id)}
-                          variant={"destructive"}
-                        >
-                          <DeleteIcon />
-                        </Button>
+                        {user.role !== "SECRETARY" && (
+                          <Button
+                            onClick={() => mutation.mutate(service.id)}
+                            variant={"destructive"}
+                          >
+                            <DeleteIcon />
+                          </Button>
+                        )}
                       </TableCell>
                     </TableRow>
                   )

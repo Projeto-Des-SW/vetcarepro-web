@@ -11,6 +11,7 @@ export interface UserDataProps {
   rememberMe: boolean;
   tier: "free" | "standard" | "enterprise" | null;
   notifications: INotifications[];
+  role?: "MANAGER" | "VETERINARY" | "SECRETARY";
 }
 
 interface INotifications {
@@ -19,7 +20,6 @@ interface INotifications {
 }
 
 //Todo o gerenciamento do usuario vai ser em apenas um slice.
-//Ideal? não, mas 0 coragem de criar outra slice
 
 const userInicialState: UserDataProps = {
   email: "",
@@ -27,9 +27,10 @@ const userInicialState: UserDataProps = {
   rememberMe: false,
   chavePix: "81998436108",
   notifications: [{ title: "", description: "" }],
-  tier: 'free',
+  tier: "free",
   cart: [],
   isDarkMode: false,
+  role: null,
 };
 
 const userSlice = createSlice({
@@ -42,6 +43,13 @@ const userSlice = createSlice({
       state.rememberMe = action.payload.rememberMe;
       state.notifications = [{ title: "", description: "" }];
       state.isDarkMode = action.payload.isDarkMode;
+      state.role = action.payload.role;
+    },
+    setCurrentRoleEmployee(
+      state,
+      action: PayloadAction<"MANAGER" | "VETERINARY" | "SECRETARY">
+    ) {
+      state.role = action.payload;
     },
     logoutUser(state) {
       state.email = "";
@@ -122,4 +130,5 @@ export const {
   setDecrementItemCart,
   setRemoveItemCart,
   setTierAccount,
+  setCurrentRoleEmployee,
 } = userSlice.actions;

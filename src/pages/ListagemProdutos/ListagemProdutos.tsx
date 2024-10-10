@@ -55,7 +55,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { splitIntoGroups } from "@/utils/const.utils";
-import ShoppingCartCheckoutIcon from '@mui/icons-material/ShoppingCartCheckout';
+import ShoppingCartCheckoutIcon from "@mui/icons-material/ShoppingCartCheckout";
 
 const ListagemProdutos = () => {
   const user = useUserSelector((state) => state.user);
@@ -157,7 +157,7 @@ const ListagemProdutos = () => {
     } else {
       setTotal(0);
     }
-  }, [user.cart]); // Recalcula quando o carrinho mudar
+  }, [user.cart]);
 
   if (isPending) return <div>carregando</div>;
   const totalPages = splitIntoGroups(data, itemsPerPage);
@@ -269,7 +269,7 @@ const ListagemProdutos = () => {
                       mutationCart.mutate();
                       setOpenCart(false);
                     }}
-                     className="flex gap-2"
+                    className="flex gap-2"
                   >
                     <ShoppingCartCheckoutIcon /> Finalizar compra
                   </Button>
@@ -308,7 +308,7 @@ const ListagemProdutos = () => {
         ]}
         page="Meus Produtos"
         title="Seus Produtos"
-        buttonName="Novo produto"
+        buttonName={user.role === "SECRETARY" ? undefined : "Novo produto"}
         clickFn={() => handleChangeMode(true)}
       />
 
@@ -392,19 +392,22 @@ const ListagemProdutos = () => {
                   >
                     <AddShoppingCartIcon />
                   </Button>
-                  <Button
-                    onClick={() => handleChangeMode(false, product.id)}
-                    variant="outline"
-                  >
-                    <Pencil />
-                  </Button>
-                  <Button
-                    variant="destructive"
-                    onClick={() => mutation.mutate(product.id)}
-                  >
-                    <Trash2 />
-                  </Button>
-                  <div className="flex "></div>
+                  {user.role !== "SECRETARY" && (
+                    <div className="flex gap-2">
+                      <Button
+                        onClick={() => handleChangeMode(false, product.id)}
+                        variant="outline"
+                      >
+                        <Pencil />
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        onClick={() => mutation.mutate(product.id)}
+                      >
+                        <Trash2 />
+                      </Button>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             );
