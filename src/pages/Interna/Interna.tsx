@@ -380,56 +380,55 @@ const Interna = () => {
             </TooltipProvider>
           )}
 
-          {user.role === "MANAGER" ||
-            (user.role === "DONO" && (
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <NavLink
-                      to={
+          {(user.role === "MANAGER" || user.role === "DONO") && (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <NavLink
+                    to={
+                      user.tier === "TIER_ONE" || user.tier === "TIER_TWO"
+                        ? "#"
+                        : `/internalClinica/${idClinica}/dashboardFinanceiro`
+                    }
+                    className={({ isActive }) =>
+                      `flex items-center gap-3 rounded-lg px-3 py-2 transition-all finanças ${
                         user.tier === "TIER_ONE" || user.tier === "TIER_TWO"
-                          ? "#"
-                          : `/internalClinica/${idClinica}/dashboardFinanceiro`
+                          ? `cursor-not-allowed opacity-50 ${
+                              user.isDarkMode && "text-white"
+                            }`
+                          : isActive
+                          ? "bg-accent text-accent-foreground"
+                          : "text-muted-foreground hover:bg-muted/50"
+                      }`
+                    }
+                    onClick={(e) => {
+                      if (
+                        user.tier === "TIER_ONE" ||
+                        user.tier === "TIER_TWO"
+                      ) {
+                        e.preventDefault();
                       }
-                      className={({ isActive }) =>
-                        `flex items-center gap-3 rounded-lg px-3 py-2 transition-all finanças ${
-                          user.tier === "TIER_ONE" || user.tier === "TIER_TWO"
-                            ? `cursor-not-allowed opacity-50 ${
-                                user.isDarkMode && "text-white"
-                              }`
-                            : isActive
-                            ? "bg-accent text-accent-foreground"
-                            : "text-muted-foreground hover:bg-muted/50"
-                        }`
-                      }
-                      onClick={(e) => {
-                        if (
-                          user.tier === "TIER_ONE" ||
-                          user.tier === "TIER_TWO"
-                        ) {
-                          e.preventDefault();
-                        }
-                      }}
-                    >
-                      {user.tier === "TIER_ONE" || user.tier === "TIER_TWO" ? (
-                        <LockIcon />
-                      ) : (
-                        <AccountBalanceIcon className="h-5 w-5" />
-                      )}
-                      {openMenu && (
-                        <div>
-                          <span>Minhas finanças</span>
-                        </div>
-                      )}
-                    </NavLink>
-                  </TooltipTrigger>
+                    }}
+                  >
+                    {user.tier === "TIER_ONE" || user.tier === "TIER_TWO" ? (
+                      <LockIcon />
+                    ) : (
+                      <AccountBalanceIcon className="h-5 w-5" />
+                    )}
+                    {openMenu && (
+                      <div>
+                        <span>Minhas finanças</span>
+                      </div>
+                    )}
+                  </NavLink>
+                </TooltipTrigger>
 
-                  <TooltipContent side="right">
-                    <p>Disponivel em outro nivel de assinatura</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            ))}
+                <TooltipContent side="right">
+                  <p>Disponivel em outro nivel de assinatura</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
 
           <TooltipProvider>
             <Tooltip>
@@ -483,51 +482,48 @@ const Interna = () => {
             </TooltipProvider>
           )}
 
-          {user.role === "MANAGER" ||
-            (user.role === "DONO" && (
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <NavLink
-                      to={
-                        user.tier === "TIER_ONE" ? "#" : `listagemFuncionario`
+          {(user.role === "MANAGER" || user.role === "DONO") && (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <NavLink
+                    to={user.tier === "TIER_ONE" ? "#" : `listagemFuncionario`}
+                    className={({ isActive }) =>
+                      `flex items-center gap-3 rounded-lg px-3 py-2 transition-all finanças ${
+                        user.tier === "TIER_ONE"
+                          ? `cursor-not-allowed opacity-50 ${
+                              user.isDarkMode && "text-white"
+                            }`
+                          : isActive
+                          ? "bg-accent text-accent-foreground"
+                          : "text-muted-foreground hover:bg-muted/50"
+                      }`
+                    }
+                    onClick={(e) => {
+                      if (user.tier === "TIER_ONE") {
+                        e.preventDefault();
                       }
-                      className={({ isActive }) =>
-                        `flex items-center gap-3 rounded-lg px-3 py-2 transition-all finanças ${
-                          user.tier === "TIER_ONE"
-                            ? `cursor-not-allowed opacity-50 ${
-                                user.isDarkMode && "text-white"
-                              }`
-                            : isActive
-                            ? "bg-accent text-accent-foreground"
-                            : "text-muted-foreground hover:bg-muted/50"
-                        }`
-                      }
-                      onClick={(e) => {
-                        if (user.tier === "TIER_ONE") {
-                          e.preventDefault();
-                        }
-                      }}
-                    >
-                      {user.tier === "TIER_ONE" ? (
-                        <LockIcon />
-                      ) : (
-                        <Diversity3Icon className="h-5 w-5" />
-                      )}
-                      {openMenu && (
-                        <div>
-                          <span>Meus funcionarios</span>
-                        </div>
-                      )}
-                    </NavLink>
-                  </TooltipTrigger>
+                    }}
+                  >
+                    {user.tier === "TIER_ONE" ? (
+                      <LockIcon />
+                    ) : (
+                      <Diversity3Icon className="h-5 w-5" />
+                    )}
+                    {openMenu && (
+                      <div>
+                        <span>Meus funcionarios</span>
+                      </div>
+                    )}
+                  </NavLink>
+                </TooltipTrigger>
 
-                  <TooltipContent side="right">
-                    <p>Disponivel em outro nivel de assinatura</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            ))}
+                <TooltipContent side="right">
+                  <p>Disponivel em outro nivel de assinatura</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
 
           {/* <TooltipProvider>
             <Tooltip>
