@@ -32,10 +32,10 @@ import axios from "axios";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import dayjs from "dayjs";
 import AttachMoneyOutlinedIcon from "@mui/icons-material/AttachMoneyOutlined";
-import EventAvailableOutlinedIcon from '@mui/icons-material/EventAvailableOutlined';
-import PendingActionsOutlinedIcon from '@mui/icons-material/PendingActionsOutlined';
-import PointOfSaleOutlinedIcon from '@mui/icons-material/PointOfSaleOutlined';
-import TrendingDownIcon from '@mui/icons-material/TrendingDown';
+import EventAvailableOutlinedIcon from "@mui/icons-material/EventAvailableOutlined";
+import PendingActionsOutlinedIcon from "@mui/icons-material/PendingActionsOutlined";
+import PointOfSaleOutlinedIcon from "@mui/icons-material/PointOfSaleOutlined";
+import TrendingDownIcon from "@mui/icons-material/TrendingDown";
 
 const DashboardFinanceiro = () => {
   const { idClinica } = useParams();
@@ -117,14 +117,18 @@ const DashboardFinanceiro = () => {
     {
       title: "Consultas",
       value: financas.totalValueSchedulesFinished.toFixed(2),
-      icon: <EventAvailableOutlinedIcon sx={{ width: "32px", height: "32px" }} />,
+      icon: (
+        <EventAvailableOutlinedIcon sx={{ width: "32px", height: "32px" }} />
+      ),
       color: "text-green-600",
       helperText: "Receita bruta com suas consultas",
     },
     {
       title: "Valor a receber",
       value: financas.totalValueSchedulesPending.toFixed(2),
-      icon: <PendingActionsOutlinedIcon sx={{ width: "32px", height: "32px" }} />,
+      icon: (
+        <PendingActionsOutlinedIcon sx={{ width: "32px", height: "32px" }} />
+      ),
       color: "text-yellow-600",
       helperText: "Receita a receber das suas consultas",
     },
@@ -203,7 +207,7 @@ const DashboardFinanceiro = () => {
                       </div>
                     </div>
                     <div
-                      className={`text-3xl font-bold text-primary ${
+                      className={`text-3xl font-bold  ${
                         card.value > 0 && card.color
                       }`}
                     >
