@@ -42,8 +42,6 @@ const ListagemAgendamento = () => {
     queryFn: () => fetchAgendamentosList(idClinica, user.token),
   });
 
-  console.log(data);
-
   const mutation = useMutation({
     mutationFn: (id?: string) =>
       handleDeleteAgendamento(idClinica, id, user.token),
