@@ -144,15 +144,21 @@ const ListagemPaciente = () => {
 
         <Separator />
       </div>
-      <div className="flex justify-center mt-4">
+      <div className="fixed bottom-8 left-1/2 transform ml-4 -translate-x-1/2 mt-4">
         <Pagination>
           <PaginationPrevious
+            className={`${user.isDarkMode && "text-white"}`}
             onClick={() =>
               currentPage !== 0 && setCurrentPage((prevState) => prevState - 1)
             }
           />
           {totalPages.length === 1 && (
-            <PaginationLink isActive>{1}</PaginationLink>
+            <PaginationLink
+              isActive
+              className={`${user.isDarkMode && "text-white"}`}
+            >
+              {1}
+            </PaginationLink>
           )}
           {totalPages.length > 1 &&
             totalPages.map((_, index) => {
@@ -168,6 +174,7 @@ const ListagemPaciente = () => {
                     key={index}
                     onClick={() => setCurrentPage(index)}
                     isActive={currentPage === index}
+                    className={`${user.isDarkMode && "text-white"}`}
                   >
                     {index + 1}
                   </PaginationLink>
@@ -178,13 +185,21 @@ const ListagemPaciente = () => {
                 (index === totalPages.length - 2 &&
                   currentPage < totalPages.length - 4)
               ) {
-                return <PaginationEllipsis key={index}>...</PaginationEllipsis>;
+                return (
+                  <PaginationEllipsis
+                    key={index}
+                    className={`${user.isDarkMode && "text-white"}`}
+                  >
+                    ...
+                  </PaginationEllipsis>
+                );
               }
 
               return null;
             })}
 
           <PaginationNext
+            className={`${user.isDarkMode && "text-white"}`}
             onClick={() =>
               currentPage !== totalPages.length - 1 &&
               setCurrentPage((prevState) => prevState + 1)

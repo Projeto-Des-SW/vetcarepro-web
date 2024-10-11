@@ -78,9 +78,8 @@ const ListagemFuncionario = () => {
         page="Meus Funcionarios"
         title="Seus Funcionarios"
         buttonName="Novo funcionario"
-        size={isPending ? 0 : data.length >= 1 && 10 }
+        size={isPending ? 0 : data.length >= 1 && 10}
         clickFn={() => navigate("../cadastrarFuncionario")}
-        
       />
 
       <div
@@ -144,15 +143,21 @@ const ListagemFuncionario = () => {
         </Table>
         <Separator />
       </div>
-      <div className="flex justify-center mt-4">
+      <div className="fixed bottom-8 left-1/2 transform ml-4 -translate-x-1/2 mt-4">
         <Pagination>
           <PaginationPrevious
+            className={`${user.isDarkMode && "text-white"}`}
             onClick={() =>
               currentPage !== 0 && setCurrentPage((prevState) => prevState - 1)
             }
           />
           {totalPages.length === 1 && (
-            <PaginationLink isActive>{1}</PaginationLink>
+            <PaginationLink
+              isActive
+              className={`${user.isDarkMode && "text-white"}`}
+            >
+              {1}
+            </PaginationLink>
           )}
           {totalPages.length > 1 &&
             totalPages.map((_, index) => {
@@ -166,6 +171,7 @@ const ListagemFuncionario = () => {
                 return (
                   <PaginationLink
                     key={index}
+                    className={`${user.isDarkMode && "text-white"}`}
                     onClick={() => setCurrentPage(index)}
                     isActive={currentPage === index}
                   >
@@ -178,13 +184,21 @@ const ListagemFuncionario = () => {
                 (index === totalPages.length - 2 &&
                   currentPage < totalPages.length - 4)
               ) {
-                return <PaginationEllipsis key={index}>...</PaginationEllipsis>;
+                return (
+                  <PaginationEllipsis
+                    key={index}
+                    className={`${user.isDarkMode && "text-white"}`}
+                  >
+                    ...
+                  </PaginationEllipsis>
+                );
               }
 
               return null;
             })}
 
           <PaginationNext
+            className={`${user.isDarkMode && "text-white"}`}
             onClick={() =>
               currentPage !== totalPages.length - 1 &&
               setCurrentPage((prevState) => prevState + 1)
