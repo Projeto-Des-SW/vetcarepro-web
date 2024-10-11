@@ -40,14 +40,11 @@ export const handleDeleteService = async (
 ) => {
   if (window.confirm("Tem certeza que deseja deletar esta clínica?")) {
     try {
-      await axios.delete(
-        `${baseUrl}/clinics/${clinicaId}/services/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      await axios.delete(`${baseUrl}/clinics/${clinicaId}/services/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
     } catch (error) {
       console.error("Erro ao deletar a clínica", error);
     }
@@ -86,6 +83,24 @@ export const handleDeleteAgendamento = async (
       });
     } catch (error) {
       console.error("Erro ao deletar o agendamento", error);
+    }
+  }
+};
+
+export const handleDeleteEmployee = async (
+  clinicaId?: string,
+  id?: string,
+  token?: string
+) => {
+  if (window.confirm("Tem certeza que deseja deletar esta clínica?")) {
+    try {
+      await axios.delete(`${baseUrl}/clinics/${clinicaId}/employees/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    } catch (error) {
+      console.error("Erro ao deletar a clínica", error);
     }
   }
 };
