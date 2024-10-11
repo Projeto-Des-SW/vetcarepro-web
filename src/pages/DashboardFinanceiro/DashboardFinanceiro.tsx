@@ -12,8 +12,8 @@ import {
 import { IFuncionario } from "@/interfaces/funcionario";
 import { fetchFinanceiro, fetchFuncionariosList } from "@/services/getServices";
 import { useUserSelector } from "@/store/hooks";
-import { useQuery } from "@tanstack/react-query";
-import { BarChart, DollarSignIcon, PieChart } from "lucide-react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { DollarSignIcon } from "lucide-react";
 import { useParams } from "react-router-dom";
 import {
   Dialog,
@@ -26,23 +26,26 @@ import {
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { useDispatch } from "react-redux";
-import { setChavePix } from "@/store/user-slice";
+import { addNotification, setChavePix } from "@/store/user-slice";
 import { toast } from "sonner";
 import BreadcrumbContainer from "@/components/BreadcrumbContainer/BreadcrumbContainer";
+import axios from "axios";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import dayjs from "dayjs";
 
 const DashboardFinanceiro = () => {
   const { idClinica } = useParams();
   const dispatch = useDispatch();
   const [openConfirmation, setOpenConfirmation] = useState(false);
+  const user = useUserSelector((state) => state.user);
+  const [currentChavePix, setCurrentChavePix] = useState(user.chavePix || "");
+  const queryClient = useQueryClient();
+  const baseUrl = import.meta.env.VITE_URL as string;
   const [selectedFuncionario, setSelectedFuncionario] = useState({
     id: "",
     name: "",
     salario: "",
   });
-
-  const user = useUserSelector((state) => state.user);
-
-  const [currentChavePix, setCurrentChavePix] = useState(user.chavePix || "");
 
   const { data, isPending } = useQuery({
     queryKey: ["FuncionariosList"],
@@ -55,30 +58,84 @@ const DashboardFinanceiro = () => {
   });
 
   const handleCadastrarChavePix = () => {
-    toast(`Chave pix cadastrada com sucesso com sucesso`, {
+    toast(`Chave pix cadastrada com sucesso`, {
       description: "Sua chave pix foi alterada!",
     });
 
     dispatch(setChavePix(currentChavePix));
+    dispatch(
+      addNotification({
+        title: "Chave pix cadastrada com sucesso",
+        description: "Sua chave pix foi alterada!",
+      })
+    );
   };
 
+  const mutationPaymentEmployee = useMutation({
+    mutationFn: async () => {
+      const response = await axios.post(
+        `${baseUrl}/clinics/${idClinica}/employees/${selectedFuncionario.id}/payments`,
+        { amount: selectedFuncionario.salario },
+        {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        }
+      );
+      return response.data;
+    },
+    onSuccess: (_data) => {
+      queryClient.invalidateQueries({ queryKey: ["financeiro"] });
+      queryClient.invalidateQueries({ queryKey: ["FuncionariosList"] });
+      setOpenConfirmation(false);
+      dispatch(
+        addNotification({
+          title: "Salario pago com sucesso",
+          description: `O pagamento de ${selectedFuncionario.name} foi realizado`,
+        })
+      );
+    },
+    onError: (error) => {
+      console.error("Erro:", error);
+    },
+  });
+
   if (pendingFinancas || isPending) return <div>Loading</div>;
-  
+
   const myCards = [
-    { title: "Vendas", value: financas.totalValueSales.toFixed(2) },
+    {
+      title: "Vendas",
+      value: financas.totalValueSales.toFixed(2),
+      color: "text-green-600",
+      helperText: "Receita bruta com as suas venda",
+    },
     {
       title: "Consultas",
       value: financas.totalValueSchedulesFinished.toFixed(2),
+      color: "text-green-600",
+      helperText: "Receita bruta com suas consultas",
     },
     {
       title: "Valor a receber",
       value: financas.totalValueSchedulesPending.toFixed(2),
+      color: "text-yellow-600",
+      helperText: "Receita a receber das suas consultas",
     },
     {
       title: "Receita Total",
       value: (
-        financas.totalValueSales + financas.totalValueSchedulesFinished
+        financas.totalValueSales +
+        financas.totalValueSchedulesFinished -
+        financas.totalValuePayments
       ).toFixed(2),
+      color: "text-green-600",
+      helperText: "Receita bruta das consultas e vendas",
+    },
+    {
+      title: "Debito salarial",
+      value: financas.totalValuePayments.toFixed(2),
+      color: "text-red-600",
+      helperText: "Debito com pagamento com os funcionarios",
     },
   ];
 
@@ -97,7 +154,13 @@ const DashboardFinanceiro = () => {
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button>Pagar</Button>
+            <Button
+              onClick={() => {
+                mutationPaymentEmployee.mutate();
+              }}
+            >
+              Pagar
+            </Button>
             <Button
               variant={"destructive"}
               onClick={() => setOpenConfirmation((prevState) => !prevState)}
@@ -120,7 +183,7 @@ const DashboardFinanceiro = () => {
               title="Painel Financeiro"
             />
 
-            <div className="grid grid-cols-1 w-full sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 w-full sm:grid-cols-2 lg:grid-cols-5 gap-8">
               {myCards.map((card, index) => (
                 <Card className="bg-background shadow-lg" key={index}>
                   <CardHeader className="flex flex-col items-start justify-between p-6">
@@ -130,10 +193,24 @@ const DashboardFinanceiro = () => {
                         <h3 className="text-lg font-semibold">{card.title}</h3>
                       </div>
                     </div>
-                    <div className="text-3xl font-bold text-primary">
+                    <div
+                      className={`text-3xl font-bold text-primary ${
+                        card.value > 0 && card.color
+                      }`}
+                    >
                       R$ {card.value}
                     </div>
                   </CardHeader>
+                  <CardContent className="p-3 border-t">
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium">
+                        <InfoOutlinedIcon />
+                      </span>
+                      <span className="text-xs font-medium">
+                        {card.helperText}
+                      </span>
+                    </div>
+                  </CardContent>
                 </Card>
               ))}
             </div>
@@ -190,6 +267,14 @@ const DashboardFinanceiro = () => {
                               <TableCell className="flex justify-end gap-2 ">
                                 <Button
                                   variant={"secondary"}
+                                  disabled={
+                                    service.last_payment_date === null
+                                      ? false
+                                      : dayjs().diff(
+                                          dayjs(service.last_payment_date),
+                                          "month"
+                                        ) <= 1
+                                  }
                                   onClick={() => {
                                     setOpenConfirmation(true);
                                     setSelectedFuncionario({
@@ -237,46 +322,6 @@ const DashboardFinanceiro = () => {
                     </Button>
                   </div>
                 </CardHeader>
-              </Card>
-              <Card className="bg-background shadow-lg">
-                <CardHeader className="flex items-center justify-between p-6">
-                  <div className="flex items-center gap-4">
-                    {/* <PieChartIcon className="h-8 w-8 text-primary" /> */}
-                    <div>
-                      <h3 className="text-lg font-semibold">
-                        Receita por Serviço
-                      </h3>
-                      <p className="text-sm text-muted-foreground">
-                        Últimos 30 dias
-                      </p>
-                    </div>
-                  </div>
-                  <Button variant="outline" size="sm" className="text-primary">
-                    Ver Detalhes
-                  </Button>
-                </CardHeader>
-                <CardContent className="p-6">
-                  <PieChart className="w-full aspect-square" />
-                </CardContent>
-              </Card>
-              <Card className="bg-background shadow-lg">
-                <CardHeader className="flex items-center justify-between p-6">
-                  <div className="flex items-center gap-4">
-                    {/* <BarChartIcon className="h-8 w-8 text-primary" /> */}
-                    <div>
-                      <h3 className="text-lg font-semibold">Folha salarial</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Últimos 30 dias
-                      </p>
-                    </div>
-                  </div>
-                  <Button variant="outline" size="sm" className="text-primary">
-                    Ver Detalhes
-                  </Button>
-                </CardHeader>
-                <CardContent className="p-6">
-                  <BarChart className="w-full aspect-[4/3]" />
-                </CardContent>
               </Card>
             </div>
           </div>

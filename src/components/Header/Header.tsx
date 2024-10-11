@@ -55,6 +55,7 @@ import LightModeIcon from "@mui/icons-material/LightMode";
 import { capitalizeFirstLetter, splitIntoGroups } from "@/utils/const.utils";
 import {
   Pagination,
+  PaginationEllipsis,
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
@@ -77,7 +78,7 @@ const Header = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [currentColor, setCurrentColor] = useState("#45BCAD");
 
-  const itemsPerPage = 7;
+  const itemsPerPage = 12;
 
   const { data, isPending } = useQuery({
     queryKey: ["userData"],
@@ -304,7 +305,7 @@ const Header = () => {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent
-                      className={`w-[360px] p-4 ${user.isDarkMode && "dark"}`}
+                      className={`w-[400px] p-4 ${user.isDarkMode && "dark"}`}
                     >
                       <div className="flex items-center justify-between mb-4">
                         <h3 className="text-lg font-semibold">Notificações</h3>
@@ -350,15 +351,39 @@ const Header = () => {
                                   }
                                 />
 
-                                {totalPages.map((_item, index) => (
-                                  <PaginationLink
-                                    key={index}
-                                    onClick={() => setCurrentPage(index)}
-                                    isActive={currentPage === index}
-                                  >
-                                    {index + 1}
-                                  </PaginationLink>
-                                ))}
+                                {totalPages.length > 1 &&
+                                  totalPages.map((_, index) => {
+                                    if (
+                                      index === 0 ||
+                                      index === totalPages.length - 1 ||
+                                      index === currentPage ||
+                                      index === currentPage - 1 ||
+                                      index === currentPage + 1
+                                    ) {
+                                      return (
+                                        <PaginationLink
+                                          key={index}
+                                          onClick={() => setCurrentPage(index)}
+                                          isActive={currentPage === index}
+                                        >
+                                          {index + 1}
+                                        </PaginationLink>
+                                      );
+                                    }
+                                    if (
+                                      (index === 1 && currentPage > 3) ||
+                                      (index === totalPages.length - 2 &&
+                                        currentPage < totalPages.length - 4)
+                                    ) {
+                                      return (
+                                        <PaginationEllipsis key={index}>
+                                          ...
+                                        </PaginationEllipsis>
+                                      );
+                                    }
+
+                                    return null;
+                                  })}
 
                                 <PaginationNext
                                   onClick={() =>
