@@ -73,6 +73,7 @@ const BreadcrumbContainer = ({
           <Button
             onClick={clickFn}
             variant={variant}
+            className="dark:text-white"
             disabled={user.tier === "TIER_ONE" && size >= 10}
           >
             {buttonName}
