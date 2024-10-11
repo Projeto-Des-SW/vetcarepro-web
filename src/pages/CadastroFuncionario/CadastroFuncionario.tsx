@@ -78,8 +78,11 @@ const CadastroFuncionario = ({ mode = "create" }: ICrudClinia) => {
     const method = mode === "create" ? "POST" : "PUT";
 
     const myData = {
-      ...data,
-      last_payment_date: "",
+      name: data.name,
+      email: data.email,
+      salary: data.salary,
+      position: data.position,
+      role: data.role,
     };
 
     const notify = (title: string, description: string) => {
