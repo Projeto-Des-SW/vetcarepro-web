@@ -129,7 +129,6 @@ const Header = () => {
     { tier: "TIER_TWO", title: "Standard" },
     { tier: "TIER_THREE", title: "Enterprise" },
   ];
-  console.log(data);
 
   const totalPages = splitIntoGroups(user.notifications, itemsPerPage);
   const current = `bg-[${currentColor}]`;

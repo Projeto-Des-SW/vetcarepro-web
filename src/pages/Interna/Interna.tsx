@@ -84,7 +84,7 @@ const Interna = () => {
         "Nesta seção, você pode visualizar e gerenciar os agendamentos de consultas e procedimentos realizados na clínica.",
     },
   ]);
-  console.log(user);
+
   const handleLogout = () => {
     dispatch(logoutUser());
     navigate("/home");
