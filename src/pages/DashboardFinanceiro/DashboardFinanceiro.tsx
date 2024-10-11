@@ -13,7 +13,6 @@ import { IFuncionario } from "@/interfaces/funcionario";
 import { fetchFinanceiro, fetchFuncionariosList } from "@/services/getServices";
 import { useUserSelector } from "@/store/hooks";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { DollarSignIcon } from "lucide-react";
 import { useParams } from "react-router-dom";
 import {
   Dialog,
@@ -32,6 +31,11 @@ import BreadcrumbContainer from "@/components/BreadcrumbContainer/BreadcrumbCont
 import axios from "axios";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import dayjs from "dayjs";
+import AttachMoneyOutlinedIcon from "@mui/icons-material/AttachMoneyOutlined";
+import EventAvailableOutlinedIcon from '@mui/icons-material/EventAvailableOutlined';
+import PendingActionsOutlinedIcon from '@mui/icons-material/PendingActionsOutlined';
+import PointOfSaleOutlinedIcon from '@mui/icons-material/PointOfSaleOutlined';
+import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 
 const DashboardFinanceiro = () => {
   const { idClinica } = useParams();
@@ -107,17 +111,20 @@ const DashboardFinanceiro = () => {
       title: "Vendas",
       value: financas.totalValueSales.toFixed(2),
       color: "text-green-600",
+      icon: <AttachMoneyOutlinedIcon sx={{ width: "32px", height: "32px" }} />,
       helperText: "Receita bruta com as suas venda",
     },
     {
       title: "Consultas",
       value: financas.totalValueSchedulesFinished.toFixed(2),
+      icon: <EventAvailableOutlinedIcon sx={{ width: "32px", height: "32px" }} />,
       color: "text-green-600",
       helperText: "Receita bruta com suas consultas",
     },
     {
       title: "Valor a receber",
       value: financas.totalValueSchedulesPending.toFixed(2),
+      icon: <PendingActionsOutlinedIcon sx={{ width: "32px", height: "32px" }} />,
       color: "text-yellow-600",
       helperText: "Receita a receber das suas consultas",
     },
@@ -129,11 +136,13 @@ const DashboardFinanceiro = () => {
         financas.totalValuePayments
       ).toFixed(2),
       color: "text-green-600",
+      icon: <PointOfSaleOutlinedIcon sx={{ width: "32px", height: "32px" }} />,
       helperText: "Receita bruta das consultas e vendas",
     },
     {
       title: "Debito salarial",
       value: financas.totalValuePayments.toFixed(2),
+      icon: <TrendingDownIcon sx={{ width: "32px", height: "32px" }} />,
       color: "text-red-600",
       helperText: "Debito com pagamento com os funcionarios",
     },
@@ -188,7 +197,7 @@ const DashboardFinanceiro = () => {
                 <Card className="bg-background shadow-lg" key={index}>
                   <CardHeader className="flex flex-col items-start justify-between p-6">
                     <div className="flex items-center gap-4">
-                      <DollarSignIcon className="h-8 w-8 text-primary" />
+                      {card.icon}
                       <div>
                         <h3 className="text-lg font-semibold">{card.title}</h3>
                       </div>

@@ -118,7 +118,6 @@ const DashboardClinica = () => {
       return;
     } else {
       localStorage.setItem("joyride", "primeira vez");
-      localStorage.setItem("joyrideMenu", "primeira vez");
       setTourRunning(true);
     }
   }, []);

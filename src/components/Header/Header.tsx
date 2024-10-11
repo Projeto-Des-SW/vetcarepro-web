@@ -94,9 +94,8 @@ const Header = () => {
   }, [isChecked]);
 
   useEffect(() => {
-    if (!localStorage.getItem("joyride")) {
-      setIsChecked(true);
-    }
+    setIsChecked(false);
+
     if (data?.role) {
       dispatch(setCurrentRoleEmployee(data.role));
     } else {
@@ -243,29 +242,38 @@ const Header = () => {
 
         <nav className="ml-auto flex gap-2 items-center">
           <Toaster />
-          <Button onClick={handleSetDarkMode} variant="ghost">
-            {!user.isDarkMode ? <NightsStayIcon /> : <LightModeIcon />}
-          </Button>
+          {user.email !== "" && (
+            <Button onClick={handleSetDarkMode} variant="ghost">
+              {!user.isDarkMode ? <NightsStayIcon /> : <LightModeIcon />}
+            </Button>
+          )}
+
           {user.email === "" ? (
             <>
-              <Link
-                to="/home"
-                className="text-sm font-medium hover:underline underline-offset-4"
-              >
-                Home
-              </Link>
-              <Link
-                to="/pricing"
-                className="text-sm font-medium hover:underline underline-offset-4"
-              >
-                Preços
-              </Link>
-              <Link
-                to="/team"
-                className="text-sm font-medium hover:underline underline-offset-4"
-              >
-                Team
-              </Link>
+              <div className="flex gap-4">
+                <Link
+                  to="/home"
+                  className="text-sm font-medium text-white hover:text-primary transition-colors duration-200 ease-in-out hover:underline underline-offset-8"
+                >
+                  Home
+                </Link>
+                <Link
+                  to="/pricing"
+                  className="text-sm font-medium text-white hover:text-primary transition-colors duration-200 ease-in-out hover:underline underline-offset-8"
+                >
+                  Preços
+                </Link>
+                <Link
+                  to="/team"
+                  className="text-sm font-medium text-white hover:text-primary transition-colors duration-200 ease-in-out hover:underline underline-offset-8"
+                >
+                  Team
+                </Link>
+              </div>
+
+              <Button onClick={handleSetDarkMode} variant="ghost">
+                {!user.isDarkMode ? <NightsStayIcon /> : <LightModeIcon />}
+              </Button>
               <Button
                 onClick={() => navigate("/login")}
                 variant={"outline"}

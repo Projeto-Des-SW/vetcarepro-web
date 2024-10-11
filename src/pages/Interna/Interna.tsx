@@ -26,7 +26,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Diversity3Icon from "@mui/icons-material/Diversity3";
 import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
@@ -102,6 +102,15 @@ const Interna = () => {
     }
   };
 
+  useEffect(() => {
+    if (localStorage.getItem("joyrideMenu")) {
+      return;
+    } else {
+      localStorage.setItem("joyrideMenu", "primeira vez");
+      setTourRunning(true);
+    }
+  }, []);
+  
   return (
     <div className={`flex h-screen ${user.isDarkMode && "dark"}`}>
       <Joyride
@@ -374,7 +383,11 @@ const Interna = () => {
                 </TooltipTrigger>
 
                 <TooltipContent side="right">
-                  <p>Disponivel em outro nivel de assinatura</p>
+                  {user.tier === "TIER_ONE" || user.tier === "TIER_TWO" ? (
+                    <p>Disponivel em outro nivel de assinatura</p>
+                  ) : (
+                    <span>Meus produtos</span>
+                  )}
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -424,7 +437,11 @@ const Interna = () => {
                 </TooltipTrigger>
 
                 <TooltipContent side="right">
-                  <p>Disponivel em outro nivel de assinatura</p>
+                  {user.tier === "TIER_ONE" || user.tier === "TIER_TWO" ? (
+                    <p>Disponivel em outro nivel de assinatura</p>
+                  ) : (
+                    <span>Minhas finanças</span>
+                  )}
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -519,7 +536,11 @@ const Interna = () => {
                 </TooltipTrigger>
 
                 <TooltipContent side="right">
-                  <p>Disponivel em outro nivel de assinatura</p>
+                  {user.tier === "TIER_ONE" ? (
+                    <p>Disponivel em outro nivel de assinatura</p>
+                  ) : (
+                    <span>Meus funcionarios</span>
+                  )}
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
