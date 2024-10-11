@@ -37,7 +37,7 @@ const Team = () => {
       stack: "Back-end",
       image: "https://avatars.githubusercontent.com/u/82480682?v=4",
       social: {
-        linkedin: "https://www.linkedin.com/in/pedro-souza-385794241/",
+        linkedin: "https://www.linkedin.com/in/lucas-romeiro-a9a699158/",
         github: "https://github.com/lucas-romeiro",
       },
     },
@@ -55,7 +55,7 @@ const Team = () => {
       stack: "QA",
       image: "https://avatars.githubusercontent.com/u/78767627?v=4",
       social: {
-        linkedin: "https://www.linkedin.com/in/pedro-souza-385794241/",
+        linkedin: "https://www.linkedin.com/in/luizfellipebarbosa/",
         github: "https://github.com/Luizfdarb",
       },
     },
@@ -104,8 +104,6 @@ const Team = () => {
           ))}
         </div>
       </section>
-
-      
     </main>
   );
 };
