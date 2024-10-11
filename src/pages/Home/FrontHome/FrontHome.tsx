@@ -48,7 +48,11 @@ const FrontHome = () => {
       </div>
 
       <picture className="">
-        <img src={boasVindas} alt="" />
+        <img
+          src={boasVindas}
+          alt="Boas Vindas"
+          className="w-[80%] h-auto max-w-lg"
+        />
       </picture>
     </div>
   );

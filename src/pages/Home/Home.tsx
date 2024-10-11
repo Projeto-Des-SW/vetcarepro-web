@@ -5,7 +5,7 @@ import Recursos from "@/components/Recursos/Recursos";
 
 const Home = () => {
   return (
-    <section className="h-screen overflow-y-auto">
+    <section className="h-screen overflow-y-auto py-8">
       <FrontHome />
       <Recursos />
       <Depoimentos />

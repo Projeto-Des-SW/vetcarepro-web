@@ -358,6 +358,17 @@ const Header = () => {
                                   }
                                 />
 
+                                {totalPages.length === 1 && (
+                                  <PaginationLink
+                                    isActive
+                                    className={`${
+                                      user.isDarkMode && "text-white"
+                                    }`}
+                                  >
+                                    {1}
+                                  </PaginationLink>
+                                )}
+
                                 {totalPages.length > 1 &&
                                   totalPages.map((_, index) => {
                                     if (
