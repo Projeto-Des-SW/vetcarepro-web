@@ -1,5 +1,6 @@
 import { IProduct } from "@/interfaces/product";
 import { type PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { toast } from "sonner";
 
 export interface UserDataProps {
   email: string;
@@ -9,9 +10,9 @@ export interface UserDataProps {
   isDarkMode: boolean;
   cart: IProduct[];
   rememberMe: boolean;
-  tier: "TIER_ONE" | "TIER_TWO" | "TIER_THREE" ;
+  tier: "TIER_ONE" | "TIER_TWO" | "TIER_THREE";
   notifications: INotifications[];
-  role?: "MANAGER" | "VETERINARY" | "SECRETARY" | 'DONO';
+  role?: "MANAGER" | "VETERINARY" | "SECRETARY" | "DONO";
 }
 
 interface INotifications {
@@ -30,7 +31,7 @@ const userInicialState: UserDataProps = {
   tier: "TIER_ONE",
   cart: [],
   isDarkMode: false,
-  role: 'DONO',
+  role: "DONO",
 };
 
 const userSlice = createSlice({
@@ -59,6 +60,9 @@ const userSlice = createSlice({
     },
     addNotification(state, action: PayloadAction<INotifications>) {
       state.notifications.push(action.payload);
+      toast(action.payload.title, {
+        description: action.payload.description,
+      });
     },
     clearNotifications(state) {
       state.notifications = [];
