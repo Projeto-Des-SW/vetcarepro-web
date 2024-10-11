@@ -36,9 +36,10 @@ const Assinatura = ({ mode = true }: IType) => {
         "Acesso ao sistema",
         "Cadastre pacientes*",
         "Cadastre serviços*",
+        "Cadastre funcionarios*",
         "Agende consultas*",
       ],
-      details: "Cadastros/agendamentos limitados a 10 itens*",
+      details: "Cadastros limitados a 10 itens. Limite de 1 funcionario.*",
       tier: "TIER_ONE",
     },
     {

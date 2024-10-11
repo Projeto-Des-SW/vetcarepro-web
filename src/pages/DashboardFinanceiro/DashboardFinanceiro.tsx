@@ -36,6 +36,14 @@ import EventAvailableOutlinedIcon from "@mui/icons-material/EventAvailableOutlin
 import PendingActionsOutlinedIcon from "@mui/icons-material/PendingActionsOutlined";
 import PointOfSaleOutlinedIcon from "@mui/icons-material/PointOfSaleOutlined";
 import TrendingDownIcon from "@mui/icons-material/TrendingDown";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
+import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 
 const DashboardFinanceiro = () => {
   const { idClinica } = useParams();
@@ -45,6 +53,7 @@ const DashboardFinanceiro = () => {
   const [currentChavePix, setCurrentChavePix] = useState(user.chavePix || "");
   const queryClient = useQueryClient();
   const baseUrl = import.meta.env.VITE_URL as string;
+  const [showValues, setShowValues] = useState(false);
   const [selectedFuncionario, setSelectedFuncionario] = useState({
     id: "",
     name: "",
@@ -109,14 +118,16 @@ const DashboardFinanceiro = () => {
   const myCards = [
     {
       title: "Vendas",
-      value: financas.totalValueSales.toFixed(2),
+      value: showValues ? financas.totalValueSales.toFixed(2) : "******",
       color: "text-green-600",
       icon: <AttachMoneyOutlinedIcon sx={{ width: "32px", height: "32px" }} />,
       helperText: "Receita bruta com as suas venda",
     },
     {
       title: "Consultas",
-      value: financas.totalValueSchedulesFinished.toFixed(2),
+      value: showValues
+        ? financas.totalValueSchedulesFinished.toFixed(2)
+        : "******",
       icon: (
         <EventAvailableOutlinedIcon sx={{ width: "32px", height: "32px" }} />
       ),
@@ -125,7 +136,9 @@ const DashboardFinanceiro = () => {
     },
     {
       title: "Valor a receber",
-      value: financas.totalValueSchedulesPending.toFixed(2),
+      value: showValues
+        ? financas.totalValueSchedulesPending.toFixed(2)
+        : "******",
       icon: (
         <PendingActionsOutlinedIcon sx={{ width: "32px", height: "32px" }} />
       ),
@@ -134,18 +147,20 @@ const DashboardFinanceiro = () => {
     },
     {
       title: "Receita Total",
-      value: (
-        financas.totalValueSales +
-        financas.totalValueSchedulesFinished -
-        financas.totalValuePayments
-      ).toFixed(2),
+      value: showValues
+        ? (
+            financas.totalValueSales +
+            financas.totalValueSchedulesFinished -
+            financas.totalValuePayments
+          ).toFixed(2)
+        : "******",
       color: "text-green-600",
       icon: <PointOfSaleOutlinedIcon sx={{ width: "32px", height: "32px" }} />,
-      helperText: "Receita bruta das consultas e vendas",
+      helperText: "Receita liquida das consultas e vendas",
     },
     {
       title: "Debito salarial",
-      value: financas.totalValuePayments.toFixed(2),
+      value: showValues ? financas.totalValuePayments.toFixed(2) : "******",
       icon: <TrendingDownIcon sx={{ width: "32px", height: "32px" }} />,
       color: "text-red-600",
       helperText: "Debito com pagamento com os funcionarios",
@@ -193,6 +208,15 @@ const DashboardFinanceiro = () => {
                 { path: "/dashboard/listagemClinica", title: "Dashboard" },
               ]}
               page="Minhas Finanças"
+              variant="outline"
+              buttonName={
+                showValues ? (
+                  <RemoveRedEyeOutlinedIcon />
+                ) : (
+                  <VisibilityOffOutlinedIcon />
+                )
+              }
+              clickFn={() => setShowValues((prevState) => !prevState)}
               title="Painel Financeiro"
             />
 
@@ -278,27 +302,49 @@ const DashboardFinanceiro = () => {
                               <TableCell>{service.position}</TableCell>
                               <TableCell>{service.salary}</TableCell>
                               <TableCell className="flex justify-end gap-2 ">
-                                <Button
-                                  variant={"secondary"}
-                                  disabled={
-                                    service.last_payment_date === null
+                                <TooltipProvider>
+                                  <Tooltip>
+                                    <TooltipTrigger>
+                                      <Button
+                                        variant={"secondary"}
+                                        disabled={
+                                          service.last_payment_date === null
+                                            ? false
+                                            : dayjs().diff(
+                                                dayjs(
+                                                  service.last_payment_date
+                                                ),
+                                                "month"
+                                              ) <= 1
+                                        }
+                                        onClick={() => {
+                                          setOpenConfirmation(true);
+                                          setSelectedFuncionario({
+                                            id: service.id || "",
+                                            name: service.name,
+                                            salario: service.salary,
+                                          });
+                                        }}
+                                      >
+                                        Pagar funcionario
+                                      </Button>
+                                    </TooltipTrigger>
+
+                                    {service.last_payment_date === null
                                       ? false
                                       : dayjs().diff(
                                           dayjs(service.last_payment_date),
                                           "month"
-                                        ) <= 1
-                                  }
-                                  onClick={() => {
-                                    setOpenConfirmation(true);
-                                    setSelectedFuncionario({
-                                      id: service.id || "",
-                                      name: service.name,
-                                      salario: service.salary,
-                                    });
-                                  }}
-                                >
-                                  Pagar funcionario
-                                </Button>
+                                        ) <= 1 && (
+                                          <TooltipContent side="bottom">
+                                            <p>
+                                              Pagamento já realizado. Disponivel
+                                              no próximo mês.
+                                            </p>
+                                          </TooltipContent>
+                                        )}
+                                  </Tooltip>
+                                </TooltipProvider>
                               </TableCell>
                             </TableRow>
                           ))}

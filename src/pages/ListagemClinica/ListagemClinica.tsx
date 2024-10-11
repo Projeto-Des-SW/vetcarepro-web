@@ -30,7 +30,7 @@ const ListagemClinica = () => {
   const navigate = useNavigate();
   const user = useUserSelector((state) => state.user);
   const queryClient = useQueryClient();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
 
@@ -104,14 +104,16 @@ const ListagemClinica = () => {
                           {clinica.description}
                         </p>
                       </div>
-                      <Button
-                        variant="outline"
-                        onClick={() =>
-                          navigate(`/dashboard/editarClinica/${clinica.id}`)
-                        }
-                      >
-                        Editar
-                      </Button>
+                      {(user.role === "MANAGER" || user.role === "DONO") && (
+                        <Button
+                          variant="outline"
+                          onClick={() =>
+                            navigate(`/dashboard/editarClinica/${clinica.id}`)
+                          }
+                        >
+                          Editar
+                        </Button>
+                      )}
                     </div>
                   </CardHeader>
                   <CardContent>
@@ -140,13 +142,15 @@ const ListagemClinica = () => {
                     >
                       Ver Detalhes
                     </Button>
-                    <Button
-                      variant="destructive"
-                      className="w-full"
-                      onClick={() => mutation.mutate(clinica.id)}
-                    >
-                      Deletar
-                    </Button>
+                    {(user.role === "MANAGER" || user.role === "DONO") && (
+                      <Button
+                        variant="destructive"
+                        className="w-full"
+                        onClick={() => mutation.mutate(clinica.id)}
+                      >
+                        Deletar
+                      </Button>
+                    )}
                   </CardFooter>
                 </Card>
               </div>

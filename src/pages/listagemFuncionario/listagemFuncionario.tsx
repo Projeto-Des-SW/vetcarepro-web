@@ -78,7 +78,9 @@ const ListagemFuncionario = () => {
         page="Meus Funcionarios"
         title="Seus Funcionarios"
         buttonName="Novo funcionario"
+        size={isPending ? 0 : data.length >= 1 && 10 }
         clickFn={() => navigate("../cadastrarFuncionario")}
+        
       />
 
       <div

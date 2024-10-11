@@ -29,6 +29,7 @@ export interface IAgendamentoGet {
   service: IService;
   service_id: string;
   updated_at: string;
+  status_schedule: string;
 }
 
 export interface ICrudClinia {

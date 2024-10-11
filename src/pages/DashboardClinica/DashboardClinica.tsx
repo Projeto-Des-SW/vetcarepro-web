@@ -9,7 +9,7 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import "dayjs/locale/es";
 import { useNavigate, useParams } from "react-router-dom";
 import { useUserSelector } from "@/store/hooks";
@@ -64,6 +64,10 @@ import PIX from "react-qrcode-pix";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import PixIcon from "@mui/icons-material/Pix";
 import BreadcrumbContainer from "@/components/BreadcrumbContainer/BreadcrumbContainer";
+import AssignmentTurnedInOutlinedIcon from "@mui/icons-material/AssignmentTurnedInOutlined";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { addNotification } from "@/store/user-slice";
 
 const DashboardClinica = () => {
   const [searchConsulta, setSearchConsulta] = useState("");
@@ -78,10 +82,12 @@ const DashboardClinica = () => {
   const [tourRunning, setTourRunning] = useState(false);
   const [openPix, setOpenPix] = useState(false);
   const [valuePix, setValuePix] = useState<number>();
-
+  const baseUrl = import.meta.env.VITE_URL as string;
   const { idClinica } = useParams();
   const user = useUserSelector((state) => state.user);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const queryClient = useQueryClient();
 
   const [steps] = useState<Step[]>([
     {
@@ -180,6 +186,54 @@ const DashboardClinica = () => {
       queryFn: () => fetchClinicaDetails(idClinica, user.token),
     });
 
+  const mutationConsulta = useMutation({
+    mutationFn: async ({
+      patient_id,
+      service_id,
+      clinic_id,
+      employee_id,
+      date,
+      id,
+    }: {
+      patient_id: string;
+      service_id: string;
+      clinic_id: string;
+      employee_id: string;
+      date: string;
+      id: string;
+    }) => {
+      const response = await axios.put(
+        `${baseUrl}/clinics/${clinic_id}/schedules/${id}`,
+        {
+          patient_id,
+          service_id,
+          clinic_id,
+          employee_id,
+          date: date,
+          status_schedule: "FINISHED",
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        }
+      );
+      return response.data;
+    },
+    onSuccess: (_data) => {
+      queryClient.invalidateQueries({ queryKey: ["AgendamentosListInternal"] });
+      dispatch(
+        addNotification({
+          title: "Consulta concluida",
+          description: "A consulta foi concluida com sucesso",
+        })
+      );
+    },
+    onError: (error) => {
+      console.error("Erro:", error);
+    },
+  });
+
   if (isPendingAgendamentos || isPendingServices || isPendingPacientes) {
     return (
       <div className="flex flex-col w-full gap-4">
@@ -226,7 +280,7 @@ const DashboardClinica = () => {
           .sort(
             (a, b) => dayjs(a.date).diff(dayjs()) - dayjs(b.date).diff(dayjs())
           )
-          .filter((value) => !dayjs(value.date).isBefore(dayjs())),
+          .filter((value) => !dayjs(value.date).isBefore(dayjs()) && value.status_schedule !== "FINISHED",),
         itemsPerPage
       )
     : dataAgendamentos
@@ -590,6 +644,7 @@ const DashboardClinica = () => {
                               <TooltipTrigger asChild>
                                 <Button
                                   variant="outline"
+                                  disabled={user.tier !== "TIER_THREE"}
                                   onClick={() => {
                                     setValuePix(
                                       parseFloat(item.service.amount)
@@ -602,6 +657,32 @@ const DashboardClinica = () => {
                               </TooltipTrigger>
                               <TooltipContent side="bottom">
                                 <p>Pagar com PIX</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button
+                                  variant="outline"
+                                  disabled={user.tier !== "TIER_THREE"}
+                                  onClick={() => {
+                                    mutationConsulta.mutate({
+                                      patient_id: item.patient_id,
+                                      service_id: item.service_id,
+                                      clinic_id: item.clinic_id,
+                                      employee_id: item.employee_id,
+                                      date: item.date,
+                                      id: item.id,
+                                    });
+                                  }}
+                                >
+                                  <AssignmentTurnedInOutlinedIcon />
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent side="bottom">
+                                <p>Concluir consulta</p>
                               </TooltipContent>
                             </Tooltip>
                           </TooltipProvider>
@@ -651,7 +732,7 @@ const DashboardClinica = () => {
                     type="text"
                     className={`${
                       user.isDarkMode ? "bg-gray-900" : "bg-transparent"
-                    } placeholder-gray-500 text-gray-900 p-2 mt-2 rounded-md dark:text-white` }
+                    } placeholder-gray-500 text-gray-900 p-2 mt-2 rounded-md dark:text-white`}
                     placeholder="Pesquisar serviços"
                     onChange={(e) => setSearchServices(e.target.value)}
                   />

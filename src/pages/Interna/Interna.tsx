@@ -110,7 +110,7 @@ const Interna = () => {
       setTourRunning(true);
     }
   }, []);
-  
+
   return (
     <div className={`flex h-screen ${user.isDarkMode && "dark"}`}>
       <Joyride
@@ -504,29 +504,17 @@ const Interna = () => {
               <Tooltip>
                 <TooltipTrigger>
                   <NavLink
-                    to={user.tier === "TIER_ONE" ? "#" : `listagemFuncionario`}
+                    to={`listagemFuncionario`}
                     className={({ isActive }) =>
                       `flex items-center gap-3 rounded-lg px-3 py-2 transition-all finanças ${
-                        user.tier === "TIER_ONE"
-                          ? `cursor-not-allowed opacity-50 ${
-                              user.isDarkMode && "text-white"
-                            }`
-                          : isActive
+                        isActive
                           ? "bg-accent text-accent-foreground"
                           : "text-muted-foreground hover:bg-muted/50"
                       }`
                     }
-                    onClick={(e) => {
-                      if (user.tier === "TIER_ONE") {
-                        e.preventDefault();
-                      }
-                    }}
                   >
-                    {user.tier === "TIER_ONE" ? (
-                      <LockIcon />
-                    ) : (
-                      <Diversity3Icon className="h-5 w-5" />
-                    )}
+                    <Diversity3Icon className="h-5 w-5" />
+
                     {openMenu && (
                       <div>
                         <span>Meus funcionarios</span>
@@ -536,11 +524,7 @@ const Interna = () => {
                 </TooltipTrigger>
 
                 <TooltipContent side="right">
-                  {user.tier === "TIER_ONE" ? (
-                    <p>Disponivel em outro nivel de assinatura</p>
-                  ) : (
-                    <span>Meus funcionarios</span>
-                  )}
+                  <span>Meus funcionarios</span>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>

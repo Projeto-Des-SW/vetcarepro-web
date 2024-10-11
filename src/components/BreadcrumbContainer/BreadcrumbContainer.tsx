@@ -9,6 +9,7 @@ import {
 } from "../ui/breadcrumb";
 import { Button } from "../ui/button";
 import { useUserSelector } from "@/store/hooks";
+import { ReactNode } from "react";
 
 interface IBreadcrumb {
   bcItems: IBreadcrumbItem[];
@@ -16,7 +17,14 @@ interface IBreadcrumb {
   title?: string;
   clickFn?: () => void;
   size?: number;
-  buttonName?: string;
+  variant?:
+    | "default"
+    | "link"
+    | "destructive"
+    | "outline"
+    | "secondary"
+    | "ghost";
+  buttonName?: string | ReactNode;
 }
 
 interface IBreadcrumbItem {
@@ -31,6 +39,7 @@ const BreadcrumbContainer = ({
   clickFn,
   size,
   buttonName,
+  variant = "default",
 }: IBreadcrumb) => {
   const user = useUserSelector((state) => state.user);
 
@@ -61,7 +70,11 @@ const BreadcrumbContainer = ({
         </h2>
 
         {buttonName !== undefined && (
-          <Button onClick={clickFn} disabled={user.tier === "TIER_ONE" && size >= 10}>
+          <Button
+            onClick={clickFn}
+            variant={variant}
+            disabled={user.tier === "TIER_ONE" && size >= 10}
+          >
             {buttonName}
           </Button>
         )}
