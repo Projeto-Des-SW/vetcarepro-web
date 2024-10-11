@@ -23,11 +23,14 @@ import { fetchClinicasList } from "@/services/getServices";
 import { handleDeleteClinic } from "@/services/deleteServices";
 import { PawPrintIcon } from "lucide-react";
 import BreadcrumbContainer from "@/components/BreadcrumbContainer/BreadcrumbContainer";
+import { useDispatch } from "react-redux";
+import { addNotification } from "@/store/user-slice";
 
 const ListagemClinica = () => {
   const navigate = useNavigate();
   const user = useUserSelector((state) => state.user);
   const queryClient = useQueryClient();
+  const dispatch = useDispatch()
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
 
@@ -49,6 +52,12 @@ const ListagemClinica = () => {
       handleDeleteClinic(serviceId, user.token),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["ClinicaListagem"] });
+      dispatch(
+        addNotification({
+          title: "Clinica deletada",
+          description: `Clinica deletada`,
+        })
+      );
     },
   });
 

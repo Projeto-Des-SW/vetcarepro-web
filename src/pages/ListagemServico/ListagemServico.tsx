@@ -17,6 +17,7 @@ import {
   PaginationNext,
   PaginationPrevious,
   PaginationLink,
+  PaginationEllipsis,
 } from "@/components/ui/pagination";
 import { Separator } from "@/components/ui/separator";
 import { fetchServiceList } from "@/services/getServices";
@@ -26,12 +27,15 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import InfoIcon from "@mui/icons-material/Info";
 import { handleDeleteService } from "@/services/deleteServices";
 import BreadcrumbContainer from "@/components/BreadcrumbContainer/BreadcrumbContainer";
+import { useDispatch } from "react-redux";
+import { addNotification } from "@/store/user-slice";
 
 const ListagemServico = () => {
   const navigate = useNavigate();
   const { idClinica } = useParams();
   const user = useUserSelector((state) => state.user);
   const queryClient = useQueryClient();
+  const dispatch = useDispatch();
 
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 7;
@@ -45,14 +49,19 @@ const ListagemServico = () => {
     mutationFn: (id?: string) => handleDeleteService(idClinica, id, user.token),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["ServicoList"] });
+      dispatch(
+        addNotification({
+          title: "Serviço deletado",
+          description: `Serviço deletado`,
+        })
+      );
     },
   });
 
-  console.log(data);
   if (error) return <div>Error fetching clinics</div>;
+  if (isPending) return <div>Carregando</div>;
 
   const totalPages = splitIntoGroups(data, itemsPerPage);
-  console.log(currentPage);
 
   return (
     <section className="flex-wrap gap-2 flex-col w-full">
@@ -143,25 +152,44 @@ const ListagemServico = () => {
       <div className="flex justify-center mt-4">
         <Pagination>
           <PaginationPrevious
-            className={`${user.isDarkMode && "text-white"}`}
             onClick={() =>
               currentPage !== 0 && setCurrentPage((prevState) => prevState - 1)
             }
           />
+          {totalPages.length === 1 && (
+            <PaginationLink isActive>{1}</PaginationLink>
+          )}
+          {totalPages.length > 1 &&
+            totalPages.map((_, index) => {
+              if (
+                index === 0 ||
+                index === totalPages.length - 1 ||
+                index === currentPage ||
+                index === currentPage - 1 ||
+                index === currentPage + 1
+              ) {
+                return (
+                  <PaginationLink
+                    key={index}
+                    onClick={() => setCurrentPage(index)}
+                    isActive={currentPage === index}
+                  >
+                    {index + 1}
+                  </PaginationLink>
+                );
+              }
+              if (
+                (index === 1 && currentPage > 3) ||
+                (index === totalPages.length - 2 &&
+                  currentPage < totalPages.length - 4)
+              ) {
+                return <PaginationEllipsis key={index}>...</PaginationEllipsis>;
+              }
 
-          {totalPages.map((_item, index) => (
-            <PaginationLink
-              key={index}
-              className={`${user.isDarkMode && "text-white"}`}
-              onClick={() => setCurrentPage(index)}
-              isActive={currentPage === index}
-            >
-              {index + 1}
-            </PaginationLink>
-          ))}
+              return null;
+            })}
 
           <PaginationNext
-            className={`${user.isDarkMode && "text-white"}`}
             onClick={() =>
               currentPage !== totalPages.length - 1 &&
               setCurrentPage((prevState) => prevState + 1)

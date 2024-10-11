@@ -50,6 +50,7 @@ import { Badge } from "@/components/ui/badge";
 import BreadcrumbContainer from "@/components/BreadcrumbContainer/BreadcrumbContainer";
 import {
   Pagination,
+  PaginationEllipsis,
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
@@ -85,6 +86,8 @@ const ListagemProdutos = () => {
     queryFn: () => fetchPacientsList(idClinica, user.token),
   });
 
+  console.log(data);
+
   const handleChangeMode = (mode: boolean, id?: string) => {
     setOpenNewProduct(true);
     setMode(mode ? true : false);
@@ -105,6 +108,12 @@ const ListagemProdutos = () => {
     mutationFn: (id?: string) => handleDeleteProduct(idClinica, id, user.token),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["ProductList"] });
+      dispatch(
+        addNotification({
+          title: "Produto deletado",
+          description: `Produto deletado`,
+        })
+      );
     },
   });
 
@@ -113,10 +122,15 @@ const ListagemProdutos = () => {
       const requestData = {
         clinic_id: idClinica,
         patient_id: dataPaciente[0].id,
-        products: user.cart.flatMap((item) =>
-          item.quantity > 0 ? Array(item.quantity).fill(item.id) : []
-        ),
+        products: user.cart.flatMap((item) => {
+          console.log(item);
+          return item.quantity > 0
+            ? Array(item.cartQuantity).fill(item.id)
+            : [];
+        }),
       };
+
+      console.log(requestData);
 
       const response = await axios.post(
         `${baseUrl}/clinics/${idClinica}/sales`,
@@ -131,6 +145,13 @@ const ListagemProdutos = () => {
     },
     onSuccess: (data) => {
       console.log("Dados recebidos:", data);
+      queryClient.invalidateQueries({ queryKey: ["ProductList"] });
+      dispatch(
+        addNotification({
+          title: "Venda realizada com sucesso",
+          description: `Venda realizada com sucesso`,
+        })
+      );
       dispatch(setClearCart());
     },
     onError: (error) => {
@@ -408,25 +429,44 @@ const ListagemProdutos = () => {
       <div className="flex justify-center mt-4">
         <Pagination>
           <PaginationPrevious
-            className={`${user.isDarkMode && "text-white"}`}
             onClick={() =>
               currentPage !== 0 && setCurrentPage((prevState) => prevState - 1)
             }
           />
+          {totalPages.length === 1 && (
+            <PaginationLink isActive>{1}</PaginationLink>
+          )}
+          {totalPages.length > 1 &&
+            totalPages.map((_, index) => {
+              if (
+                index === 0 ||
+                index === totalPages.length - 1 ||
+                index === currentPage ||
+                index === currentPage - 1 ||
+                index === currentPage + 1
+              ) {
+                return (
+                  <PaginationLink
+                    key={index}
+                    onClick={() => setCurrentPage(index)}
+                    isActive={currentPage === index}
+                  >
+                    {index + 1}
+                  </PaginationLink>
+                );
+              }
+              if (
+                (index === 1 && currentPage > 3) ||
+                (index === totalPages.length - 2 &&
+                  currentPage < totalPages.length - 4)
+              ) {
+                return <PaginationEllipsis key={index}>...</PaginationEllipsis>;
+              }
 
-          {totalPages.map((_item, index) => (
-            <PaginationLink
-              className={`${user.isDarkMode && "text-white"}`}
-              key={index}
-              onClick={() => setCurrentPage(index)}
-              isActive={currentPage === index}
-            >
-              {index + 1}
-            </PaginationLink>
-          ))}
+              return null;
+            })}
 
           <PaginationNext
-            className={`${user.isDarkMode && "text-white"}`}
             onClick={() =>
               currentPage !== totalPages.length - 1 &&
               setCurrentPage((prevState) => prevState + 1)

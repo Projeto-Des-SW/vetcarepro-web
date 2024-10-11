@@ -6,6 +6,7 @@ import { useUserSelector } from "@/store/hooks";
 import { fetchAgendamentosList } from "@/services/getServices";
 import {
   Pagination,
+  PaginationEllipsis,
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
@@ -150,25 +151,44 @@ const ListagemAgendamento = () => {
       <div className="flex justify-center mt-4">
         <Pagination>
           <PaginationPrevious
-            className={`${user.isDarkMode && "text-white"}`}
             onClick={() =>
               currentPage !== 0 && setCurrentPage((prevState) => prevState - 1)
             }
           />
+          {totalPages.length === 1 && (
+            <PaginationLink isActive>{1}</PaginationLink>
+          )}
+          {totalPages.length > 1 &&
+            totalPages.map((_, index) => {
+              if (
+                index === 0 ||
+                index === totalPages.length - 1 ||
+                index === currentPage ||
+                index === currentPage - 1 ||
+                index === currentPage + 1
+              ) {
+                return (
+                  <PaginationLink
+                    key={index}
+                    onClick={() => setCurrentPage(index)}
+                    isActive={currentPage === index}
+                  >
+                    {index + 1}
+                  </PaginationLink>
+                );
+              }
+              if (
+                (index === 1 && currentPage > 3) ||
+                (index === totalPages.length - 2 &&
+                  currentPage < totalPages.length - 4)
+              ) {
+                return <PaginationEllipsis key={index}>...</PaginationEllipsis>;
+              }
 
-          {totalPages.map((_item, index) => (
-            <PaginationLink
-              className={`${user.isDarkMode && "text-white"}`}
-              key={index}
-              onClick={() => setCurrentPage(index)}
-              isActive={currentPage === index}
-            >
-              {index + 1}
-            </PaginationLink>
-          ))}
+              return null;
+            })}
 
           <PaginationNext
-            className={`${user.isDarkMode && "text-white"}`}
             onClick={() =>
               currentPage !== totalPages.length - 1 &&
               setCurrentPage((prevState) => prevState + 1)

@@ -7,6 +7,7 @@ import { useUserSelector } from "@/store/hooks";
 import { fetchPacientsList } from "@/services/getServices";
 import {
   Pagination,
+  PaginationEllipsis,
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
@@ -26,6 +27,8 @@ import { Separator } from "@/components/ui/separator";
 import DeleteIcon from "@mui/icons-material/Delete";
 import InfoIcon from "@mui/icons-material/Info";
 import BreadcrumbContainer from "@/components/BreadcrumbContainer/BreadcrumbContainer";
+import { addNotification } from "@/store/user-slice";
+import { useDispatch } from "react-redux";
 
 const ListagemPaciente = () => {
   const navigate = useNavigate();
@@ -33,6 +36,7 @@ const ListagemPaciente = () => {
   const queryClient = useQueryClient();
   const user = useUserSelector((state) => state.user);
   const [currentPage, setCurrentPage] = useState(0);
+  const dispatch = useDispatch();
   const itemsPerPage = 7;
 
   const { data, error, isPending } = useQuery({
@@ -44,6 +48,12 @@ const ListagemPaciente = () => {
     mutationFn: (id?: string) => handleDeletePacient(idClinica, id, user.token),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["PacienteList"] });
+      dispatch(
+        addNotification({
+          title: "Paciente deletado",
+          description: `Paciente deletado`,
+        })
+      );
     },
   });
 
@@ -137,25 +147,44 @@ const ListagemPaciente = () => {
       <div className="flex justify-center mt-4">
         <Pagination>
           <PaginationPrevious
-            className={`${user.isDarkMode && "text-white"}`}
             onClick={() =>
               currentPage !== 0 && setCurrentPage((prevState) => prevState - 1)
             }
           />
+          {totalPages.length === 1 && (
+            <PaginationLink isActive>{1}</PaginationLink>
+          )}
+          {totalPages.length > 1 &&
+            totalPages.map((_, index) => {
+              if (
+                index === 0 ||
+                index === totalPages.length - 1 ||
+                index === currentPage ||
+                index === currentPage - 1 ||
+                index === currentPage + 1
+              ) {
+                return (
+                  <PaginationLink
+                    key={index}
+                    onClick={() => setCurrentPage(index)}
+                    isActive={currentPage === index}
+                  >
+                    {index + 1}
+                  </PaginationLink>
+                );
+              }
+              if (
+                (index === 1 && currentPage > 3) ||
+                (index === totalPages.length - 2 &&
+                  currentPage < totalPages.length - 4)
+              ) {
+                return <PaginationEllipsis key={index}>...</PaginationEllipsis>;
+              }
 
-          {totalPages.map((_item, index) => (
-            <PaginationLink
-              className={`${user.isDarkMode && "text-white"}`}
-              key={index}
-              onClick={() => setCurrentPage(index)}
-              isActive={currentPage === index}
-            >
-              {index + 1}
-            </PaginationLink>
-          ))}
+              return null;
+            })}
 
           <PaginationNext
-            className={`${user.isDarkMode && "text-white"}`}
             onClick={() =>
               currentPage !== totalPages.length - 1 &&
               setCurrentPage((prevState) => prevState + 1)

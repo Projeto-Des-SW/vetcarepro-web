@@ -1,4 +1,3 @@
-import axios from "axios";
 import {
   Table,
   TableBody,
@@ -17,54 +16,53 @@ import {
   PaginationNext,
   PaginationPrevious,
   PaginationLink,
+  PaginationEllipsis,
 } from "@/components/ui/pagination";
 import { Separator } from "@/components/ui/separator";
 import { splitIntoGroups } from "@/utils/const.utils";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { IFuncionario } from "@/interfaces/funcionario";
 import { fetchFuncionariosList } from "@/services/getServices";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import BreadcrumbContainer from "@/components/BreadcrumbContainer/BreadcrumbContainer";
+import { handleDeleteEmployee } from "@/services/deleteServices";
+import { useDispatch } from "react-redux";
+import { addNotification } from "@/store/user-slice";
 
 const ListagemFuncionario = () => {
   const navigate = useNavigate();
-  const baseUrl = import.meta.env.VITE_URL as string;
   const { idClinica } = useParams();
   const user = useUserSelector((state) => state.user);
+  const queryClient = useQueryClient();
+  const dispatch = useDispatch();
 
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 7;
-
-  const handleDelete = async (idService?: string) => {
-    if (window.confirm("Tem certeza que deseja deletar esta clínica?")) {
-      try {
-        await axios.delete(
-          `${baseUrl}/clinics/${idClinica}/services/${idService}`,
-          {
-            headers: {
-              Authorization: `Bearer ${user.token}`,
-            },
-          }
-        );
-        navigate(`internalClinica/${idClinica}/dashboard`);
-      } catch (error) {
-        console.error("Erro ao deletar a clínica", error);
-      }
-    }
-  };
 
   const { data, error, isPending } = useQuery({
     queryKey: ["FuncionariosList"],
     queryFn: () => fetchFuncionariosList(idClinica, user.token),
   });
 
-  console.log(data);
+  const mutation = useMutation({
+    mutationFn: (id?: string) =>
+      handleDeleteEmployee(idClinica, id, user.token),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["FuncionariosList"] });
+      dispatch(
+        addNotification({
+          title: "Funcionario deletado",
+          description: `Funcionario deletado`,
+        })
+      );
+    },
+  });
+
   if (isPending) return <div>carregando</div>;
   if (error) return <div>Error fetching clinics</div>;
 
   const totalPages = splitIntoGroups(data, itemsPerPage);
-  console.log(currentPage);
 
   return (
     <section className="flex-wrap gap-2 flex-col w-full">
@@ -94,7 +92,6 @@ const ListagemFuncionario = () => {
               <TableHead>Email</TableHead>
               <TableHead>Cargo</TableHead>
               <TableHead>Salario</TableHead>
-              <TableHead>Ultimo pagamento</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -115,25 +112,25 @@ const ListagemFuncionario = () => {
                     </TableCell>
                   </TableRow>
                 ))
-              : totalPages[currentPage]?.map((service: IFuncionario) => (
-                  <TableRow key={service.id}>
+              : totalPages[currentPage]?.map((employee: IFuncionario) => (
+                  <TableRow key={employee.id}>
                     <TableCell className="font-medium">
-                      {service.name}
+                      {employee.name}
                     </TableCell>
-                    <TableCell>{service.email}</TableCell>
-                    <TableCell>{service.position}</TableCell>
-                    <TableCell>{service.salary}</TableCell>
-                    <TableCell>{service.last_payment_date}</TableCell>
+                    <TableCell>{employee.email}</TableCell>
+                    <TableCell>{employee.position}</TableCell>
+                    <TableCell>{employee.salary}</TableCell>
+
                     <TableCell className="flex justify-end gap-2 ">
                       <Button
                         onClick={() =>
-                          navigate(`../editarFuncionario/${service.id}`)
+                          navigate(`../editarFuncionario/${employee.id}`)
                         }
                       >
                         <EditIcon />
                       </Button>
                       <Button
-                        onClick={() => handleDelete(service.id)}
+                        onClick={() => mutation.mutate(employee.id)}
                         variant={"destructive"}
                       >
                         <DeleteIcon />
@@ -148,25 +145,44 @@ const ListagemFuncionario = () => {
       <div className="flex justify-center mt-4">
         <Pagination>
           <PaginationPrevious
-            className={`${user.isDarkMode && "text-white"}`}
             onClick={() =>
               currentPage !== 0 && setCurrentPage((prevState) => prevState - 1)
             }
           />
+          {totalPages.length === 1 && (
+            <PaginationLink isActive>{1}</PaginationLink>
+          )}
+          {totalPages.length > 1 &&
+            totalPages.map((_, index) => {
+              if (
+                index === 0 ||
+                index === totalPages.length - 1 ||
+                index === currentPage ||
+                index === currentPage - 1 ||
+                index === currentPage + 1
+              ) {
+                return (
+                  <PaginationLink
+                    key={index}
+                    onClick={() => setCurrentPage(index)}
+                    isActive={currentPage === index}
+                  >
+                    {index + 1}
+                  </PaginationLink>
+                );
+              }
+              if (
+                (index === 1 && currentPage > 3) ||
+                (index === totalPages.length - 2 &&
+                  currentPage < totalPages.length - 4)
+              ) {
+                return <PaginationEllipsis key={index}>...</PaginationEllipsis>;
+              }
 
-          {totalPages.map((_item, index) => (
-            <PaginationLink
-              className={`${user.isDarkMode && "text-white"}`}
-              key={index}
-              onClick={() => setCurrentPage(index)}
-              isActive={currentPage === index}
-            >
-              {index + 1}
-            </PaginationLink>
-          ))}
+              return null;
+            })}
 
           <PaginationNext
-            className={`${user.isDarkMode && "text-white"}`}
             onClick={() =>
               currentPage !== totalPages.length - 1 &&
               setCurrentPage((prevState) => prevState + 1)
