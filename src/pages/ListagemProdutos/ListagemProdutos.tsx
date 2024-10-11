@@ -86,8 +86,6 @@ const ListagemProdutos = () => {
     queryFn: () => fetchPacientsList(idClinica, user.token),
   });
 
-  console.log(data);
-
   const handleChangeMode = (mode: boolean, id?: string) => {
     setOpenNewProduct(true);
     setMode(mode ? true : false);
@@ -244,7 +242,7 @@ const ListagemProdutos = () => {
                       </Button>
                     </div>
                     <div className="text-3xl font-bold text-primary">
-                      $
+                      R$
                       {(
                         parseFloat(product.amount) * product.cartQuantity
                       ).toFixed(2)}
@@ -264,7 +262,7 @@ const ListagemProdutos = () => {
                 <div className="flex items-center justify-between">
                   <h3 className="text-lg font-semibold">Total</h3>
                   <div className="text-3xl font-bold text-primary">
-                    ${total.toFixed(2)}
+                    R${total.toFixed(2)}
                   </div>
                 </div>
                 <div className="flex gap-2 mt-4 justify-end">
@@ -369,7 +367,7 @@ const ListagemProdutos = () => {
                       </TooltipProvider>
 
                       <div className="text-3xl font-bold text-primary">
-                        ${parseFloat(product.amount).toFixed(2)}
+                        R${parseFloat(product.amount).toFixed(2)}
                       </div>
                     </div>
                   </div>

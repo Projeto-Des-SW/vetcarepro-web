@@ -17,6 +17,7 @@ import dayjs from "dayjs";
 import {
   fetchAgendamentosList,
   fetchClinicaDetails,
+  fetchFinanceiro,
   fetchPacientsList,
   fetchServiceList,
 } from "@/services/getServices";
@@ -180,6 +181,11 @@ const DashboardClinica = () => {
     queryFn: () => fetchServiceList(idClinica, user.token),
   });
 
+  const { data: financas, isPending: pendingFinancas } = useQuery({
+    queryKey: ["financeiro"],
+    queryFn: () => fetchFinanceiro(idClinica, user.token),
+  });
+
   const { data: dataDetailsClinica, isPending: isPendingDetailsClinica } =
     useQuery({
       queryKey: ["ClinicDetails"],
@@ -234,7 +240,12 @@ const DashboardClinica = () => {
     },
   });
 
-  if (isPendingAgendamentos || isPendingServices || isPendingPacientes) {
+  if (
+    isPendingAgendamentos ||
+    isPendingServices ||
+    isPendingPacientes ||
+    pendingFinancas
+  ) {
     return (
       <div className="flex flex-col w-full gap-4">
         <div className="flex gap-2">
@@ -280,7 +291,11 @@ const DashboardClinica = () => {
           .sort(
             (a, b) => dayjs(a.date).diff(dayjs()) - dayjs(b.date).diff(dayjs())
           )
-          .filter((value) => !dayjs(value.date).isBefore(dayjs()) && value.status_schedule !== "FINISHED",),
+          .filter(
+            (value) =>
+              !dayjs(value.date).isBefore(dayjs()) &&
+              value.status_schedule !== "FINISHED"
+          ),
         itemsPerPage
       )
     : dataAgendamentos
@@ -291,14 +306,6 @@ const DashboardClinica = () => {
     services as any,
     itemsPerPageServices
   );
-
-  const receitaUsuario = dataAgendamentos?.filter((value) =>
-    dayjs(value.date).isBefore(dayjs())
-  );
-
-  const myReceita = receitaUsuario?.reduce((total, item) => {
-    return total + parseFloat(item.service.amount);
-  }, 0);
 
   return (
     <section className={`flex h-full w-full overflow-y-auto `}>
@@ -470,7 +477,9 @@ const DashboardClinica = () => {
 
             <CardContent className="flex justify-between items-center">
               <div className="text-4xl font-bold">
-                {isExibirLucro ? `R$ ${myReceita}` : "R$ *****"}
+                {isExibirLucro
+                  ? `R$ ${financas.totalValueSchedulesFinished.toFixed(2)}`
+                  : "R$ *****"}
               </div>
 
               {!isExibirLucro ? (

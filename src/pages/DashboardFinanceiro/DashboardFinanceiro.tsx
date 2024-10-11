@@ -182,13 +182,41 @@ const DashboardFinanceiro = () => {
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button
-              onClick={() => {
-                mutationPaymentEmployee.mutate();
-              }}
-            >
-              Pagar
-            </Button>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <Button
+                    onClick={() => {
+                      mutationPaymentEmployee.mutate();
+                    }}
+                    disabled={
+                      parseFloat(
+                        (
+                          financas.totalValueSales +
+                          financas.totalValueSchedulesFinished -
+                          financas.totalValuePayments
+                        ).toFixed(2)
+                      ) < parseFloat(selectedFuncionario.salario)
+                    }
+                  >
+                    Pagar
+                  </Button>
+                </TooltipTrigger>
+
+                {parseFloat(
+                  (
+                    financas.totalValueSales +
+                    financas.totalValueSchedulesFinished -
+                    financas.totalValuePayments
+                  ).toFixed(2)
+                ) < parseFloat(selectedFuncionario.salario) && (
+                  <TooltipContent side="bottom">
+                    Saldo insuficiente para pagar o funcionario
+                  </TooltipContent>
+                )}
+              </Tooltip>
+            </TooltipProvider>
+
             <Button
               variant={"destructive"}
               onClick={() => setOpenConfirmation((prevState) => !prevState)}
