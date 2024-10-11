@@ -5,7 +5,6 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import Inputs from "@/components/Inputs/Inputs";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
 import { useUserSelector } from "@/store/hooks";
 import { Card } from "@/components/ui/card";
 import { useDispatch } from "react-redux";
@@ -80,10 +79,6 @@ const CadastroClinica = ({ mode = "create" }: ICrudClinia) => {
       .then((response) => {
         const successMessage = `Clínica - ${response.statusText}`;
         const successDescription = `Data: ${formattedDate}, Hora: ${formattedTime}`;
-
-        toast(`${mode} realizado com sucesso`, {
-          description: successDescription,
-        });
 
         notify(successMessage, successDescription);
       })

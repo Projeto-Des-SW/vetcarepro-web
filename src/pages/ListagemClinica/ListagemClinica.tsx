@@ -156,43 +156,47 @@ const ListagemClinica = () => {
               </div>
             ))}
 
-        <Pagination>
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                href="#"
-                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                className={`${user.isDarkMode && "text-white"}`}
-              />
-            </PaginationItem>
-            {Array.from({ length: totalPages }, (_, index) => (
-              <PaginationItem key={index}>
-                <PaginationLink
+        <div className="fixed bottom-8 left-1/2 transform ml-4 -translate-x-1/2 mt-4">
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  href="#"
+                  onClick={() =>
+                    setCurrentPage((prev) => Math.max(prev - 1, 1))
+                  }
+                  className={`${user.isDarkMode && "text-white"}`}
+                />
+              </PaginationItem>
+              {Array.from({ length: totalPages }, (_, index) => (
+                <PaginationItem key={index}>
+                  <PaginationLink
+                    href="#"
+                    className={`${user.isDarkMode && "text-white"}`}
+                    onClick={() => setCurrentPage(index + 1)}
+                    isActive={currentPage === index + 1}
+                  >
+                    {index + 1}
+                  </PaginationLink>
+                </PaginationItem>
+              ))}
+              {totalPages > currentPage + 1 && (
+                <PaginationItem>
+                  <PaginationEllipsis />
+                </PaginationItem>
+              )}
+              <PaginationItem>
+                <PaginationNext
                   href="#"
                   className={`${user.isDarkMode && "text-white"}`}
-                  onClick={() => setCurrentPage(index + 1)}
-                  isActive={currentPage === index + 1}
-                >
-                  {index + 1}
-                </PaginationLink>
+                  onClick={() =>
+                    setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                  }
+                />
               </PaginationItem>
-            ))}
-            {totalPages > currentPage + 1 && (
-              <PaginationItem>
-                <PaginationEllipsis />
-              </PaginationItem>
-            )}
-            <PaginationItem>
-              <PaginationNext
-                href="#"
-                className={`${user.isDarkMode && "text-white"}`}
-                onClick={() =>
-                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-                }
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
+            </PaginationContent>
+          </Pagination>
+        </div>
       </div>
     </div>
   );

@@ -5,7 +5,6 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import Inputs from "@/components/Inputs/Inputs";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
 import dogHappy from "../../assets/dogHappy.png";
 import dogPuto from "../../assets/dogPuto.png";
 import dogTriste from "../../assets/dogTriste.png";
@@ -14,7 +13,6 @@ import { Card } from "@/components/ui/card";
 import { useDispatch } from "react-redux";
 import { addNotification } from "@/store/user-slice";
 import {
-  capitalizeFirstLetter,
   formattedDate,
   formattedTime,
   roles,
@@ -106,10 +104,6 @@ const CadastroFuncionario = ({ mode = "create" }: ICrudClinia) => {
       .then((response) => {
         const successMessage = `Clinica - ${response.statusText}`;
         const successDescription = `Data: ${formattedDate}, Hora: ${formattedTime}`;
-
-        toast(`${capitalizeFirstLetter(mode)} realizado com sucesso`, {
-          description: successDescription,
-        });
 
         notify(successMessage, successDescription);
       })

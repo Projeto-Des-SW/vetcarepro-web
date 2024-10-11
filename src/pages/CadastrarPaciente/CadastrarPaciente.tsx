@@ -3,10 +3,9 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Inputs from "@/components/Inputs/Inputs";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
 import { IPet } from "@/interfaces/paciente";
 import { ICrud } from "@/interfaces/clinicas";
-import { Link, useParams } from "react-router-dom";
+import {useParams } from "react-router-dom";
 import { useUserSelector } from "@/store/hooks";
 import axios from "axios";
 import { useDispatch } from "react-redux";
@@ -18,14 +17,7 @@ import dogPuto from "../../assets/dogPuto.png";
 import dogTriste from "../../assets/dogTriste.png";
 import { petSchema } from "@/utils/schemas.utils";
 import { formattedDate, formattedTime } from "@/utils/const.utils";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+import BreadcrumbContainer from "@/components/BreadcrumbContainer/BreadcrumbContainer";
 
 const CadastrarPaciente = ({ mode = "create" }: ICrud) => {
   const { id, idClinica } = useParams();
@@ -96,10 +88,6 @@ const CadastrarPaciente = ({ mode = "create" }: ICrud) => {
         const successMessage = `Paciente - ${response.statusText}`;
         const successDescription = `Data: ${formattedDate}, Hora: ${formattedTime}`;
 
-        toast(`${mode} realizado com sucesso`, {
-          description: successDescription,
-        });
-
         notify(successMessage, successDescription);
       })
       .catch((error) => {
@@ -126,50 +114,22 @@ const CadastrarPaciente = ({ mode = "create" }: ICrud) => {
   return (
     <div className="h-fit">
       <div className="flex flex-col gap-2 mb-2">
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link to="/home">Home</Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link to="/dashboard/listagemClinica">Dashboard</Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link to={`/internalClinica/${idClinica}/dashboard`}>
-                  Minha clinica
-                </Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link to={`/internalClinica/${idClinica}/listagemPaciente`}>
-                  Meus Pacientes
-                </Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>Novo Paciente</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-        <div className="flex justify-between">
-          <h2
-            className={`scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 ${
-              user.isDarkMode && "text-white "
-            }`}
-          >
-            Seus Pacientes
-          </h2>
-        </div>
+        <BreadcrumbContainer
+          bcItems={[
+            { path: "/home", title: "Home" },
+            { path: "/dashboard/listagemClinica", title: "Dashboard" },
+            {
+              path: `/internalClinica/${idClinica}/dashboard`,
+              title: "Minha Clinica",
+            },
+            {
+              path: `/internalClinica/${idClinica}/listagemPaciente`,
+              title: "Meus Pacientes",
+            },
+          ]}
+          page="Novo Paciente"
+          title="Seus Pacientes"
+        />
       </div>
       <Card
         className={`${

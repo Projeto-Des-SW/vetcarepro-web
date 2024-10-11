@@ -18,8 +18,7 @@ import { Switch } from "../ui/switch";
 import Inputs from "../Inputs/Inputs";
 import { Label } from "../ui/label";
 import { useDispatch } from "react-redux";
-import { setCurrentUser } from "@/store/user-slice";
-import { toast } from "sonner";
+import { addNotification, setCurrentUser } from "@/store/user-slice";
 import { formattedDate, formattedTime } from "@/utils/const.utils";
 import { persistor } from "@/store/store";
 import { useUserSelector } from "@/store/hooks";
@@ -56,11 +55,10 @@ const Login = () => {
   const dispatch = useDispatch();
 
   const handleSwitchChange = (checked: boolean) => {
-    setSwitchState(checked); 
+    setSwitchState(checked);
   };
 
   const onSubmit: SubmitHandler<IFormInput> = (data) => {
-    console.log(data);
     const myEmail = data.email;
     fetch(`${baseUrl}/sessions`, {
       method: "POST",
@@ -77,19 +75,20 @@ const Login = () => {
         } else {
           title = "Ocorreu um erro, tente mais tarde!";
         }
-
-        toast(`${title}`, {
-          description: successDescription,
-        });
+        dispatch(
+          addNotification({
+            title: title,
+            description: successDescription,
+          })
+        );
 
         return response.json();
       })
       .then((data) => {
-        console.log(data);
         if (data && data.token) {
           if (!switchState) {
-            persistor.pause(); 
-            persistor.purge(); 
+            persistor.pause();
+            persistor.purge();
           }
           dispatch(
             setCurrentUser({
@@ -97,9 +96,15 @@ const Login = () => {
               token: data.token,
               notifications: [],
               isDarkMode: user.isDarkMode,
-              tier: 'TIER_ONE',
+              tier: "TIER_ONE",
               rememberMe: switchState,
               cart: [],
+            })
+          );
+          dispatch(
+            addNotification({
+              title: "Login realizado com sucesso",
+              description: `Login realizado com sucesso`,
             })
           );
 
@@ -112,17 +117,17 @@ const Login = () => {
       .catch((error) => {
         console.error("Form submission error:", error);
       });
-
-    // console.log(data);
   };
 
   return (
     <motion.section
-      className={`flex items-center justify-center ${user.isDarkMode && 'dark'}`}
+      className={`flex items-center justify-center ${
+        user.isDarkMode && "dark"
+      }`}
       animate={{ x: 0 }}
       transition={{ ease: "easeOut", duration: 1 }}
     >
-      <Card className={`w-full border-none ${user.isDarkMode && 'dark'}`}>
+      <Card className={`w-full border-none ${user.isDarkMode && "dark"}`}>
         <CardHeader>
           <CardTitle>Bem vindo de volta</CardTitle>
           <CardDescription>
@@ -169,7 +174,7 @@ const Login = () => {
               <div className="flex items-center gap-2">
                 <Switch
                   name="stayOn"
-                  checked={switchState} 
+                  checked={switchState}
                   onCheckedChange={handleSwitchChange}
                 />
                 <Label>Continuar logado</Label>

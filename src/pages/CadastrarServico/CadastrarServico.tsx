@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
 import { Link, useParams } from "react-router-dom";
 import { IService } from "@/interfaces/servico";
 import { useUserSelector } from "@/store/hooks";
@@ -107,10 +106,6 @@ const CadastrarServico = ({ mode = "create" }: ICrudClinia) => {
       .then((response) => {
         const successMessage = `Serviço - ${response.statusText}`;
         const successDescription = `Data: ${formattedDate}, Hora: ${formattedTime}`;
-
-        toast(`${mode} realizado com sucesso`, {
-          description: successDescription,
-        });
 
         notify(successMessage, successDescription);
       })
