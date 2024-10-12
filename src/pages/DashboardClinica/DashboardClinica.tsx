@@ -228,6 +228,7 @@ const DashboardClinica = () => {
     },
     onSuccess: (_data) => {
       queryClient.invalidateQueries({ queryKey: ["AgendamentosListInternal"] });
+      queryClient.invalidateQueries({ queryKey: ["financeiro"] });
       dispatch(
         addNotification({
           title: "Consulta concluida",
