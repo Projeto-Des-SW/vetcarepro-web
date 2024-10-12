@@ -675,7 +675,6 @@ const DashboardClinica = () => {
                               <TooltipTrigger asChild>
                                 <Button
                                   variant="outline"
-                                  disabled={user.tier !== "TIER_THREE"}
                                   onClick={() => {
                                     mutationConsulta.mutate({
                                       patient_id: item.patient_id,
