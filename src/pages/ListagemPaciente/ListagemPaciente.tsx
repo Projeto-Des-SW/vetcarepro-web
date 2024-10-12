@@ -87,9 +87,11 @@ const ListagemPaciente = () => {
           <TableHeader>
             <TableRow>
               <TableHead className="w-[100px]">Titulo</TableHead>
-              <TableHead>Tipo do serviço</TableHead>
-              <TableHead>Valor</TableHead>
-              <TableHead></TableHead>
+              <TableHead>Nome do pet</TableHead>
+              <TableHead>Especie</TableHead>
+              <TableHead>Idade</TableHead>
+              <TableHead>Nome do guardião</TableHead>
+              <TableHead>Contato do guardião</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -121,6 +123,8 @@ const ListagemPaciente = () => {
                       </TableCell>
                       <TableCell>{paciente.species}</TableCell>
                       <TableCell>{paciente.age}</TableCell>
+                      <TableCell>{paciente.guardian_name}</TableCell>
+                      <TableCell>{paciente.guardian_contact}</TableCell>
                       <TableCell className="flex justify-end gap-2 ">
                         <Button
                           onClick={() =>
