@@ -262,11 +262,13 @@ const AgendarConsulta = ({ mode = "create" }: { mode?: "create" | "edit" }) => {
                     <SelectValue placeholder="Selecione o funcionario" />
                   </SelectTrigger>
                   <SelectContent>
-                    {funcionario?.map((service) => (
-                      <SelectItem key={service.id} value={service.id || ""}>
-                        {service.name}
-                      </SelectItem>
-                    ))}
+                    {funcionario
+                      ?.filter((item) => item.role === "VETERINARY")
+                      .map((service) => (
+                        <SelectItem key={service.id} value={service.id || ""}>
+                          {service.name}
+                        </SelectItem>
+                      ))}
                   </SelectContent>
                 </Select>
               )}
