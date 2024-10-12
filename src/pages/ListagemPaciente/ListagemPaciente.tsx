@@ -86,7 +86,6 @@ const ListagemPaciente = () => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[100px]">Titulo</TableHead>
               <TableHead>Nome do pet</TableHead>
               <TableHead>Especie</TableHead>
               <TableHead>Idade</TableHead>
