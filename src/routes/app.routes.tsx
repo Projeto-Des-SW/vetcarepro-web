@@ -45,33 +45,31 @@ const AppRoutes = () => {
             )}
             <Route path="dashboard" element={<Dashboard />}>
               <Route path="profile" element={<Me />} />
-              {user.role === "MANAGER" ||
-                (user.role === "DONO" && (
-                  <>
-                    <Route
-                      path="cadastrarClinica"
-                      element={<CadastroClinica />}
-                    />
-                    <Route
-                      path="editarClinica/:id"
-                      element={<CadastroClinica mode="edit" />}
-                    />
-                  </>
-                ))}
+              {(user.role === "MANAGER" || user.role === "DONO") && (
+                <>
+                  <Route
+                    path="cadastrarClinica"
+                    element={<CadastroClinica />}
+                  />
+                  <Route
+                    path="editarClinica/:id"
+                    element={<CadastroClinica mode="edit" />}
+                  />
+                </>
+              )}
 
               <Route path="listagemClinica" element={<ListagemClinica />} />
             </Route>
 
             <Route path="internalClinica/:idClinica" element={<Interna />}>
-              {user.role === "MANAGER" ||
-                (user.role === "DONO" && (
-                  <>
-                    <Route
-                      path="dashboardFinanceiro"
-                      element={<DashboardFinanceiro />}
-                    />
-                  </>
-                ))}
+              {(user.role === "MANAGER" || user.role === "DONO") && (
+                <>
+                  <Route
+                    path="dashboardFinanceiro"
+                    element={<DashboardFinanceiro />}
+                  />
+                </>
+              )}
               <Route
                 path="cadastrarFuncionario"
                 element={<CadastroFuncionario />}
