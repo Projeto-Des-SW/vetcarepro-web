@@ -109,10 +109,6 @@ const AgendarConsulta = ({ mode = "create" }: { mode?: "create" | "edit" }) => {
         } com sucesso`;
         const successDescription = `Data: ${formattedDate}, Hora: ${formattedTime}`;
 
-        toast(successMessage, {
-          description: successDescription,
-        });
-
         dispatch(
           addNotification({
             title: successMessage,

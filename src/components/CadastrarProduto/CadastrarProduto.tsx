@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
 import { useParams } from "react-router-dom";
 import { useUserSelector } from "@/store/hooks";
 import axios from "axios";
@@ -11,7 +10,6 @@ import dogPuto from "../../assets/dogPuto.png";
 import dogTriste from "../../assets/dogTriste.png";
 import { Card } from "@/components/ui/card";
 import {
-  capitalizeFirstLetter,
   formattedDate,
   formattedTime,
 } from "@/utils/const.utils";
@@ -99,10 +97,6 @@ const CadastrarProduto = ({ mode = "create", id }: ICrudClinia) => {
       .then((response) => {
         const successMessage = `Produto - ${response.statusText}`;
         const successDescription = `Data: ${formattedDate}, Hora: ${formattedTime}`;
-
-        toast(`${capitalizeFirstLetter(mode)} realizado com sucesso`, {
-          description: successDescription,
-        });
 
         notify(successMessage, successDescription);
       })

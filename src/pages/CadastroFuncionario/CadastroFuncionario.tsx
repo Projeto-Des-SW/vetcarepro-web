@@ -79,6 +79,7 @@ const CadastroFuncionario = ({ mode = "create" }: ICrudClinia) => {
       name: data.name,
       email: data.email,
       salary: data.salary,
+      password: data.password,
       position: data.position,
       role: data.role,
     };
