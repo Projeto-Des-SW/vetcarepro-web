@@ -16,6 +16,7 @@ import { Separator } from "../ui/separator";
 import Inputs from "../Inputs/Inputs";
 import EyeOpen from "@/assets/icons/EyeOpen";
 import { toast } from "sonner";
+import emailjs from "emailjs-com";
 
 import {
   Dialog,
@@ -58,6 +59,7 @@ const Cadastro = () => {
       ...data,
       tier: "TIER_ONE",
     };
+
     fetch(`${baseUrl}/users`, {
       method: "POST",
       headers: {
@@ -76,6 +78,30 @@ const Cadastro = () => {
           title = "Ocorreu um erro, tente mais tarde!";
         }
 
+        emailjs
+          .send(
+            "service_926z42m", 
+            "template_xwcgdwn", 
+            {
+              to_email: myForm.email, 
+              name: myForm.name,
+              message: "Olá, esta é uma mensagem de teste.",
+            },
+            "D4zV7NOASGdqumlfv"
+          )
+          .then(
+            (response) => {
+              console.log(
+                "E-mail enviado com sucesso!",
+                response.status,
+                response.text
+              );
+            },
+            (err) => {
+              console.error("Falha no envio do e-mail", err);
+            }
+          );
+          
         toast(`${title}`, {
           description: successDescription,
         });
