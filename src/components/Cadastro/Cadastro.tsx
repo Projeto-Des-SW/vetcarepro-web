@@ -80,7 +80,7 @@ const Cadastro = () => {
 
         emailjs
           .send(
-            "service_926z42m", 
+            "service_cbndias", 
             "template_xwcgdwn", 
             {
               to_email: myForm.email, 
